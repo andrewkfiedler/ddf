@@ -12,13 +12,23 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
+/*global define*/
+define([
+    'marionette',
+    'icanhaz',
+    'jquery',
+    'js/wreqr',
+    'js/views/notification/Notification.view'
+], function (Marionette, ich, $, wreqr, NotificationView) {
 
-@import "variables.less";
-@import "mixins.less";
-@import "utils.less";
+    var NotificationsView = Marionette.CollectionView.extend({
+        itemView: NotificationView,
+        tagName: 'ddf-notifications',
+        initialize: function(){
+        },
+        onRender: function () {
 
-@import "./common/init.less";
-@import "./application/init.less";
-@import "./configuration/init.less";
-@import "./installer/init.less";
-@import "./notification/init.less";
+        }
+    });
+    return NotificationsView;
+});

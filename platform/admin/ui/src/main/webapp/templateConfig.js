@@ -44,7 +44,10 @@
             //module
             moduleDetailLayout: 'templates/module/ModuleDetail.layout.handlebars',
             systemInformationTemplate: 'templates/module/systeminformation.template.handlebars',
-            systemInformationItemTemplate: 'templates/module/systeminformation.item.template.handlebars'
+            systemInformationItemTemplate: 'templates/module/systeminformation.item.template.handlebars',
+
+            //notification
+            notificationView: 'templates/notification/notification.handlebars'
         }
     });
 }());

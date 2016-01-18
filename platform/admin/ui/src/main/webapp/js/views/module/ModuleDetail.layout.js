@@ -15,15 +15,17 @@
 /*global define*/
 define([
     'backbone',
+    'jquery',
     'marionette',
     'icanhaz',
     'js/wreqr',
     'text!moduleDetailLayout'
-], function(Backbone, Marionette, ich, wreqr, moduleDetailLayout) {
+], function (Backbone, $, Marionette, ich, wreqr, moduleDetailLayout) {
     "use strict";
 
     ich.addTemplate('moduleDetailLayout', moduleDetailLayout);
 
+    var exportUrl = '/jolokia/exec/org.codice.ddf.configuration.migration.ConfigurationMigrationManager:service=configuration-migration/export/etc!/exported';
 
     var ModuleDetailLayout = Marionette.Layout.extend({
         template: 'moduleDetailLayout',
@@ -33,11 +35,33 @@ define([
             tabContent: '.tab-content-container'
         },
         events: {
-            'click .nav-to-applications': 'navToApplications',
-            'click #featureTab': 'getFeatures'
+            'click .header > .btn': 'export'
         },
-
-        selectFirstTab: function(){
+        export: function () {
+            $.ajax({
+                type: 'GET',
+                url: exportUrl,
+                dataType: 'JSON'
+            }).then(function (response) {
+                if (response.error) {
+                    wreqr.vent.trigger('notify', {
+                        type: 'error',
+                        message: 'System failed to export to etc/exported.  Please see the logs for more details.'
+                    });
+                } else if (response.value.length !== 0) {
+                    wreqr.vent.trigger('notify', {
+                        type: 'warning',
+                        message: 'System successfully exported to etc/exported, however there were some issues copying certain files.  Please see the logs for more details.'
+                    });
+                } else {
+                    wreqr.vent.trigger('notify', {
+                        type: 'success',
+                        message: 'System successfully exported to etc/exported.'
+                    });
+                }
+            });
+        },
+        selectFirstTab: function () {
             this.$('.tab-container a:first').tab('show');
         }
     });

@@ -26,8 +26,10 @@ define([
     'text!templates/appHeader.handlebars',
     'text!templates/header.handlebars',
     'text!templates/footer.handlebars',
-    'text!templates/moduleTab.handlebars'
-    ],function (_, Backbone, Marionette, ich, $, poller, wreqr, Module, AppModel, tabs, appHeader, header, footer, moduleTab) {
+    'text!templates/moduleTab.handlebars',
+    'js/models/notification/Notifications.js',
+    'js/views/notification/Notifications.view'
+    ],function (_, Backbone, Marionette, ich, $, poller, wreqr, Module, AppModel, tabs, appHeader, header, footer, moduleTab, NotificationsModel, NotificationsView) {
     'use strict';
 
     var Application = {};
@@ -57,6 +59,18 @@ define([
         appHeader: '#appHeader',
         alertsRegion: '.alerts'
     });
+
+    /*Application.App.addInitializer(function(){
+        Application.App.notificationsRegion.open = function(view){
+            this.$el.replaceWith(view.el);
+        };
+        Application.App.notificationsRegion.show(new NotificationsView({collection: new NotificationsModel()}));
+    });*/
+
+    var Notifications = new NotificationsView({collection: new NotificationsModel()});
+    $('body').append(Notifications.el);
+
+
 
     //setup models
     var options = {
