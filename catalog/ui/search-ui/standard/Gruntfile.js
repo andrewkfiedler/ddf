@@ -22,7 +22,7 @@ module.exports = function (grunt) {
         ports: {
           phantom: 0,
           selenium: 0,
-          express:  0,
+          express:  0
         },
 
         clean: {
@@ -66,6 +66,7 @@ module.exports = function (grunt) {
                     'src/main/webapp/config.js',
                     'src/main/webapp/main.js',
                     'src/main/webapp/properties.js',
+                    'src/main/webapp/rearchitecture/js/models/*',
                     'src/test/js/**/*.js'
                 ]
             },
@@ -93,6 +94,17 @@ module.exports = function (grunt) {
                     module: true,
                     define: true
                 }
+            }
+        },
+        'node-inspector': {
+            dev: {}
+        },
+        simplemocha: {
+            options: {
+                fullTrace: true
+            },
+            test: {
+                src: ['src/test/js/unit/models/*.js']
             }
         },
         mochaWebdriver: {
@@ -184,6 +196,8 @@ module.exports = function (grunt) {
         }
     });
 
+    grunt.loadNpmTasks('grunt-node-inspector');
+    grunt.registerTask('unitTest', ['simplemocha:test']);
     grunt.registerTask('test', ['port:allocator', 'express:test', 'mochaWebdriver:phantom']);
     grunt.registerTask('test:selenium', ['port:allocator', 'express:test', 'mochaWebdriver:selenium']);
     grunt.registerTask('test:sauce', ['port:allocator', 'express:test', 'mochaWebdriver:sauce']);
