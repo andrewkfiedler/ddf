@@ -2,146 +2,122 @@
 /* global describe, it, require */
 'use strict';
 
-var Squire;
-(function setupSquire() {
-    var requirejs = require('requirejs');
-    requirejs.config({
-        baseUrl: '.',
-        nodeRequire: require,
-        packages: [
-            {
-                name: 'squirejs',
-                location: 'node_modules/squirejs',
-                main: 'src/Squire'
-            }
-        ]
-    });
-    Squire = requirejs('squirejs');
-})();
-var $;
-(function setup$() {
-    var document = require('jsdom').jsdom();
-    var window = document.defaultView;
-    require('jquery')(window);
-    $ = window.$;
-})();
-var Backbone;
-(function replaceBackboneJquery() {
-    Backbone = require('backbone');
-    Backbone.$ = $;
-})();
+var utility = require('../../shared/utility.js');
+var Squire = utility.getSquire();
+var $ = utility.getJquery();
+var Backbone = utility.getBackbone($);
 
 var expect = require('chai').expect;
 var sinon = require('sinon');
-var tryAssertions = require('../../shared/utility.js').tryAssertions;
+var tryAssertions = utility.tryAssertions;
+var clock = sinon.useFakeTimers();
 
 describe('Sources', function () {
-    var sourcesModelPath = 'src/main/webapp/rearchitecture/js/models/Sources';
-    var injector = new Squire();
-    injector.mock('jquery', $).mock('backbone', Backbone);
-    var response;
-    var deferred;
-    var clock = sinon.useFakeTimers();
-    sinon.stub($, 'ajax', function (options) {
-        return deferred.always(function(response, success){
-            if (success) {
-                options.success(response);
-            } else {
-                options.error(response);
-            }
-        });
-    });
+    var injector, ajaxMock, clock, Sources, Source, serverResponses;
 
-    before(function fetchDependencies(done) {
+    function resetServerResponses() {
+        serverResponses = [
+            [
+                {
+                    available: true,
+                    id: "source1",
+                    contentTypes: [],
+                    version: "2.9.0-SNAPSHOT"
+                },
+                {
+                    available: true,
+                    id: "source2",
+                    contentTypes: [],
+                    version: "2.0"
+                },
+                {
+                    available: false,
+                    id: "source3",
+                    contentTypes: [],
+                    version: "2.0"
+                }
+            ],
+            [
+                {
+                    available: true,
+                    id: "source1",
+                    contentTypes: [],
+                    version: "2.9.0-SNAPSHOT"
+                },
+                {
+                    available: true,
+                    id: "source2",
+                    contentTypes: [],
+                    version: "2.0"
+                },
+                {
+                    available: true,
+                    id: "source3",
+                    contentTypes: [],
+                    version: "2.0"
+                }
+            ]
+        ];
+    }
+
+    before(function setupAll(done) {
+        injector = new Squire();
+        injector.mock('backbone', Backbone);
+        ajaxMock = utility.mockAjax($);
+        clock = sinon.useFakeTimers();
         injector.require(['src/main/webapp/rearchitecture/js/models/Source'], function (SourceModel) {
-            injector.mock('rearchitecture/js/models/Source', SourceModel);
-            done();
+            Source = SourceModel;
+            injector.mock('rearchitecture/js/models/Source', Source);
+            injector.require(['src/main/webapp/rearchitecture/js/models/Sources'], function (SourcesSingleton) {
+                Sources = SourcesSingleton;
+                done();
+            });
         });
     });
 
-    beforeEach(function resetDeferred(){
-        deferred = $.Deferred();
+    beforeEach(function setupIndividual() {
+        Sources.reset();
+        resetServerResponses();
+        ajaxMock.resetDeferred();
     });
 
-    afterEach(function resolveHangingRequests(){
-        deferred.resolve();
-    });
-
-    after(function restoreTimers(){
+    after(function tearDownAll() {
         clock.restore();
+        ajaxMock.destroy();
     });
 
 
-    it('should initialize empty and immediately start polling', function(done){
-        response = [
-            {
-                available: true,
-                id: "source1",
-                contentTypes: [ ],
-                version: "2.9.0-SNAPSHOT"
-            },
-            {
-                available: true,
-                id: "source2",
-                contentTypes: [ ],
-                version: "2.0"
-            },
-            {
-                available: false,
-                id: "source3",
-                contentTypes: [ ],
-                version: "2.0"
-            }
-        ];
-        injector.require([sourcesModelPath], function (Sources) {
-            try {
-                expect(Sources.length).to.equal(0);
-                Sources.on('update', function () {
-                    done(tryAssertions(function () {
-                        expect(Sources.length).to.equal(3);
-                    }));
-                });
-                deferred.resolve(response, true);
-            } catch (err){
-                done(err);
-            }
-        });
+    it('should initialize empty and immediately start polling', function (done) {
+        try {
+            expect(Sources.length).to.equal(0);
+            Sources.once('update', function () {
+                done(tryAssertions(function () {
+                    expect(Sources.length).to.equal(3);
+                }));
+            });
+            ajaxMock.resolveDeferred(serverResponses[0], true);
+            clock.tick(10000);
+        } catch (err) {
+            done(err);
+        }
     });
 
-    it('should pick up any changes', function(done){
-        response = [
-            {
-                available: true,
-                id: "source1",
-                contentTypes: [ ],
-                version: "2.9.0-SNAPSHOT"
-            },
-            {
-                available: true,
-                id: "source2",
-                contentTypes: [ ],
-                version: "2.0"
-            },
-            {
-                available: true,
-                id: "source3",
-                contentTypes: [ ],
-                version: "2.0"
-            }
-        ];
-        injector.require([sourcesModelPath], function (Sources) {
-            try {
-                expect(Sources.length).to.equal(3);
-                Sources.on('change', function () {
+    it('should pick up any changes to existing models', function (done) {
+        try {
+            Sources.once('sync', function () {
+                expect(Sources.get('source3').get('available')).to.equal(false);
+                Sources.once('sync', function () {
                     done(tryAssertions(function () {
-                        expect(Sources.length).to.equal(3);
+                        expect(Sources.get('source3').get('available')).to.equal(true);
                     }));
                 });
-                deferred.resolve(response, true);
+                ajaxMock.resolveDeferred(serverResponses[1], true);
                 clock.tick(10000);
-            } catch (err){
-                done(err);
-            }
-        });
+            });
+            ajaxMock.resolveDeferred(serverResponses[0], true);
+            clock.tick(10000);
+        } catch (err) {
+            done(err);
+        }
     });
 });

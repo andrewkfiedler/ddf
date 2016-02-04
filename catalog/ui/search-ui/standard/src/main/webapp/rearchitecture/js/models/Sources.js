@@ -14,27 +14,26 @@ define([
     'backbone',
     'underscore',
     'rearchitecture/js/models/Source'
-], function(Backbone, _, Source) {
-
-    function startPolling(collection){
-        timeoutID = setTimeout(function(){
-            collection.fetch().always(function(){
-                startPolling(collection);
-            });
-        }, pollingInterval);
-    }
+], function (Backbone, _, Source) {
 
     var pollingInterval = 10000; // 10 seconds
-    var timeoutID;
 
     var Sources = Backbone.Collection.extend({
         model: Source,
         url: '/services/catalog/sources',
-        initialize: function(){
+        initialize: function () {
             var collection = this;
-            collection.fetch().always(function(){
-                startPolling(collection);
+            collection.on('sync', function () {
+                setTimeout(function () {
+                    collection.fetch();
+                }, pollingInterval);
             });
+            collection.on('error', function () {
+                setTimeout(function () {
+                    collection.fetch();
+                }, pollingInterval);
+            });
+            collection.fetch();
         }
     });
 

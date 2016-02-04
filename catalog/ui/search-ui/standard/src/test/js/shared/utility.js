@@ -14,7 +14,7 @@ module.exports = {
             return error;
         }
     },
-    getSquire: function(){
+    getSquire: function () {
         var requirejs = require('requirejs');
         requirejs.config({
             baseUrl: '.',
@@ -28,5 +28,48 @@ module.exports = {
             ]
         });
         return requirejs('squirejs');
+    },
+    getJquery: function () {
+        var document = require('jsdom').jsdom();
+        var window = document.defaultView;
+        require('jquery')(window);
+        return window.$;
+    },
+    getBackbone: function ($) {
+        $ = $ || this.getJquery();
+        var Backbone = require('backbone');
+        Backbone.$ = $;
+        return Backbone;
+    },
+    mockAjax: function ($) {
+        var deferred = new $.Deferred();
+        var ajaxMock = {
+            destroy: function () {
+                $.ajax.restore();
+                this.destroy = $.noop;
+            },
+            resetDeferred: function () {
+                if (deferred.state() === 'pending')
+                    deferred.resolve();
+                deferred = new $.Deferred();
+                return this;
+            },
+            resolveDeferred: function (response, success) {
+                if (deferred.state() !== 'pending')
+                    this.resetDeferred();
+                deferred.resolve(response, success);
+            }
+        };
+        require('sinon').stub($, 'ajax', function (options) {
+            return deferred.always(function (response, success) {
+                if (success) {
+                    options.success(response); // needed for backbone fetch to work
+                } else {
+                    options.error(response);  // needed for backbone fetch to work
+                }
+                return response;  // for typical ajax calls
+            });
+        });
+        return ajaxMock;
     }
 };
