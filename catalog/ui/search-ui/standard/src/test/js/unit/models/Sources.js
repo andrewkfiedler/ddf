@@ -120,4 +120,42 @@ describe('Sources', function () {
             done(err);
         }
     });
+
+    it('should repoll upon a fetch error', function (done) {
+        try {
+            Sources.once('error', function () {
+                expect(Sources.length).to.equal(0);
+                Sources.once('sync', function () {
+                    done(tryAssertions(function () {
+                        expect(Sources.length).to.equal(3);
+                    }));
+                });
+                ajaxMock.resolveDeferred(serverResponses[1], true);
+                clock.tick(10000);
+            });
+            ajaxMock.resolveDeferred(serverResponses[0], false);
+            clock.tick(10000);
+        } catch (err) {
+            done(err);
+        }
+    });
+
+    it('should keep old results upon a fetch error', function (done) {
+        try {
+            Sources.once('error',function(){
+                done(tryAssertions(function () {
+                    expect(Sources.length).to.equal(3);
+                }));
+            });
+            Sources.once('sync', function () {
+                expect(Sources.length).to.equal(3);
+                ajaxMock.resolveDeferred(serverResponses[0], false);
+                clock.tick(10000);
+            });
+            ajaxMock.resolveDeferred(serverResponses[0], true);
+            clock.tick(10000);
+        } catch (err) {
+            done(err);
+        }
+    });
 });

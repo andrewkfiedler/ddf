@@ -16,22 +16,24 @@ define([
     'rearchitecture/js/models/Source'
 ], function (Backbone, _, Source) {
 
+    function refetch(){
+        var collection = this;
+        setTimeout(function () {
+            collection.fetch();
+        }, pollingInterval);
+    }
+
     var pollingInterval = 10000; // 10 seconds
 
     var Sources = Backbone.Collection.extend({
         model: Source,
         url: '/services/catalog/sources',
         initialize: function () {
+            refetch = refetch.bind(this);
             var collection = this;
-            collection.on('sync', function () {
-                setTimeout(function () {
-                    collection.fetch();
-                }, pollingInterval);
-            });
-            collection.on('error', function () {
-                setTimeout(function () {
-                    collection.fetch();
-                }, pollingInterval);
+            collection.on({
+                'sync': refetch,
+                'error': refetch
             });
             collection.fetch();
         }
