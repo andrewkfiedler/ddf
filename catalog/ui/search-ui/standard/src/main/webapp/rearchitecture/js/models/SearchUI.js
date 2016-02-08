@@ -11,14 +11,13 @@
  **/
 /*global define*/
 define([
-    'backbone',
-    'underscore'
-], function(Backbone, _) {
+    'backbone'
+], function(Backbone) {
 
     // global model to be used instead of passing around models that get out of sync with one another
     // you can effectively think of it as a singleton
 
-    SearchUI = Backbone.Model.extend({
+    var SearchUI = Backbone.Model.extend({
         url: '/service/action',
         useAjaxSync: false,
         initialize : function() {

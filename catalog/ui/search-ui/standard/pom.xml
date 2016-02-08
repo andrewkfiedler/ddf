@@ -147,6 +147,18 @@
                 <artifactId>frontend-maven-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id> install node and npm</id>
+                        <goals>
+                            <goal>
+                                install-node-and-npm
+                            </goal>
+                        </goals>
+                        <phase>test</phase>
+                        <configuration>
+                            <nodeVersion>v5.5.0</nodeVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>grunt test</id>
                         <goals>
                             <goal>grunt</goal>
@@ -154,7 +166,7 @@
                         <phase>test</phase>
                         <configuration>
                             <skip>${skipTests}</skip>
-                            <arguments>test</arguments>
+                            <arguments>unitTest</arguments>
                         </configuration>
                     </execution>
                 </executions>

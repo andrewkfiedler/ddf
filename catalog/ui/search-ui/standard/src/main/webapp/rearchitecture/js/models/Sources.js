@@ -9,19 +9,19 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-/*global define, setInterval, clearInterval*/
+/*global define, setTimeout*/
 define([
     'backbone',
     'underscore',
     'rearchitecture/js/models/Source'
 ], function (Backbone, _, Source) {
 
-    function refetch(){
+    var refetch = function () {
         var collection = this;
         setTimeout(function () {
             collection.fetch();
         }, pollingInterval);
-    }
+    };
 
     var pollingInterval = 10000; // 10 seconds
 

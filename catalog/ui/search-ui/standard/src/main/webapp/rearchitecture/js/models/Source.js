@@ -11,9 +11,8 @@
  **/
 /*global define*/
 define([
-    'backbone',
-    'underscore'
-], function(Backbone, _) {
+    'backbone'
+], function(Backbone) {
 
     // what's the public API for a source other than changes to the model?
 

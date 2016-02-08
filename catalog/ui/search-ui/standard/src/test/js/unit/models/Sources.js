@@ -1,5 +1,5 @@
 /*jslint node: true */
-/* global describe, it, require */
+/* global describe, it, require, before, beforeEach, after*/
 'use strict';
 
 var utility = require('../../shared/utility.js');
@@ -10,7 +10,6 @@ var Backbone = utility.getBackbone($);
 var expect = require('chai').expect;
 var sinon = require('sinon');
 var tryAssertions = utility.tryAssertions;
-var clock = sinon.useFakeTimers();
 
 describe('Sources', function () {
     var injector, ajaxMock, clock, Sources, Source, serverResponses;

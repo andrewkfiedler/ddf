@@ -1,3 +1,5 @@
+/*jslint node: true */
+/* global require*/
 module.exports = {
     /*
      Mocha Utility for Asynchronous Tests
