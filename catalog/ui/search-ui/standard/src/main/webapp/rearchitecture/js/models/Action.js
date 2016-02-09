@@ -1,4 +1,7 @@
 /**
+ * Created by andrewfiedler on 2/8/16.
+ */
+/**
  * Copyright (c) Codice Foundation
  *
  * This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either
@@ -11,14 +14,17 @@
  **/
 /*global define*/
 define([
-    'backbone',
-    'underscore',
-    'rearchitecture/js/models/Metacard'
-], function (Backbone, _, Metacard) {
+    'backbone'
+], function (Backbone) {
 
-    var Metacards = Backbone.Collection.extend({
-        model: Metacard
+    var Action = Backbone.Model.extend({
+        defaults: {
+            description: "Provides a URL to the metacard",
+            id: "catalog.data.metacard.viewExport Metacard XML",
+            title: "Export Metacard XML",
+            url: "https://localhost:8993/services/catalog/sources/ddf.distribution/d06aa8b0c494422880b7d68dddde513c"
+        }
     });
 
-    return new Metacards();
+    return Action;
 });

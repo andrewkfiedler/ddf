@@ -13,12 +13,12 @@
 define([
     'backbone',
     'underscore',
-    'rearchitecture/js/models/Metacard'
-], function (Backbone, _, Metacard) {
+    'rearchitecture/js/models/Action'
+], function (Backbone, _, Action) {
 
-    var Metacards = Backbone.Collection.extend({
-        model: Metacard
+    var Actions = Backbone.Collection.extend({
+        model: Action
     });
 
-    return new Metacards();
+    return Actions;
 });

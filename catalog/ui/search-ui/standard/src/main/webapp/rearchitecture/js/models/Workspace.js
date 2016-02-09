@@ -18,10 +18,10 @@ define([
 
     var Workspace = Backbone.Model.extend({
         defaults: {
-            metacards: [],
+            metacardIDs: [],
             name: undefined,
             id: undefined,
-            searches: []
+            searchIDs: []
         }
     });
 

@@ -14,8 +14,6 @@ define([
     'backbone'
 ], function(Backbone) {
 
-    // what's the public API for a source other than changes to the model?
-
     var Source = Backbone.Model.extend({
         defaults: {
             available: false,

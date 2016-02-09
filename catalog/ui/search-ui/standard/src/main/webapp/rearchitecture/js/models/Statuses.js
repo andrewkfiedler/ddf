@@ -11,18 +11,14 @@
  **/
 /*global define*/
 define([
-    'backbone'
-], function(Backbone) {
+    'backbone',
+    'underscore',
+    'rearchitecture/js/models/Status'
+], function (Backbone, _, Status) {
 
-    // global model to be used instead of passing around models that get out of sync with one another
-    // you can effectively think of it as a singleton
-
-    var SearchUI = Backbone.Model.extend({
-        url: '/service/action',
-        useAjaxSync: false,
-        initialize : function() {
-        }
+    var Statuses = Backbone.Collection.extend({
+        model: Status
     });
 
-    return new SearchUI();
+    return new Statuses();
 });

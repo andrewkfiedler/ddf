@@ -11,14 +11,22 @@
  **/
 /*global define*/
 define([
-    'backbone',
-    'underscore',
-    'rearchitecture/js/models/Metacard'
-], function (Backbone, _, Metacard) {
+    'backbone'
+], function(Backbone) {
 
-    var Metacards = Backbone.Collection.extend({
-        model: Metacard
+    var PlatformConfig = Backbone.Model.extend({
+        defaults: {
+            productImage: "as;dlkjf",
+            color: null,
+            footer: null,
+            background: null,
+            favIcon: "",
+            header: null,
+            title: "DDF",
+            version: "DDF 2.9.0-SNAPSHOT"
+        },
+        url: '/services/platform/config/ui'
     });
 
-    return new Metacards();
+    return new PlatformConfig();
 });

@@ -1,4 +1,7 @@
 /**
+ * Created by andrewfiedler on 2/8/16.
+ */
+/**
  * Copyright (c) Codice Foundation
  *
  * This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either
@@ -11,14 +14,19 @@
  **/
 /*global define*/
 define([
-    'backbone',
-    'underscore',
-    'rearchitecture/js/models/Metacard'
-], function (Backbone, _, Metacard) {
+    'backbone'
+], function(Backbone) {
 
-    var Metacards = Backbone.Collection.extend({
-        model: Metacard
+    var Status = Backbone.Model.extend({
+        defaults: {
+            statusID: undefined,
+            elapsed: 55,
+            hits: 0,
+            id: "ddf.distribution",
+            results: 0,
+            state: "SUCCEEDED"
+        }
     });
 
-    return new Metacards();
+    return Status;
 });
