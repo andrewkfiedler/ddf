@@ -58,6 +58,13 @@ module.exports = function (grunt) {
                 }
             }
         },
+        sass: {
+            dist: {
+                files: {
+                    'src/main/webapp/rearchitecture/css/Compiled.css' : 'src/main/webapp/rearchitecture/css/Compiled.scss'
+                }
+            }
+        },
         jshint: {
             all: {
                 src: [
@@ -202,7 +209,7 @@ module.exports = function (grunt) {
     grunt.registerTask('test:selenium', ['port:allocator', 'express:test', 'mochaWebdriver:selenium']);
     grunt.registerTask('test:sauce', ['port:allocator', 'express:test', 'mochaWebdriver:sauce']);
 
-    grunt.registerTask('build', ['bower-offline-install', 'sed', 'less',
+    grunt.registerTask('build', ['bower-offline-install', 'sed', 'less', 'sass',
         'cssmin', 'jshint']);
 
     grunt.registerTask('default', ['build','express:server','watch']);

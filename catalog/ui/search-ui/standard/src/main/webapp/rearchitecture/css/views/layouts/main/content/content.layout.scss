@@ -1,0 +1,11 @@
+#{$customElementNamespace}main-content-layout {
+
+  @include customElement();
+
+  > div  {
+    height: 100%;
+    width: 33%;
+    display: inline-block;
+  }
+
+}

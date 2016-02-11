@@ -1,0 +1,32 @@
+#{$customElementNamespace}navigation-item {
+
+  @include customElement();
+
+  top: 0px;
+  left: 0px;
+  background: black;
+  text-align: center;
+
+  > .menu-items {
+    float: right;
+  }
+
+  > button {
+    display: inline-block;
+    width: 200px;
+    height: $minimumButtonSize;
+  }
+
+  button {
+    width: $minimumButtonSize;
+    height: $minimumButtonSize;
+    text-align: center;
+    background: black;
+    border: none;
+  }
+
+  button:last-of-type {
+    width: auto;
+    white-space: nowrap;
+  }
+}

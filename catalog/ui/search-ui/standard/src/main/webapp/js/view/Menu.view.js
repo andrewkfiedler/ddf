@@ -31,13 +31,14 @@ define([
     'js/view/preferences/PreferencesMenu',
     'application',
     'properties',
-    'modelbinder',
-    'perfectscrollbar',
-    'backbonecometd',
-    'progressbar'
+    'rearchitecture/js/views/layouts/main/main.layout.view',
+    'rearchitecture/js/views/layouts/main/content/content.layout.view',
+    'rearchitecture/js/views/items/navigation.view',
+    'rearchitecture/js/views/items/navigation.model'
 ], function(Marionette, ich, menubarTemplate, menubarItemTemplate, Backbone, notificationMenuTemplate,
         notificationCategoryTemplate, wreqr, _, loginTemplate, logoutTemplate,
-        taskTemplate, taskCategoryTemplate, helpTemplate, Cometd, $, IngestMenu, PreferencesMenu, Application, properties) {
+        taskTemplate, taskCategoryTemplate, helpTemplate, Cometd, $, IngestMenu, PreferencesMenu, Application,
+            properties, MainLayoutView, ContentLayoutView, NavigationView, NavigationModel) {
 
     if (!ich.menubarItemTemplate) {
         ich.addTemplate('menubarItemTemplate', menubarItemTemplate);
@@ -367,6 +368,19 @@ define([
     Menu.Bar = Marionette.LayoutView.extend({
         template: 'menubarTemplate',
         className: 'container-fluid navbar',
+        events: {
+            'click .fa-globe' : 'openRearchitecture'
+        },
+        openRearchitecture: function(){
+            document.querySelector('html').classList.add('show-rearchitecture');
+            var mainLayoutView = new MainLayoutView();
+            mainLayoutView.render();
+            var contentLayoutView = new ContentLayoutView();
+            mainLayoutView.content.show(contentLayoutView);
+            var navigationView = new NavigationView(NavigationModel);
+            mainLayoutView.navigation.show(navigationView);
+            document.querySelector('body').appendChild(mainLayoutView.el);
+        },
         regions: {
             welcome: '#welcome',
             notification: '#notification',

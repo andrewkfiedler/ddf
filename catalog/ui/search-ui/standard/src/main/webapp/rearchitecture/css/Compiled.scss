@@ -1,0 +1,15 @@
+@import "Constants";
+@import "Mixins";
+
+@import "views/layouts/main/main.layout";
+@import "views/layouts/main/content/content.layout";
+@import "items/navigation";
+
+html.show-rearchitecture {
+  #controlPanel {
+    display: none;
+  }
+  #menu {
+    display: none;
+  }
+}

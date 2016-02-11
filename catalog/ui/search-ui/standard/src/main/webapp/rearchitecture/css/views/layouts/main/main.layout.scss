@@ -1,0 +1,23 @@
+$navigationHeight: $minimumButtonSize;
+
+#{$customElementNamespace}main-layout {
+
+  @include customElement();
+
+  .navigation {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: $navigationHeight;
+  }
+
+  .content {
+    position: fixed;
+    top: $navigationHeight;
+    left: 0px;
+    width: 100%;
+    height: calc(100% - #{$navigationHeight});
+  }
+
+}
