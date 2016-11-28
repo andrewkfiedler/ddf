@@ -94,7 +94,7 @@ module.exports = Marionette.LayoutView.extend({
     endLoading: function() {
         LoadingCompanionView.endLoading(this);
     },
-    onRender: function() {
+    onShow: function() {
         this.startLoading();
         setTimeout(function() {
             this.createMap().then(function(Map) {
