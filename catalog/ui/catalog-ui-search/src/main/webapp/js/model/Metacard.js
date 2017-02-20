@@ -567,19 +567,6 @@ define([
 
         MetaCard.Metacard = Backbone.AssociatedModel.extend({
             url: '/services/catalog/',
-
-            initialize: function () {
-                this.listenTo(wreqr.vent, 'metacard:selected', _.bind(this.onAppContext, this));
-            },
-
-            onAppContext: function (direction, model) {
-                if (model.id !== this.id) {
-                    this.set('context', false);
-                } else {
-                    this.set('context', true);
-                }
-            },
-
             relations: [
                 {
                     type: Backbone.One,
