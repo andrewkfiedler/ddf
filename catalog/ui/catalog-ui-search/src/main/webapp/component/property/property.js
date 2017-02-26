@@ -91,6 +91,9 @@ define([
                 case 'LOCATION':
                     this.set('calculatedType', 'location');
                     break;
+                case 'TEXTAREA':
+                    this.set('calculatedType', 'textarea');
+                    break;
                 case 'BOOLEAN':
                     this.set('calculatedType', 'boolean');
                     break;
