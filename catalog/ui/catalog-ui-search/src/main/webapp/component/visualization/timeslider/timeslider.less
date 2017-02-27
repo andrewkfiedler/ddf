@@ -1,0 +1,22 @@
+@{customElementNamespace}timeslider {
+  .customElement;
+  padding: 20px 20px @minimumButtonSize 20px;
+
+  > .timeslider-empty {
+    text-align: center;
+    display: none;
+  }
+
+}
+
+@{customElementNamespace}timeslider.is-empty {
+
+  > .timeslider-empty {
+    display: block;
+  }
+
+  > .timeslider-container {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+}

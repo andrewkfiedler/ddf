@@ -26,6 +26,7 @@ module.exports = Marionette.ItemView.extend({
         'click .choice-3dmap': 'handle3dmap',
         'click .choice-histogram': 'handleHistogram',
         'click .choice-table': 'handleTable',
+        'click .choice-timeslider': 'handleTimeslider',
         'click .visualization-choice': 'handleChoice'
     },
     handle2dmap: function(){
@@ -39,6 +40,9 @@ module.exports = Marionette.ItemView.extend({
     },
     handleTable: function(){
         user.get('user').get('preferences').set('visualization', 'table');
+    },
+    handleTimeslider: function(){
+        user.get('user').get('preferences').set('visualization', 'timeslider');
     },
     handleChoice: function(){
         this.$el.trigger('closeSlideout.' + CustomElements.getNamespace());

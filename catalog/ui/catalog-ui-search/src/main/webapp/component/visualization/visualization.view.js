@@ -22,10 +22,11 @@ define([
     'component/visualization/maps/openlayers/openlayers.view',
     'component/visualization/histogram/histogram.view',
     'component/visualization/table/table.view',
+    'component/visualization/timeslider/timeslider.view',
     'component/singletons/user-instance',
     'maptype'
 ], function (wreqr, Marionette, CustomElements, template, CesiumView, OpenlayersView, HistogramView,
-             TableView, user, maptype) {
+             TableView, TimesliderView, user, maptype) {
 
     function getActiveVisualization() {
         return user.get('user').get('preferences').get('visualization');
@@ -60,6 +61,9 @@ define([
                 case 'table': 
                     this.showTable();
                     break;
+                case 'timeslider':
+                    this.showTimeslider();
+                    break;
             }
         },
         showOpenlayers: function(){
@@ -80,7 +84,12 @@ define([
         showTable: function(){
             this.activeVisualization.show(new TableView({
                 selectionInterface: this.options.selectionInterface
-            }))
+            }));
+        },
+        showTimeslider: function(){
+            this.activeVisualization.show(new TimesliderView({
+                selectionInterface: this.options.selectionInterface
+            }));
         }
     });
 
