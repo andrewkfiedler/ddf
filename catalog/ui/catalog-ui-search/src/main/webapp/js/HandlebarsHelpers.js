@@ -13,8 +13,9 @@
 define([
     'underscore',
     'moment',
-    'handlebars/runtime'
-], function (_, moment, Handlebars) {
+    'handlebars/runtime',
+    'wkx'
+], function (_, moment, Handlebars, wkx) {
     'use strict';
     // The module to be exported
     var helper, helpers = {
@@ -327,6 +328,13 @@ define([
                     return encodeURIComponent(str);
                 }
                 return str;
+            },
+            transformGeoJSONToWkt: function(str){
+                try {
+                    return wkx.Geometry.parseGeoJSON(str).toWkt();
+                } catch (err){
+                    return str;
+                }
             },
           json: function (obj) {
             return JSON.stringify(obj);

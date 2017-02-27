@@ -101,8 +101,10 @@ define([
                 case 'SHORT':
                     this.set('calculatedType', 'number');
                     break;
-                case 'STRING':
                 case 'GEOMETRY':
+                    this.set('calculatedType', 'geometry');
+                    break;
+                case 'STRING':
                 case 'XML':
                 default:
                     this.set('calculatedType', 'text');

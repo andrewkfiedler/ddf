@@ -100,6 +100,7 @@
     "openlayers": "3.20.1",
     "plotly.js": "1.10.5",
     "vis": "4.15.0",
-    "eonasdan-bootstrap-datetimepicker": "Eonasdan/bootstrap-datetimepicker#4.17.37"
+    "eonasdan-bootstrap-datetimepicker": "Eonasdan/bootstrap-datetimepicker#4.17.37",
+    "wkx": "0.4.1"
   }
 }
