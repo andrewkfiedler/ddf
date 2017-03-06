@@ -38,6 +38,11 @@ define([
                 this.setDefaultModel();
             }
             this.listenTo(this.model, 'change:currentWorkspace', this.updateInput);
+            this.listenTo(this.model, 'change:currentWorkspace', this.handleSaved);
+        },
+        handleSaved: function(){
+            var currentWorkspace = this.model.get('currentWorkspace');
+            this.$el.toggleClass('is-saved', currentWorkspace ? currentWorkspace.isSaved() : false);
         },
         updateInput: function(){
             if (this.model.get('currentWorkspace')) {

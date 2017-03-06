@@ -31,9 +31,12 @@ module.exports = Marionette.ItemView.extend({
         'click .choice-previous-workspace': 'handlePreviousWorkspace',
         'click .choice-previous-metacard': 'handlePreviousMetacard',
         'click .choice-upload': 'handleUpload',
-        'click': 'closeSlideout'
+        'click .navigation-choice': 'closeSlideout',
+        'click .workspaces-save': 'handleSave'
     },
     initialize: function(){
+        this.listenTo(store.get('workspaces'), 'change:saved update add remove', this.handleSaved);
+        this.handleSaved();
     },
     handleWorkspaces: function(){
         wreqr.vent.trigger('router:navigate', {
@@ -66,6 +69,16 @@ module.exports = Marionette.ItemView.extend({
                 trigger: true
             }
         });
+    },
+    handleSaved: function(){
+        var hasUnsaved = store.get('workspaces').find(function(workspace){
+            return !workspace.isSaved();
+        });
+        this.$el.toggleClass('is-saved', !hasUnsaved);
+        this.$el.find('.workspaces-save').attr('tabindex', !hasUnsaved ? -1 : null);
+    },
+    handleSave: function(){
+        store.get('workspaces').saveAll();
     },
     closeSlideout: function() {
         this.$el.trigger('closeSlideout.' + CustomElements.getNamespace());

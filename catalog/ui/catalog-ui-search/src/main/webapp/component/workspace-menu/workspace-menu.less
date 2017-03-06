@@ -5,23 +5,90 @@
   height: 2*@minimumLineSize;
   white-space: nowrap;
 
+  .inlineBlockDisplay(div, @largeFontSize) !important;
+
   > .content-title {
     height: 100%;
-    overflow: hidden;
     text-overflow: ellipsis;
     width: auto;
-    max-width: ~'calc(100% - @{minimumButtonSize})';
+    transition: padding 1*@coreTransitionTime ease-out;
+    padding-right: 2*@minimumButtonSize;
+    max-width: 100%;
   }
 
-  > .content-interactions {
+  > .content-interactions,
+  > .content-save {
+    transform: translateX(-200%);
+    transition: width 2*@coreTransitionTime ease-out, 
+        margin 2*@coreTransitionTime ease-out,
+        transform 1*@coreTransitionTime ease-out;
     width: @minimumButtonSize;
     height: 100%;
     text-align: center;
   }
 
-  > div {
-    display: inline-block;
-    vertical-align: top;
+  > .content-save {
+    margin-left: 10px;
+    position: relative;
+    overflow: hidden;
+    width: @minimumButtonSize;
   }
 
+  .content-save .fa {
+    vertical-align: middle;
+  }
+
+  .content-save .fa-floppy-o {
+    transition: opacity 2*@coreTransitionTime ease-out 0*@coreTransitionTime, 
+      transform 2*@coreTransitionTime ease-out 0*@coreTransitionTime;
+  }
+
+  .content-save span.fa-check {
+      margin: auto;
+      position: absolute;
+      line-height: 2*@minimumLineSize;
+      left: 0px;
+      text-align: center;
+      width: 100%;
+      transform: scale(2);
+      opacity: 0;
+      color: @positive-color;
+  }
+}
+
+@{customElementNamespace}workspace-menu.is-saved {
+
+  .content-save .fa-floppy-o {
+    opacity: 0;
+    transform: scale(2);
+    transition-delay: 0s;
+  }
+
+  .content-save .fa-check {
+    visibility: visible;
+    transition: transform 2*@coreTransitionTime ease-out @coreTransitionTime, 
+      opacity 2*@coreTransitionTime ease-out @coreTransitionTime,
+      color 2*@coreTransitionTime ease-out 8*@coreTransitionTime;
+    color: transparent;
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  .content-save {
+      opacity: 1;
+      transition-delay: 10*@coreTransitionTime;
+      overflow: hidden;
+      width: 0%;
+      margin-left: 0px;
+  }
+
+  .content-interactions {
+    transition-delay: 10*@coreTransitionTime;
+    transform: translateX(-100%);
+  }
+
+  .content-title {
+    transition-delay: 10*@coreTransitionTime;
+    padding-right: @minimumButtonSize;
+  }
 }

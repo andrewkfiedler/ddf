@@ -11,11 +11,81 @@
         word-wrap: normal;
         overflow: hidden;
         text-overflow: ellipsis;
+        position: relative;
     }
 
     .navigation-links {
-        .fa {
+        position: relative;
+        .navigation-choice .fa {
             padding-right: @minimumSpacing;
         }
     }
+
+    .choice-workspaces span:last-of-type:after {
+        content: ' *';
+        color: @warning-color;
+        opacity: 1;
+        transform: scale(1);
+        transition: transform @coreTransitionTime ease-out, 
+            opacity @coreTransitionTime ease-out;
+        white-space: pre;
+        display: inline-block;
+    }
+
+    .workspaces-save {
+        padding: @largeSpacing;
+        position: absolute;
+        right:0px;
+        top: 0px;
+        height: auto;
+        overflow: hidden;
+        max-width: 100%;
+    }
+
+
+    .workspaces-save span.fa-check {
+        margin: auto;
+        position: absolute;
+        //right: ~'calc(50% - .5rem)';
+        left: 0px;
+        text-align: center;
+        width: 100%;
+        transform: scale(2);
+        opacity: 0;
+        color: @positive-color;
+    }
+}
+
+@{customElementNamespace}navigator.is-saved {
+
+    .choice-workspaces span:last-of-type:after {
+        transform: scale(2);
+        opacity: 0;
+    }   
+
+    .workspaces-save .fa-floppy-o {
+        opacity: 0;
+        transform: scale(2);
+        transition: opacity 2*@coreTransitionTime ease-out, 
+        transform 2*@coreTransitionTime ease-out;
+    }
+
+    .workspaces-save .fa-check {
+        visibility: visible;
+        transition: transform 2*@coreTransitionTime ease-out @coreTransitionTime, 
+        opacity 2*@coreTransitionTime linear @coreTransitionTime,
+        color 2*@coreTransitionTime linear 8*@coreTransitionTime;
+        color: transparent;
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    .workspaces-save {
+        opacity: 1;
+        transition: max-width 0s linear 10*@coreTransitionTime, padding 0s linear 10*@coreTransitionTime;
+        overflow: hidden;
+        padding: 0px;
+        max-width: 0%;
+    }
+
 }

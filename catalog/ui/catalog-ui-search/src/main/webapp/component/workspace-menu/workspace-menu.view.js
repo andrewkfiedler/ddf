@@ -36,16 +36,20 @@ define([
             title: '.content-title',
             workspaceInteractions: '.content-interactions'
         },
+        events: {
+            'click > .content-save': 'handleSave'
+        },
         initialize: function (options) {
             if (options.model === undefined){
                 this.setDefaultModel();
             }
             this.listenTo(this.model, 'change:currentWorkspace', this.updateWorkspaceInteractions);
-            this.listenTo(this.model, 'change:currentWorkspace', this.handleWorkspaceChange);
+            this.listenTo(this.model, 'change:currentWorkspace', this.handleSaved);
         },
         onBeforeShow: function(){
             this.title.show(new TitleView());
             this.updateWorkspaceInteractions();
+            this.handleSaved();
         },
         updateWorkspaceInteractions: function(workspace) {
             if (workspace && workspace.changed.currentWorkspace) {
@@ -54,6 +58,14 @@ define([
                     modelForComponent: this.model.get('currentWorkspace')
                 }));
             }
+        },
+        handleSave: function(){
+            this.model.get('currentWorkspace').save();
+        },
+        handleSaved: function(){
+            var currentWorkspace = this.model.get('currentWorkspace');
+            this.$el.toggleClass('is-saved', currentWorkspace ? currentWorkspace.isSaved() : false);
+            this.$el.find('.content-save').attr('tabindex', currentWorkspace && currentWorkspace.isSaved() ? -1 : null);
         }
     });
 });

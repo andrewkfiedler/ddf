@@ -11,7 +11,10 @@
  *
  **/
  --}}
-<input placeholder="Workspace Title" value="{{currentWorkspace.title}}" data-help="This is the title of the workspace you are currently in.
-If you have permission, you can click here to start editing the title.">
-<pre class="title-display">{{currentWorkspace.title}}</pre>
-<span class="title-saved">*</span>
+<div class="choice-title" data-help="The title of the workspace.">
+    <span class="title-text" title="{{title}}">{{title}}</span>
+    <span class="title-saved" title="Indicates the workspace has unsaved changes.">*</span>
+</div>
+<div class="choice-date" title="{{niceDate}}" data-help="The date the workspace was last modified">
+    {{niceDate}}
+</div>

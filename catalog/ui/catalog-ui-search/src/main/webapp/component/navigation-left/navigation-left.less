@@ -1,10 +1,29 @@
 @{customElementNamespace}navigation-left {
     .customElement;
     position: relative;
+    overflow: hidden;
+    cursor: pointer;
 
     button {
         text-align: center;
         width: @minimumButtonSize;
         height: 100%;
     }
+}
+
+@{customElementNamespace}navigation-left:after {
+    position: absolute;
+    right: 0px;
+    top: -5px;
+    content: '*';
+    color: @warning-color;
+    opacity: 1;
+    transform: scale(1);
+    transition: transform @coreTransitionTime ease-out, 
+        opacity @coreTransitionTime ease-out;
+}
+
+@{customElementNamespace}navigation-left.is-saved:after {
+    transform: scale(2);
+    opacity: 0;
 }
