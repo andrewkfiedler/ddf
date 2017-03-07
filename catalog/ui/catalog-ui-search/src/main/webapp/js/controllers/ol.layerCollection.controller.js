@@ -13,17 +13,19 @@
 /*jshint newcap: false, bitwise: false */
 
 define(['underscore',
+    'jquery',
     'marionette',
     'openlayers',
     'properties',
     'js/controllers/common.layerCollection.controller'
-], function (_, Marionette, ol, properties, CommonLayerController) {
+], function (_, $, Marionette, ol, properties, CommonLayerController) {
     "use strict";
 
     var imageryProviderTypes = {
         OSM: ol.source.OSM,
         BM: ol.source.BingMaps,
         WMS: ol.source.TileWMS,
+        WMT: ol.source.WMTS,
         MQ: ol.source.MapQuest,
         AGM: ol.source.XYZ,
         SI: ol.source.ImageStatic
@@ -117,6 +119,24 @@ define(['underscore',
                 if (initObj.url && initObj.url.indexOf('/tile/{z}/{y}/{x}') === -1) {
                     initObj.url = initObj.url + '/tile/{z}/{y}/{x}';
                 }
+            } else if (typeStr === 'WMT') {
+                /* If tileMatrixSetID is present (Cesium WMTS keyword) set matrixSet (OpenLayers WMTS keyword) */
+                if (initObj.tileMatrixSetID) {
+                    initObj.matrixSet = initObj.tileMatrixSetID;
+                }
+
+                $.ajax({
+                  url : initObj.url + '?request=GetCapabilities',
+                  async : false,
+                  success : function(data)  {
+                      var parser = new ol.format.WMTSCapabilities();
+                      var result = parser.read(data);
+                      var options = ol.source.WMTS.optionsFromCapabilities(result, {layer: initObj.layer, matrixSet: initObj.matrixSet});
+                      /* Replace URL with Proxy URL */
+                      options.urls = [initObj.url];
+                      initObj = options;
+                  }
+                });
             }
 
             return new layerType({
