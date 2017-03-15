@@ -45,6 +45,7 @@ define([
                                 return dateValue;
                             }
                         }).toString();
+                case 'range':
                 case 'number':  //needed until cql result correctly returns numbers as numbers
                     var currentValue = this.children.map(function(childView){
                         return childView.getCurrentValue().toString();
