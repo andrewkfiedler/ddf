@@ -124,10 +124,49 @@ define(['underscore',
                 if (initObj.tileMatrixSetID) {
                     initObj.matrixSet = initObj.tileMatrixSetID;
                 }
+                initObj.tileGrid = {
+                    getMinZoom: function(){
+                        return 0;
+                    },
+                    getMatrixId: function(){
+                        return 0;
+                    },
+                    getZForResolution: function(){
+                        return 0;
+                    },
+                    getResolution: function(){
+                        return 0;
+                    },
+                    getTileRangeForExtentAndResolution: function(){
+                        return {
+                            getWidth: function() {
+                                return 0;
+                            },
+                            getHeight: function(){
+                                return 0;
+                            }
+                        };
+                    },
+                    getTileRangeExtent: function(){
+                        return 0;
+                    },
+                    getTileSize: function(){
+                        return 0;
+                    },
+                    getTileRangeForExtentAndZ: function(){
+                        return {
+                            getWidth: function() {
+                                return 0;
+                            },
+                            getHeight: function(){
+                                return 0;
+                            }
+                        };
+                    }
+                }
 
                 $.ajax({
                   url : initObj.url + '?request=GetCapabilities',
-                  async : false,
                   success : function(data)  {
                       var parser = new ol.format.WMTSCapabilities();
                       var result = parser.read(data);
@@ -135,7 +174,20 @@ define(['underscore',
                       /* Replace URL with Proxy URL */
                       options.urls = [initObj.url];
                       initObj = options;
-                  }
+                      var layer = new layerType({
+                            visible: model.get('show'),
+                            preload: Infinity,
+                            opacity: model.get('alpha'),
+                            source: new type(initObj)
+                        });
+                      var olMapLayers = this.map.getLayers();
+                      olMapLayers.forEach(function(existingLayer, index){
+                        if (existingLayer === this.layerForCid[model.id]){
+                            this.layerForCid[model.id] = layer;
+                            olMapLayers.setAt(index, this.layerForCid[model.id]);
+                        }
+                      }.bind(this));
+                  }.bind(this)
                 });
             }
 
