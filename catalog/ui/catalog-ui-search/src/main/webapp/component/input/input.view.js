@@ -52,6 +52,12 @@ define([
             this.handleEdit();
             this.handleReadOnly();
             this.handleValue();
+            this.listenForChange();
+        },
+        listenForChange: function(){
+            this.$el.on('change', function(){
+                this.model.set('value', this.getCurrentValue());
+            }.bind(this));
         },
         handleReadOnly: function () {
             this.$el.toggleClass('is-readOnly', this.model.isReadOnly());

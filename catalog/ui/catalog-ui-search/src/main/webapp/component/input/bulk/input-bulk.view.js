@@ -37,9 +37,7 @@ define([
         },
         onRender: function () {
             this.initializeDropdown();
-            this.handleEdit();
-            this.handleReadOnly();
-            this.handleValue();
+            InputView.prototype.onRender.call(this);
             this.handleOther();
             this.handleBulk();
         },

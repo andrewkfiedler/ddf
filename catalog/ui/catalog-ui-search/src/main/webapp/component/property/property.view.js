@@ -82,6 +82,7 @@ define([
             this.$el.addClass('has-limited-width');
         },
         revert: function(){
+            this.model.set('value', this.model.get('_initialValue'));
             this.onBeforeShow();
             this.$el.trigger('change');
             this.$el.trigger('revert');
