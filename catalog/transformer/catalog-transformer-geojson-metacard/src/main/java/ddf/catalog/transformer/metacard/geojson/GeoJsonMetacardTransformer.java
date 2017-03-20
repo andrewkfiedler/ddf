@@ -99,13 +99,12 @@ public class GeoJsonMetacardTransformer implements MetacardTransformer {
 
             Attribute attribute = metacard.getAttribute(ad.getName());
             if (attribute != null) {
-                Object value = convertAttribute(attribute, ad);
+                Object value = convertAttribute(attribute, ad, false);
                 if (value != null) {
                     if (Metacard.GEOGRAPHY.equals(attribute.getName())) {
-                        rootObject.put(CompositeGeometry.GEOMETRY_KEY, value);
-                    } else {
-                        properties.put(attribute.getName(), value);
+                        rootObject.put(CompositeGeometry.GEOMETRY_KEY, convertAttribute(attribute, ad));
                     }
+                    properties.put(attribute.getName(), value);
                 }
             }
         }
@@ -144,26 +143,31 @@ public class GeoJsonMetacardTransformer implements MetacardTransformer {
                 .getName() + ", id=" + ID + ", MIME Type=" + DEFAULT_MIME_TYPE + "}";
     }
 
-    private static Object convertAttribute(Attribute attribute, AttributeDescriptor descriptor)
-            throws CatalogTransformerException {
+    private static Object convertAttribute(Attribute attribute, AttributeDescriptor descriptor,  Boolean convertGeometry)
+        throws CatalogTransformerException {
         if (descriptor.isMultiValued()) {
             List<Object> values = new ArrayList<>();
             for (Serializable value : attribute.getValues()) {
                 values.add(convertValue(value,
                         descriptor.getType()
-                                .getAttributeFormat()));
+                                .getAttributeFormat(), convertGeometry));
             }
             return values;
         } else {
             return convertValue(attribute.getValue(),
                     descriptor.getType()
-                            .getAttributeFormat());
+                            .getAttributeFormat(), convertGeometry);
         }
     }
 
-    private static Object convertValue(Serializable value, AttributeType.AttributeFormat format)
+    private static Object convertAttribute(Attribute attribute, AttributeDescriptor descriptor)
             throws CatalogTransformerException {
-        if (value == null) {
+        return convertAttribute(attribute, descriptor, true);
+    }
+
+    private static Object convertValue(Serializable value, AttributeType.AttributeFormat format, Boolean convertGeometry)
+        throws CatalogTransformerException {
+             if (value == null) {
             return null;
         }
 
@@ -189,25 +193,34 @@ public class GeoJsonMetacardTransformer implements MetacardTransformer {
         case XML:
             return value.toString();
         case GEOMETRY:
-            WKTReader reader = new WKTReader();
-            try {
-                Geometry geometry = reader.read(value.toString());
-                CompositeGeometry geoJsonGeometry =
-                        CompositeGeometry.getCompositeGeometry(geometry);
-                if (geoJsonGeometry == null) {
+            if (convertGeometry) {
+                WKTReader reader = new WKTReader();
+                try {
+                    Geometry geometry = reader.read(value.toString());
+                    CompositeGeometry geoJsonGeometry =
+                            CompositeGeometry.getCompositeGeometry(geometry);
+                    if (geoJsonGeometry == null) {
+                        throw new CatalogTransformerException(
+                                "Could not perform transform: unsupported geometry [" + value + "]");
+                    }
+                    return geoJsonGeometry.toJsonMap();
+                } catch (ParseException e) {
                     throw new CatalogTransformerException(
-                            "Could not perform transform: unsupported geometry [" + value + "]");
+                            "Could not perform transform: could not parse geometry [" + value + "]",
+                            e);
                 }
-                return geoJsonGeometry.toJsonMap();
-            } catch (ParseException e) {
-                throw new CatalogTransformerException(
-                        "Could not perform transform: could not parse geometry [" + value + "]",
-                        e);
+            } else {
+                return value.toString();
             }
         case OBJECT:
         default:
             return null;
         }
+    }
+
+    private static Object convertValue(Serializable value, AttributeType.AttributeFormat format)
+            throws CatalogTransformerException {
+        return convertValue(value, format, true);
     }
 
 }

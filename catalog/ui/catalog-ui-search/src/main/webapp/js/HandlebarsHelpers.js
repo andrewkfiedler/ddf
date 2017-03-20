@@ -15,8 +15,9 @@ define([
     'moment',
     'handlebars/runtime',
     'js/Common',
-    'component/singletons/metacard-definitions'
-], function (_, moment, Handlebars, Common, metacardDefinitions) {
+    'component/singletons/metacard-definitions',
+    'wkx'
+], function (_, moment, Handlebars, Common, metacardDefinitions, wkx) {
     'use strict';
     // The module to be exported
     var helper, helpers = {
@@ -350,6 +351,13 @@ define([
             } else {
                 return options.inverse(this);
             }
+          },
+          transformGeoJSONToWkt: function (str) {
+              try {
+                  return wkx.Geometry.parseGeoJSON(str).toWkt();
+              } catch (err) {
+                  return str;
+              }
           }
         };
     // Export helpers

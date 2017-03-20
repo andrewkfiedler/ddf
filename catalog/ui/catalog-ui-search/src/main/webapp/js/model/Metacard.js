@@ -607,6 +607,14 @@ define([
                 return {
                     'metacard-tags': ['resource']
                }
+           },
+           getCombinedGeoJSON: function(){
+               return 
+           },
+           getGeometries: function(){
+               return _.filter(this.toJSON(), function(value, key){
+                
+               });
            }
         });
 
@@ -666,6 +674,9 @@ define([
             ],
             initialize: function(){
                 this.refreshData = _.throttle(this.refreshData, 200);
+                this.listenTo(this.get('metacard').get('properties'), 'change', function(){
+                    this.trigger('change');
+                }.bind(this));
             },
             isWorkspace: function(){
                 return this.get('metacard').get('properties').get('metacard-tags').indexOf('workspace') >= 0;

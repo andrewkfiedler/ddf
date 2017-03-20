@@ -22,7 +22,8 @@ module.exports = {
     /*
       Calculates the center of given a geometry (WKT)
     */
-    calculateCartesian3CenterOfGeometry: function(geometry) {
+    calculateCartesian3CenterOfGeometry: function(propertiesModel) {
+        
         return Cesium.BoundingSphere.fromPoints(Cesium.Cartesian3.fromDegreesArray(_.flatten(geometry.getAllPoints()))).center;
     },
     /*

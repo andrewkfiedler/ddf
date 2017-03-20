@@ -371,7 +371,7 @@ module.exports = function CesiumMap(insertionElement, selectionInterface, notifi
                 occluder = new Cesium.EllipsoidalOccluder(Cesium.Ellipsoid.WGS84, map.scene.camera.position);
             }
             return results.map(function(result) {
-                var cartesian3CenterOfGeometry = utility.calculateCartesian3CenterOfGeometry(result.get('metacard').get('geometry'));
+                var cartesian3CenterOfGeometry = utility.calculateCartesian3CenterOfGeometry(result.get('metacard').get('properties'));
                 if (occluder && isNotVisible(cartesian3CenterOfGeometry, occluder)) {
                     return undefined;
                 }
