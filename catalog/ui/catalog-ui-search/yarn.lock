@@ -250,6 +250,10 @@
     "@turf/helpers" "^3.7.3"
     "@turf/point-on-line" "^3.7.3"
 
+"@turf/meta@3.13.0":
+  version "3.13.0"
+  resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-3.13.0.tgz#95c97993016777358f242615b8ec437c54163601"
+
 "@turf/meta@^3.3.3", "@turf/meta@^3.7.3":
   version "3.7.3"
   resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-3.7.3.tgz#47f2a2937fa9fee5550eb8c0c649f3f39e13dfd6"
@@ -422,6 +426,10 @@
   dependencies:
     "@turf/helpers" "^3.7.3"
     "@turf/inside" "^3.7.3"
+
+"@types/node@^6.0.48":
+  version "6.0.65"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.65.tgz#c00faa7ffcfc9842b5dd7bf650872562504d5670"
 
 Base64@~0.2.0:
   version "0.2.1"
@@ -8427,6 +8435,12 @@ win-fork@^1.1.1:
 window-size@0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/window-size/-/window-size-0.1.0.tgz#5438cd2ea93b202efa3a19fe8887aee7c94f9c9d"
+
+wkx@0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/wkx/-/wkx-0.4.1.tgz#2fc171b5e9cb55c6256fef4bde1f21be413befee"
+  dependencies:
+    "@types/node" "^6.0.48"
 
 wordwrap@0.0.2:
   version "0.0.2"

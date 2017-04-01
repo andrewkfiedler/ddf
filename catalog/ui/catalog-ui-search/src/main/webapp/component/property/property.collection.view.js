@@ -193,7 +193,7 @@ define([
                 if (metacards.length > 1) {
                     property.bulk = true;
                     if (Object.keys(property.values).length > 1) {
-                        property.value = [''];
+                        property.value = [];
                     }
                 }
             });
@@ -219,7 +219,17 @@ define([
                     });
                     return false;
                 }
-            }).sort();
+            }).sort(function(a, b){
+                a = metacardDefinitions.getLabel(a);
+                b = metacardDefinitions.getLabel(b);
+                if (a < b){
+                    return -1;
+                }
+                if (a > b){
+                    return 1;
+                }
+                return 0;
+            });
             return propertyIntersection;
         }
     });

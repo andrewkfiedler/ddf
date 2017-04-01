@@ -13,4 +13,27 @@
     word-break: break-all;
     min-height: @minimumButtonSize;
   }
+
+  .for-error {
+        overflow: hidden;
+        display: block;
+        line-height: @minimumLineSize;
+        text-align: left;
+        padding-left: @minimumSpacing;
+        content: 'Your WKT appears to be malformed.';
+        background: @negative-color;
+        height: 0px;
+       // transition: height @coreTransitionTime ease-in-out;
+    }
+}
+
+@{customElementNamespace}input.is-enum.has-validation-issues {
+    .enum-region {
+        border: 1px solid @negative-color;
+    }
+
+    .for-error {
+        display: block;
+        height: @minimumLineSize;
+    }
 }

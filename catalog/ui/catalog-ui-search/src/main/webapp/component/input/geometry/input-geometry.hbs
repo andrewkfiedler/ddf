@@ -11,10 +11,19 @@
  *
  **/
  --}}
-<div>
-    <span class="dropdown-text">
-        {{concatenatedLabel}}
-    </span>
-    <span class="dropdown-icon fa fa-sort">
-    </span>
+<div class="if-editing">
+    <input id="{{cid}}" value="{{value}}" placeholder="{{property.placeholder}}" name="{{property.id}}">
+    <div class="for-error">
+        <span class="fa fa-exclamation-triangle"></span>
+        Your WKT is malformed.
+    </div>
+</div>
+<div class="if-viewing">
+    <label>
+        {{value}}
+    </label>
+    <div class="for-error">
+        <span class="fa fa-exclamation-triangle"></span>
+        Your WKT is malformed.
+    </div>
 </div>

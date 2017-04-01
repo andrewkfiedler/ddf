@@ -114,7 +114,12 @@ define([
         },
         serializeData: function () {
             if (this.options.list) {
-                return this.determineSelections();
+                return {
+                    value: this.determineSelections(),
+                    concatenatedLabel: this.determineSelections().map(function(selection){
+                        return selection.label || selection.value || selection;
+                    }).join(' | ')
+                };
             } else {
                 return this.model.toJSON();
             }

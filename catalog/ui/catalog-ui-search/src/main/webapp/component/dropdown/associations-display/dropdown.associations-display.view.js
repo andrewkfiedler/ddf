@@ -23,7 +23,7 @@ module.exports = DropdownView.extend({
     serializeData: function() {
         var modelJSON = DropdownView.prototype.serializeData.call(this);
         modelJSON = {
-            value: modelJSON[0].label
+            value: modelJSON.value[0].label
         };
         if (modelJSON.value === 'Graph') {
             modelJSON.icon = 'fa-sitemap'

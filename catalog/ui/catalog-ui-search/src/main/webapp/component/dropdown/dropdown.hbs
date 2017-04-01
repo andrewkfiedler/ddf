@@ -11,9 +11,9 @@
  *
  **/
  --}}
-    <div class="dropdown-text">
-        {{#each this}}
-            <span class="text-src {{#if invalid}}is-invalid{{/if}}" title="{{label}}">
+    <div class="dropdown-text" title="{{concatenatedLabel}}">
+        {{#each this.value}}
+            <span class="text-src {{#if invalid}}is-invalid{{/if}}">
                 {{#each label}}
                     <span>
                         {{this}}

@@ -30,12 +30,12 @@ define([
         serializeData: function(){
             var modelJSON = DropdownView.prototype.serializeData.call(this);
             modelJSON = {
-                value: modelJSON[0].label
+                value: modelJSON.value[0].label
             };
             if (modelJSON.value === 'List') {
-                modelJSON.icon = 'fa-th-list'
+                modelJSON.icon = 'fa-th-list';
             } else {
-                modelJSON.icon = 'fa-th'
+                modelJSON.icon = 'fa-th';
             }
             return modelJSON;
         }

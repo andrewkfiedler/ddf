@@ -65,6 +65,9 @@ define([
         addNewValue: function(){
             this.values.currentView.addNewValue(this.model);
         },
+        getValue: function(){
+            return this.values.currentView.getValue();
+        },
         getCurrentValue: function(){
             return this.values.currentView.getCurrentValue();
         }

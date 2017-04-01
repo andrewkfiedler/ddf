@@ -151,9 +151,9 @@ define([
             this.setupType();
             this.setupTypeSpecific();
             this.turnOnLimitedWidth();
-            this.basicTime.currentView.$el.on('change', this.handleTimeRangeValue.bind(this));
-            this.basicLocation.currentView.$el.on('change', this.handleLocationValue.bind(this));
-            this.basicType.currentView.$el.on('change', this.handleTypeValue.bind(this));
+            this.listenTo(this.basicTime.currentView.model, 'change:value', this.handleTimeRangeValue);
+            this.listenTo(this.basicLocation.currentView.model, 'change:value', this.handleLocationValue);
+            this.listenTo(this.basicType.currentView.model, 'change:value', this.handleTypeValue);
             this.handleTimeRangeValue();
             this.handleLocationValue();
             this.handleTypeValue();
@@ -253,17 +253,17 @@ define([
             }));
         },
         handleTypeValue: function(){
-            var type = this.basicType.currentView.getCurrentValue()[0];
+            var type = this.basicType.currentView.model.getValue()[0];
             this.$el.toggleClass('is-type-any', type === 'any');
             this.$el.toggleClass('is-type-specific', type === 'specific');
         },
         handleLocationValue: function(){
-            var location = this.basicLocation.currentView.getCurrentValue()[0];
+            var location = this.basicLocation.currentView.model.getValue()[0];
             this.$el.toggleClass('is-location-any', location === 'any');
             this.$el.toggleClass('is-location-specific', location === 'specific');
         },
         handleTimeRangeValue: function(){
-            var timeRange = this.basicTime.currentView.getCurrentValue()[0];
+            var timeRange = this.basicTime.currentView.model.getValue()[0];
             this.$el.toggleClass('is-timeRange-any', timeRange === 'any');
             this.$el.toggleClass('is-timeRange-before', timeRange === 'before');
             this.$el.toggleClass('is-timeRange-after', timeRange === 'after');

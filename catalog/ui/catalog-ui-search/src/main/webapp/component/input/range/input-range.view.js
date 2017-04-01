@@ -56,5 +56,26 @@ module.exports = InputView.extend({
             this.$el.find('input[type=number]').val(value);
             this.$el.find('.units-value').html(value);
         }.bind(this));
+    },
+    listenForChange: function(){
+        this.$el.on('change keyup mouseup', function(e){
+             switch(e.target.type){
+                case 'range':
+                    if (e.type === 'mouseup' || e.type === 'keyup') {
+                        this.saveChanges();
+                    }
+                break;
+                case 'number':
+                    if (e.type === 'change'){
+                        this.saveChanges();
+                    }
+                break;
+            }
+        }.bind(this));
+    },
+    saveChanges: function(){
+        var currentValue = this.$el.find('input[type=range]').val();
+        currentValue = Math.min(Math.max(currentValue, this.model.get('property').get('min')), this.model.get('property').get('max'));
+        this.model.set('value', currentValue);
     }
 })

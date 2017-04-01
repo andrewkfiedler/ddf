@@ -1,0 +1,30 @@
+@{customElementNamespace}input.is-geometry {
+    .if-viewing label { 
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .for-error {
+        overflow: hidden;
+        display: block;
+        line-height: @minimumLineSize;
+        text-align: left;
+        padding-left: @minimumSpacing;
+        content: 'Your WKT appears to be malformed.';
+        background: @negative-color;
+        height: 0px;
+       // transition: height @coreTransitionTime ease-in-out;
+    }
+}
+
+@{customElementNamespace}input.is-geometry.has-validation-issues {
+    input {
+        border-color: @negative-color;
+    }
+
+    .for-error {
+        display: block;
+        height: @minimumLineSize;
+    }
+}

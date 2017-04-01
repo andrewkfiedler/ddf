@@ -39,6 +39,7 @@ define([
             'change': 'handleRevert'
         },
         modelEvents: {
+            'change:hasChanged': 'handleRevert',
             'change:isEditing': 'handleEdit'
         },
         regions: {
@@ -82,9 +83,10 @@ define([
             this.$el.addClass('has-limited-width');
         },
         revert: function(){
+            this.model.revert();
             this.onBeforeShow();
-            this.$el.trigger('change');
-            this.$el.trigger('revert');
+        //    this.$el.trigger('change');
+          //  this.$el.trigger('revert');
         },
         save: function(){
             var value = this.$el.find('input').val();
@@ -114,11 +116,7 @@ define([
             }.bind(this), 0);
         },
         hasChanged: function(){
-            if (this.propertyValue.currentView){
-                return this.propertyValue.currentView.hasChanged();
-            } else {
-                return false;
-            }
+            return this.model.get('hasChanged');
         },
         handleRevert: function(){
             if (this.hasChanged()){

@@ -12,8 +12,9 @@
 /*global define*/
 define([
     'underscore',
-    'backbone'
-], function (_, Backbone) {
+    'backbone',
+    'moment'
+], function (_, Backbone, moment) {
 
     return Backbone.Model.extend({
         defaults: {
@@ -30,17 +31,82 @@ define([
             bulk: false,
             multivalued: false,
             type: 'STRING',
-            calculatedType: 'text'
+            calculatedType: 'text',
+            hasChanged: false,
+            isValid: false,
+            validationMessage: ''
+        },
+        setDefaultValue: function(){
+            if (this.get('initializeToDefault')){
+                this.set('value', [this.getDefaultValue()]);
+            }
+        },
+        getDefaultValue: function(){
+            switch(this.getCalculatedType()){
+                case 'boolean':
+                    return true;
+                case 'date':
+                    return (new Date()).toISOString();
+                default:
+                    return '';
+            }
+        },
+        //transform incoming value so later comparisons are easier
+        transformValue: function(){
+            switch(this.getCalculatedType()){
+                case 'thumbnail':
+                case 'location':
+                    return;
+                case 'date':
+                    var currentValue = this.getValue();
+                    currentValue.sort();
+                    this.setValue(currentValue.map(function (dateValue) {
+                        if (dateValue) {
+                            return (moment(dateValue)).toISOString();
+                        } else {
+                            return dateValue;
+                        }
+                    }));
+                    break;
+                case 'number':  //needed until cql result correctly returns numbers as numbers
+                    var currentValue = this.getValue();
+                    currentValue.sort();
+                    this.setValue(currentValue.map(function(value){ 
+                        return Number(value); //handle cases of unnecessary number padding -> 22.0000
+                    }));
+                    break;
+                default:
+                    return;
+            }
         },
         initialize: function(){
-            this._setInitialValue();
             this._setCalculatedType();
+            this.setDefaultValue();
+            this.transformValue();
+            this._setInitialValue();
             this.setDefaultLabel();
+            this.listenTo(this, 'change:value', this.updateHasChanged);
         },
         setDefaultLabel: function(){
             if (!this.get('label')){
                 this.set('label', this.get('id'));
             }
+        },
+        hasChanged: function(){
+            if (!this.isHomogeneous()){
+              //  return this.get('hasChanged');
+            }
+            switch(this.getCalculatedType()){
+                case 'location':
+                    return this.get('hasChanged');
+                default:
+                    var currentValue = this.getValue();
+                    currentValue.sort();
+                    return JSON.stringify(currentValue) !== JSON.stringify(this.getInitialValue());
+            }
+        },
+        updateHasChanged: function(){
+            this.set('hasChanged', this.hasChanged()); 
         },
         getValue: function(){
             return this.get('value');
@@ -70,12 +136,11 @@ define([
             return !this.get('bulk') || Object.keys(this.get('values')).length <= 1;
         },
         revert: function(){
-            this.set('value',this.getInitialValue());
-            this.trigger('change:value');
-        },
-        save: function(value){
-            this.set('value', value);
-            this.trigger('change:value');
+            this.set({
+                hasChanged: false,
+                value: this.getInitialValue()
+            });
+          //  this.trigger('change:value');
         },
         _setInitialValue: function(){
             this.set('_initialValue', this.getValue());
@@ -104,8 +169,10 @@ define([
                 case 'RANGE':
                     this.set('calculatedType', 'range');
                     break;
-                case 'STRING':
                 case 'GEOMETRY':
+                    this.set('calculatedType', 'geometry');
+                    break;
+                case 'STRING':
                 case 'XML':
                 default:
                     this.set('calculatedType', 'text');

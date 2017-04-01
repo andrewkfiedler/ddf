@@ -86,6 +86,7 @@ define([
             this.$el.removeClass('is-editing');
             this.afterSave(this.editorProperties.currentView.toPatchJSON());
             this.editorProperties.currentView.turnOffEditing();
+            this.editorProperties.currentView.revert();
         },
         afterCancel: function(){
             //override

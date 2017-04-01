@@ -53,6 +53,14 @@ define([
             this.handleReadOnly();
             this.handleValue();
         },
+        onAttach: function() {
+            this.listenForChange();
+        },
+        listenForChange: function(){
+            this.$el.on('change keyup input', function(){
+                this.model.set('value', this.getCurrentValue());
+            }.bind(this));
+        },
         handleReadOnly: function () {
             this.$el.toggleClass('is-readOnly', this.model.isReadOnly());
         },

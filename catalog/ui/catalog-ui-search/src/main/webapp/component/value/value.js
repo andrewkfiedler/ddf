@@ -19,9 +19,10 @@ define([
 
     return Backbone.AssociatedModel.extend({
         defaults: {
-            value: '',
-            _initialValue: '',
-            property: undefined
+            value: undefined,
+            _initialValue: undefined,
+            property: undefined,
+            hasChanged: false
         },
         relations: [
             {
@@ -38,6 +39,9 @@ define([
         },
         getInitialValue: function(){
             return this.get('_initialValue');
+        },
+        setValue: function(value){
+            this.set('value', value);
         },
         getValue: function(){
             return this.get('value');
@@ -56,6 +60,12 @@ define([
         },
         isMultivalued: function(){
             return this.get('property').isMultivalued();
+        },
+        revert: function(){
+            this.set({
+                value: this.getInitialValue(),
+                hasChanged: false
+            });
         }
     });
 });

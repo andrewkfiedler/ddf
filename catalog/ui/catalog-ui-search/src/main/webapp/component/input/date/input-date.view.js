@@ -91,6 +91,17 @@ define([
                 return null;
             }
         },
+        listenForChange: function(){
+            this.$el.on('dp.change click input change keyup', function(){
+                var currentValue = this.$el.find('input').val();
+                if (currentValue){
+                    this.model.set('value', (moment(currentValue, Common.getDateFormat())).toISOString());
+                } else {
+                    this.model.set('value', null);
+                }
+            }.bind(this));
+
+        },
         onDestroy: function(){
             var datetimepicker = this.$el.find('.input-group.date').data('DateTimePicker');
             if (datetimepicker) {

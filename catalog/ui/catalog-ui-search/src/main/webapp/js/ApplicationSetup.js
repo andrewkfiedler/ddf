@@ -12,6 +12,11 @@
 /*global require, window */
 /*jslint nomen:false, -W064 */
 window.CESIUM_BASE_URL = './cesium/';
+var $ = require('jquery');
+$.ajaxSetup({
+    cache: false
+});
+
 require([
     'underscore',
     'jquery',
@@ -26,9 +31,6 @@ require([
     'cesium.css',
     'js/Autocomplete',
 ], function(_, $, Backbone, Marionette, hbs, announcement) {
-    $.ajaxSetup({
-        cache: false
-    });
 
     $(window.document).ajaxError(function(event, jqxhr, settings, throwError) {
         var message;

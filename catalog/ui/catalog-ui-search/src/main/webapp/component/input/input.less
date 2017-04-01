@@ -22,7 +22,8 @@
   > .if-editing {
     display: block;
     position: absolute;
-    top: ~'calc(50% - 1.375rem)';
+    top: 50%;
+    transform: translateY(-50%);
     z-index: 1;
   }
   > .if-viewing {
@@ -46,12 +47,14 @@
 
 @{customElementNamespace}input.is-text,
 @{customElementNamespace}input.is-number,
-@{customElementNamespace}input.is-boolean {
+@{customElementNamespace}input.is-boolean, 
+@{customElementNamespace}input.is-geometry {
   input {
     height: @minimumButtonSize;
     width: 100%;
   }
   .if-viewing label {
+    display: inline;
     padding-left: 10px;
     line-height: @minimumButtonSize;
     margin: 0px;
@@ -59,4 +62,36 @@
     word-break: break-all;
     min-height: @minimumButtonSize;
   }
+
+  &.is-editing {
+     .if-viewing label[data-value^="http"] {
+      a {
+        display: none;
+      }
+
+      span {
+        display: inline;
+      }
+    }
+  }
+
+  .if-viewing label[data-value^="http"] {
+    a {
+      display: inline;
+    }
+
+    span {
+      display: none;
+    }
+  }
+
+  .if-viewing label:not([data-value^="http"]) {
+    a {
+      display: none;
+    }
+    span {
+      display: inline;
+    }
+  }
+
 }
