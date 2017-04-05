@@ -39,7 +39,8 @@ define([
             'change': 'handleRevert'
         },
         modelEvents: {
-            'change:isEditing': 'handleEdit'
+            'change:isEditing': 'handleEdit',
+            'change:enum': 'onBeforeShow'
         },
         regions: {
             propertyValue: '.property-value'
@@ -82,6 +83,7 @@ define([
             this.$el.addClass('has-limited-width');
         },
         revert: function(){
+            this.model.revert();
             this.onBeforeShow();
             this.$el.trigger('change');
             this.$el.trigger('revert');

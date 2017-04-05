@@ -1,48 +1,56 @@
 @{customElementNamespace}sort-item-collection {
   display: block;
   width: 100%;
-  padding: 10px;
   overflow-x: hidden;
 
-  @{customElementNamespace}sort-item + @{customElementNamespace}sort-item {
-    margin-top: 10px;
+  @{customElementNamespace}sort-item:not(:first-of-type) {
+    .sort-remove {
+      display: inline-block;
+    }
   }
 
-  @{customElementNamespace}sort-item:first-of-type {
-    .sort-remove {
-      display: none;
+  @{customElementNamespace}sort-item {
+    .sort-direction {
+      width: ~'calc(50% - @{minimumButtonSize} - 10px)';
     }
+  }
+
+  @{customElementNamespace}property {
+    padding: 0px;
   }
 }
 
 @{customElementNamespace}sort-item {
   display: block;
-  cursor: pointer;
   white-space: nowrap;
-
-  .sort-attribute,
-  .sort-direction {
-    margin-right: 20px;
-  }
+  overflow: hidden;
 
   .sort-attribute,
   .sort-direction,
   .sort-remove {
       display: inline-block;
-      vertical-align: top;
+      vertical-align: middle;
   }
 
   .sort-attribute {
       width: 50%;
+      transition: width @coreTransitionTime ease-in-out;
   }
 
   .sort-direction {
-    width: ~'calc(50% - @{minimumButtonSize} - 40px)';
+    width: ~'calc(50% - 5px)';
   }
 
   .sort-remove {
     height: @minimumButtonSize;
     width: @minimumButtonSize;
+    display: none;
   }
 
 }
+@{customElementNamespace}sort-item.is-non-directional-sort {
+    .sort-attribute {
+       width: ~'calc(100% - 2.5px)';
+    }
+}
+  
