@@ -21,6 +21,44 @@ module.exports = function (grunt) {
                 app: 'Google Chrome'
             }
         },
+        'webpack-dev-server': {
+            options: {
+                historyApiFallBack: true,
+                inline: false,
+                hot: true,
+				webpack: require(grunt.option("webpackConfig")),
+                contentBase: 'src/main/resources/',
+                proxy: {
+                    '/search/**': {
+                        target: 'https://localhost:8993',
+                        secure: false,
+                        changeOrigin: true
+                    },
+                    '/services/**': {
+                        target: 'https://localhost:8993',
+                        secure: false,
+                        changeOrigin: true
+                    },
+                    '/css/**': {
+                        target: 'https://localhost:8993/search/catalog',
+                        secure: false,
+                        changeOrigin: true
+                    },
+                    '/fonts/**': {
+                        target: 'https://localhost:8993/search/catalog/css',
+                        secure: false,
+                        changeOrigin: true
+                    }
+                }
+			},
+			start: {
+				keepAlive: true,
+				webpack: {
+					devtool: "eval",
+					debug: true
+				}
+			}
+        },
         webpack: {
             build: require(grunt.option("webpackConfig"))
         },
@@ -74,25 +112,13 @@ module.exports = function (grunt) {
             }
         },
         watch: {
-            jsFiles: {
-                files: ['<%= jshint.all.src %>'],
-                tasks: ['jshint']
-            },
-            livereload: {
-                options: {livereload: true},
-                files: ['target/webapp/css/index.css']
-            },
-            lessFiles: {
-                files: [
-                    'src/main/webapp/component/**/*.less',
-                    'src/main/webapp/less/**/*.less'
-                ],
-                tasks: ['less']
-            },
-            cssFiles: {
-                files: ['src/main/webapp/css/*.css'],
-                tasks: ['cssmin']
-            }
+            app: {
+				files: ["src/**/*"],
+				tasks: ["webpack:build"],
+				options: {
+					spawn: false,
+				}
+			}
         }
     });
 
@@ -108,9 +134,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('start', [
-        'build:part',
-        'express:server',
-        'watch'
+        'webpack-dev-server:start',
     ]);
 
     grunt.registerTask('startplus', [

@@ -8,6 +8,8 @@ var resolve = function (place) {
   return path.resolve(__dirname, '../../', place)
 };
 
+var DEBUG = process.env.NODE_ENV !== 'production' ? true : false;
+
 module.exports = {
     devtool: 'source-map',
     context: resolve('./src/main/webapp/'),
@@ -82,8 +84,12 @@ module.exports = {
                 loader: 'handlebars'
             },
             {
+                test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)/,
+                loader: 'url-loader'
+            },
+            {
                  test: /\.(css|less)$/,
-                loader: ExtractTextPlugin.extract("style", "css?url=false&sourceMap!less?sourceMap")
+                loader: "style?url=false&sourceMap!css?url=false&sourceMap!less?url=false&sourceMap"
             }
         ]
     },
