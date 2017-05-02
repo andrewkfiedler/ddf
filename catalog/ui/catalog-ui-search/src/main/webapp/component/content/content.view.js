@@ -143,12 +143,14 @@ define([
             this.$el.find('.content-panelTwo-title').html(title);
         },
         hidePanelTwo: function(){
+            if (this.panelTwo){
             this.panelTwo.empty();
             this.$el.addClass('hide-panelTwo');
             Common.repaintForTimeframe(500, function(){
                 wreqr.vent.trigger('resize');
                 $(window).trigger('resize');
             });
+            }
         },
         showPanelTwo: function(){
             this.$el.removeClass('hide-panelTwo');

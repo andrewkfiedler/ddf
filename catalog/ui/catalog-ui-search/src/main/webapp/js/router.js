@@ -110,11 +110,11 @@ define([
                 case 'openWorkspace':
                     var workspaceId = args[0];
                     if (store.get('workspaces').get(workspaceId)!==undefined) {
-                        if (Application.App.workspaceRegion.currentView===undefined) {
-                            Application.App.workspaceRegion.show(new ContentView());
-                        }
+                        //if (Application.App.workspaceRegion.currentView===undefined) {
+                            Application.App.workspacesRegion.show(new ContentView());
+                        //}
                         store.setCurrentWorkspaceById(workspaceId);
-                        Application.App.workspaceRegion.$el.removeClass('is-hidden');
+                        Application.App.workspacesRegion.$el.removeClass('is-hidden');
                         this.updateRoute(name, path, args);
                     } else {
                         toggleNavigator();
@@ -153,10 +153,10 @@ define([
                         'currentResult': queryForMetacard.get('result'),
                         'currentQuery': queryForMetacard
                     });
-                    if (Application.App.metacardRegion.currentView === undefined) {
-                        Application.App.metacardRegion.show(new MetacardView());
-                    }
-                    Application.App.metacardRegion.$el.removeClass('is-hidden');
+                    //if (Application.App.metacardRegion.currentView === undefined) {
+                        Application.App.workspacesRegion.show(new MetacardView());
+                    //}
+                    Application.App.workspacesRegion.$el.removeClass('is-hidden');
                     self.updateRoute(name, path, args);
                     break;
                 case 'openAlert':
@@ -193,10 +193,10 @@ define([
                             currentAlert: alert,
                             currentQuery: queryForMetacards
                         });
-                        if (Application.App.alertRegion.currentView === undefined) {
-                            Application.App.alertRegion.show(new AlertView());
-                        }
-                        Application.App.alertRegion.$el.removeClass('is-hidden');
+                        //if (Application.App.alertRegion.currentView === undefined) {
+                            Application.App.workspacesRegion.show(new AlertView());
+                       // }
+                        Application.App.workspacesRegion.$el.removeClass('is-hidden');
                         var workspace = store.get('workspaces').filter(function(workspace){
                             return workspace.get('queries').get(alert.get('queryId'));
                         })[0];
@@ -247,31 +247,31 @@ define([
                             currentQuery: queryForMetacards
                         });
                         uploadInstance.trigger('change:currentUpload', upload);
-                        if (Application.App.uploadRegion.currentView === undefined) {
-                            Application.App.uploadRegion.show(new UploadView());
-                        }
-                        Application.App.uploadRegion.$el.removeClass('is-hidden');
+                       // if (Application.App.uploadRegion.currentView === undefined) {
+                            Application.App.workspacesRegion.show(new UploadView());
+                      //  }
+                        Application.App.workspacesRegion.$el.removeClass('is-hidden');
                         self.updateRoute(name, path, args);
                     }
                     break;
                 case 'openIngest':
-                    if (Application.App.ingestRegion.currentView === undefined){
-                        Application.App.ingestRegion.show(new IngestView());
-                    }
-                    Application.App.ingestRegion.$el.removeClass('is-hidden');
+                   // if (Application.App.ingestRegion.currentView === undefined){
+                        Application.App.workspacesRegion.show(new IngestView());
+                   // }
+                    Application.App.workspacesRegion.$el.removeClass('is-hidden');
                     this.updateRoute(name, path, args);
                     break;
                 case 'home':
-                    if (Application.App.workspacesRegion.currentView===undefined) {
+                   // if (Application.App.workspacesRegion.currentView===undefined) {
                         Application.App.workspacesRegion.show(new HomeView());
-                    }
+                  //  }
                     Application.App.workspacesRegion.$el.removeClass('is-hidden');
                     this.updateRoute(name, path, args);
                     break;
                 case 'workspaces':
-                    if (Application.App.workspacesRegion.currentView===undefined) {
+                    //if (Application.App.workspacesRegion.currentView===undefined) {
                         Application.App.workspacesRegion.show(new HomeView());
-                    }
+                    //}
                     Application.App.workspacesRegion.$el.removeClass('is-hidden');
                     this.updateRoute(name, path, args);
                     break;

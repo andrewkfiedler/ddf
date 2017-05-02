@@ -48,23 +48,33 @@ define([
         },
         onBeforeShow: function(){
             this.title.show(new TitleView());
-            this.updateWorkspaceSave();
-            this.updateWorkspaceInteractions();
+            this.showWorkspaceSave();
+            this.showWorkspaceInteractions();
             this.handleSaved();
         },
-        updateWorkspaceSave: function(workspace){
-             if (workspace && workspace.changed.currentWorkspace) {
+        showWorkspaceSave: function(){
+            if (this.model.get('currentWorkspace')) {
                 this.workspaceSave.show(new SaveView({
                     model: this.model.get('currentWorkspace')
                 }));
             }
         },
-        updateWorkspaceInteractions: function(workspace) {
-            if (workspace && workspace.changed.currentWorkspace) {
+        showWorkspaceInteractions: function(){
+            if (this.model.get('currentWorkspace')) {
                 this.workspaceInteractions.show(new WorkspaceInteractionsView({
                     model: new DropdownModel(),
                     modelForComponent: this.model.get('currentWorkspace')
                 }));
+            }
+        },
+        updateWorkspaceSave: function(workspace){
+             if (workspace && workspace.changed.currentWorkspace) {
+                this.showWorkspaceSave();
+            }
+        },
+        updateWorkspaceInteractions: function(workspace) {
+            if (workspace && workspace.changed.currentWorkspace) {
+                this.showWorkspaceInteractions();
             }
         },
         handleSaved: function(){
