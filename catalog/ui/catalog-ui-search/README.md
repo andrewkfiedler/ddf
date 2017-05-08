@@ -12,6 +12,7 @@ maven clean install
 ###Building
 You can use the webpack dev server for rapid development without having to build with Maven and deploy bundles for every change.
 
+* Install Chrome Canary
 * Install `node` and `npm` locally or use [helper scripts](https://github.com/eirslett/frontend-maven-plugin#helper-scripts) to use the node and npm downloaded by Maven
 * Install package.json with `npm`
 
@@ -23,8 +24,9 @@ yarn install
 ```
 npm run startplus
 ```
-* Opens the browser for you.
-
+* Will automatically open Chrome Canary for you to the correct page.
+* On the Inspectable Pages tab copy the url for "http://localhost:8080/" and paste it into a new tab.  Treat this new tab as your dev tools for the other tab.  As such you can pull it into it's own window, etc.  
+* Has a fix for quick open crashing.  Once that's merged back to the master for dev tools we can skip this step.
 * Alternatively
 ```
 npm start
