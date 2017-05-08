@@ -5,8 +5,8 @@
   "version": "0.0.1",
   "license": "LGPL-3.0",
   "scripts": {
-    "startplus": "webpack-dev-server --config=./webpack/config/dev.js --open",
     "start": "webpack-dev-server --config=./webpack/config/dev.js",
+    "startplus": "concurrently --kill-others \"npm start http://localhost:8080/ --prefix ./node_modules/chrome-devtools-frontend\" \"webpack-dev-server --config=./webpack/config/dev.js\"",
     "pretest": "node ./node_modules/phantomjs-prebuilt/install.js && webpack --config webpack/config/ci.js",
     "test": "phantomjs ./node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js ./target/test/index.html",
     "testplus": "webpack-dev-server --config=./webpack/config/test.js --open",
@@ -35,6 +35,8 @@
     "console-polyfill": "0.2.2",
     "copy-webpack-plugin": "3.0.1",
     "css-loader": "0.23.1",
+    "chrome-devtools-frontend": "andrewkfiedler/devtools-frontend#301b3a8ece0e9e7b15943e2b2e3f9bbc82d6e15c",
+    "concurrently": "3.4.0",
     "exports-loader": "0.6.3",
     "extract-text-webpack-plugin": "1.0.1",
     "file-loader": "0.8.5",
