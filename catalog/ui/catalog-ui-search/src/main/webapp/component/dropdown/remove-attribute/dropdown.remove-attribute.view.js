@@ -17,22 +17,14 @@ define([
     'marionette',
     'underscore',
     'jquery',
-    '../editor.view',
-    'js/store',
-    'component/input/metacard/input-metacard.collection.view',
-    'component/input/metacard/input-metacard.collection'
-], function (Marionette, _, $, EditorView, store, InputMetacardCollectionView, InputMetacardCollection) {
+    '../dropdown.view',
+    './dropdown.remove-attribute.hbs',
+    'component/remove-attribute/remove-attribute.view'
+], function (Marionette, _, $, DropdownView, template, RemoveAttributeView) {
 
-    return EditorView.extend({
-        onBeforeShow: function(){
-            this.editorProperties.show(new InputMetacardCollectionView({
-                collection: InputMetacardCollection.createWorkspaceBasic(this.model)
-            }));
-            this.editorProperties.currentView.$el.addClass("is-list");
-        },
-        afterSave: function(attributeToVal){
-            this.model.set(attributeToVal);
-            this.model.save();
-        }
+    return DropdownView.extend({
+        template: template,
+        className: 'is-removeAttribute',
+        componentToShow: RemoveAttributeView
     });
 });

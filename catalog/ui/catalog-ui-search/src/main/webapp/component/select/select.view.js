@@ -24,6 +24,11 @@ define([
     return Marionette.ItemView.extend({
         template: template,
         tagName: CustomElements.register('select'),
+        className: function(){
+            if (this.model.get('hasNoValue')){
+                return 'hasNoValue';
+            }
+        },
         attributes: function(){
             return {
                 'data-hits': this.model.get('hits'),

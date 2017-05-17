@@ -20,7 +20,8 @@ define([
     'jquery',
     './select.view',
     'js/CustomElements',
-], function (Backbone, Marionette, _, $, childView, CustomElements) {
+    'js/Common'
+], function (Backbone, Marionette, _, $, childView, CustomElements, Common) {
 
     return Marionette.CollectionView.extend({
         emptyView: Marionette.ItemView.extend({className: 'select-collection-empty', template: 'Nothing Found'}),
@@ -70,7 +71,7 @@ define([
                 this.$el.children('.is-selected').removeClass('is-selected');
             }
             $(e.currentTarget).toggleClass('is-selected');
-            this.updateValue();
+            this.updateValue(e.currentTarget);
             if (!this.options.isMultiSelect){
                 this.$el.trigger('closeDropdown.'+CustomElements.getNamespace());
             }
@@ -80,14 +81,17 @@ define([
             this.filterValue = filterValue.toLowerCase();
             this.render();
         },
-        handleEnter: function(){
+        handleEnter: function(e){
             if (!this.options.isMultiSelect){
                 this.$el.children('.is-selected').removeClass('is-selected');
             }
-            this.$el.children('.choice.is-active').toggleClass('is-selected');
-            this.updateValue();
-            if (!this.options.isMultiSelect){
-                this.$el.trigger('closeDropdown.'+CustomElements.getNamespace());
+            var activeChoice = this.$el.children('.choice.is-active');
+            if (activeChoice.length > 0) {
+                var el = activeChoice.toggleClass('is-selected')[0];
+                this.updateValue(el);
+                if (!this.options.isMultiSelect){
+                    this.$el.trigger('closeDropdown.'+CustomElements.getNamespace());
+                }
             }
         },
         handleDownArrow: function(){
@@ -98,10 +102,10 @@ define([
                 $nextActive.addClass('is-active');
                 var diff = ($nextActive[0].getBoundingClientRect().top +
                     $nextActive[0].getBoundingClientRect().height) -
-                    ($nextActive[0].parentNode.parentNode.clientHeight +
-                    $nextActive[0].parentNode.parentNode.getBoundingClientRect().top);
+                    ($nextActive[0].parentNode.parentNode.parentNode.clientHeight +
+                    $nextActive[0].parentNode.parentNode.parentNode.getBoundingClientRect().top);
                 if (diff >= 0) {
-                    $nextActive[0].parentNode.parentNode.scrollTop = $nextActive[0].parentNode.parentNode.scrollTop + diff;
+                    $nextActive[0].parentNode.parentNode.parentNode.scrollTop = $nextActive[0].parentNode.parentNode.parentNode.scrollTop + diff;
                 }
             }
         },
@@ -111,20 +115,29 @@ define([
             if ($nextActive.length !== 0){
                 $currentActive.removeClass('is-active');
                 $nextActive.addClass('is-active');
-                var diff = ($nextActive[0].parentNode.parentNode.getBoundingClientRect().top) -
+                var diff = ($nextActive[0].parentNode.parentNode.parentNode.getBoundingClientRect().top) -
                     ($nextActive[0].getBoundingClientRect().top);
                 if (diff >= 0) {
-                    $nextActive[0].parentNode.parentNode.scrollTop = $nextActive[0].parentNode.parentNode.scrollTop - diff;
+                    $nextActive[0].parentNode.parentNode.parentNode.scrollTop = $nextActive[0].parentNode.parentNode.parentNode.scrollTop - diff;
                 }
             }
         },
         filter: function(child){
             return child.get('label').toString().toLowerCase().indexOf(this.filterValue) > -1;
         },
-        updateValue: function(){
-            var values = _.map(this.$el.children('.is-selected'), function(choice){
-                return JSON.parse($(choice).attr('data-value'));
-            });
+        updateValue: function(target){
+            var value = JSON.parse($(target).attr('data-value'));
+            var values = this.model.get('value').slice();
+            if (this.options.isMultiSelect){
+                var index = values.indexOf(value);
+                if (index >= 0) {
+                    values.splice(index, 1);
+                } else {
+                    values.push(value);
+                }
+            } else {
+                values = [value];
+            }
             this.model.set({
                 value: values
             });

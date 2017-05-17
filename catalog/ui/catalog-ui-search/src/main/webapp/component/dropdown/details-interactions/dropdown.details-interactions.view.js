@@ -12,23 +12,18 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-/*global define*/
-define([
-    'marionette',
-    'underscore',
-    'jquery',
-    '../editor.view',
-    'js/store',
-    'component/input/metacard/input-metacard.collection.view',
-    'component/input/metacard/input-metacard.collection'
-], function (Marionette, _, $, EditorView, store, InputMetacardCollectionView, InputMetacardCollection) {
+/*global require*/
+var Marionette = require('marionette');
+var _ = require('underscore');
+var DropdownView = require('../dropdown.view');
+var template = require('./dropdown.details-interactions.hbs');
+var ComponentView = require('component/details-interactions/details-interactions.view');
 
-    return EditorView.extend({
-        onBeforeShow: function(){
-            this.editorProperties.show(new InputMetacardCollectionView({
-                collection: InputMetacardCollection.createWorkspaceAdvanced(this.model)
-            }));
-            this.editorProperties.currentView.$el.addClass("is-list");
-        }
-    });
+module.exports = DropdownView.extend({
+    template: template,
+    className: 'is-detailsInteractions',
+    componentToShow: ComponentView,
+    initialize: function () {
+        DropdownView.prototype.initialize.call(this);
+    }
 });

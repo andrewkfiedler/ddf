@@ -131,6 +131,7 @@ define([
                 resultPreview: ['modified'],
                 resultFilter: undefined,
                 resultSort: undefined,
+                detailsFilter: undefined,
                 homeFilter: 'Owned by anyone',
                 homeSort: 'Last modified',
                 homeDisplay: 'Grid',

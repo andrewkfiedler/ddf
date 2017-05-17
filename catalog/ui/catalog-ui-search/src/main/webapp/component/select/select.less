@@ -22,6 +22,7 @@
 
   &.is-active {
     background: @lighten-inherited-background-color;
+    box-shadow: inset 0px 0px 0px 1px @primary-color
   }
 
   &.is-selected::after {
@@ -58,6 +59,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+}
+
+@{customElementNamespace}select.hasNoValue {
+  opacity: @minimumOpacity;
 }
 
 @{customElementNamespace}select[data-hits] {

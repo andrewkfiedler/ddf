@@ -22,7 +22,7 @@
     </label>
     <div class="value-list is-list">
         {{#each values}}
-            <div class="list-value" data-ids="{{this.ids}}">
+            <div class="list-value {{#if hasNoValue}}hasNoValue{{/if}}" data-ids="{{this.ids}}">
                 <div class="cell-value">
                 {{#each value}}
                     <div class="value-subvalue" title="{{this}}">

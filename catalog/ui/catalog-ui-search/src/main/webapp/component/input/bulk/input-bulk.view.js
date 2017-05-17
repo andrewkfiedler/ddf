@@ -44,15 +44,20 @@ define([
                     break;
                     case 'bulkCustom':
                         this.model.setValue(this.otherInput.currentView.model.getValue());
+                        this.model.set('hasChanged', true); 
                         break;
                     default:
                         this.model.setValue(value);
+                        this.model.set('hasChanged', true); 
                     break;
                 }
                 this.handleChange();
             });
             this.listenTo(this.otherInput.currentView.model, 'change:value', function(){
                 this.model.setValue(this.otherInput.currentView.model.getValue());
+                if (!this.model.isHomogeneous()){
+                    this.model.set('hasChanged', true);
+                }
                 this.handleChange();
             });
         },
@@ -68,13 +73,24 @@ define([
             switch(this.model.getCalculatedType()){
                 case 'date':
                     modelJSON.values = _.map(modelJSON.values, (function(valueInfo){
-                        valueInfo.value = valueInfo.value.map(function(value){
-                            return Common.getHumanReadableDate(value);
-                        });
+                        if (valueInfo.hasNoValue){
+                            valueInfo.value[0] = 'No Value';
+                        } else {
+                            valueInfo.value = valueInfo.value.map(function(value){
+                                return Common.getHumanReadableDate(value);
+                            });
+                            return valueInfo;
+                        }
                         return valueInfo;
                     }));
                     break;
                 default:
+                    modelJSON.values = _.map(modelJSON.values, (function(valueInfo){
+                        if (valueInfo.hasNoValue){
+                            valueInfo.value[0] = 'No Value';
+                        }
+                        return valueInfo;
+                    }));
                     break;
             }
             return modelJSON;
@@ -94,23 +110,26 @@ define([
             ];
             _.forEach( this.model.get('values'), function(valueInfo){
                 var value = valueInfo.value;
-                var label = value;
-                switch(this.model.getCalculatedType()){
-                    case 'date':
-                        label = label.map(function(text){
-                           return Common.getHumanReadableDate(text);
-                        });
-                        value = value.map(function(text){
-                            return moment(text);
-                        });
-                        break;
-                    default:
-                        break;
+                var label = valueInfo.hasNoValue ? 'No Value' : value;
+                if (!valueInfo.hasNoValue) {
+                    switch(this.model.getCalculatedType()){
+                        case 'date':
+                            label = label.map(function(text){
+                            return Common.getHumanReadableDate(text);
+                            });
+                            value = value.map(function(text){
+                                return moment(text);
+                            });
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 enumValues.push({
                     label: label,
                     value: value,
-                    hits: valueInfo.hits
+                    hits: valueInfo.hits,
+                    hasNoValue: valueInfo.hasNoValue
                 });
             }.bind(this));
             this.enumRegion.show(DropdownView.createSimpleDropdown(

@@ -13,13 +13,46 @@
  *
  **/
 /*global define*/
+var filter = '';
+
+function convertArrayToModels(array){
+    return array.map((key) => {
+        return {
+            id: key
+        };
+    });
+}
+
+function getDifference(collection, array){
+    return collection.filter((model) => array.indexOf(model.id) === -1);
+}
+
+function intersect(collection, array){
+    var difference = getDifference(collection, array);
+    collection.remove(difference);
+    return difference;
+}
+
+function sync(collection, array){
+    var difference = getDifference(collection, array);
+    collection.remove(difference);
+    collection.add(convertArrayToModels(array));
+    return difference;
+}
+
 define([
+    'backbone',
     'marionette',
     'underscore',
     'jquery',
     './editor.hbs',
     'js/CustomElements',
-], function (Marionette, _, $, template, CustomElements) {
+    'component/property/property.view',
+    'component/property/property',
+    'component/dropdown/details-filter/dropdown.details-filter.view',
+    'component/dropdown/dropdown',
+    'component/dropdown/details-interactions/dropdown.details-interactions.view'
+], function (Backbone, Marionette, _, $, template, CustomElements, PropertyView, Property, DetailsFilterView, DropdownModel, DetailsInteractionsView) {
 
     return Marionette.LayoutView.extend({
         setDefaultModel: function(){
@@ -35,13 +68,23 @@ define([
             'click .editor-cancel': 'cancel'
         },
         regions: {
-            editorProperties: '.editor-properties'
+            editorProperties: '> .editor-properties',
+            editorFilter: '> .editor-header > .header-filter',
+            editorActions: '> .editor-header > .header-actions'
         },
+        attributesAdded: undefined,
+        attributesRemoved: undefined,
+        attributesMocked: undefined,
         initialize: function (options) {
             if (options.model === undefined){
                 this.setDefaultModel();
             }
             this.handleTypes();
+            this.attributesAdded = new Backbone.Collection([]);
+            this.attributesRemoved = new Backbone.Collection([]);
+            this.attributesMocked = new Backbone.Collection([]);
+            this.listenTo(this.attributesAdded, 'reset', this.handleEphemeralReset);
+            this.listenTo(this.attributesRemoved, 'reset', this.handleAttributesToRemoveReset);
         },
         handleTypes: function(){
             var types = {};
@@ -67,31 +110,97 @@ define([
             this.$el.toggleClass('is-deleted', types.deleted !== undefined);
             this.$el.toggleClass('is-remote', types.remote !== undefined);
         },
+        generateEditorActions: function(){
+            this.editorActions.show(new DetailsInteractionsView({
+                model: new DropdownModel({}),
+                selectionInterface: this.selectionInterface
+            }));            
+            this.listenTo(this.editorActions.currentView.model, 'change:attributesToAdd', this.handleAttributeAdd);
+            this.listenTo(this.editorActions.currentView.model, 'change:attributesToRemove', this.handleAttributeRemove);
+        },
         onBeforeShow: function(){
-            //override
+            this.editorFilter.show(new DetailsFilterView({
+                model: new DropdownModel({
+                    value: filter
+                })
+            }));
+            this.listenTo(this.editorFilter.currentView.model, 'change:value', this.handleFilterValue);
+            this.handleFilterValue();
+            this.generateEditorActions();
+        }, 
+        handleAttributesToRemoveReset: function(collection, options){
+            this.handleAttributesToRemove();
+            var ephemeralAttributesToUnRemove = this.attributesMocked.map((model) => model.id)
+                .filter((id) => this.attributesRemoved.get(id) === undefined);
+            this.editorProperties.currentView.removeProperties(ephemeralAttributesToUnRemove);
+            this.generateEditorActions();
+        },
+        handleEphemeralReset: function(collection, options){
+            var ephemeralAttributes = options.previousModels.map((model) => model.id);
+            this.editorProperties.currentView.removeProperties(ephemeralAttributes);
+            this.generateEditorActions();
+        },
+        handleAttributeRemove: function(){
+            sync(this.attributesRemoved, this.editorActions.currentView.model.get('attributesToRemove')[0]);
+            var newAttributes = this.editorProperties.currentView.addProperties(this.attributesRemoved.pluck('id'));
+            this.attributesMocked.add(convertArrayToModels(newAttributes));
+            this.editorProperties.currentView.removeProperties(intersect(this.attributesMocked, this.attributesRemoved.pluck('id')));
+            this.handleNewProperties();
+            this.handleAttributesToRemove();
+        },
+        handleAttributesToRemove: function(){
+            this.editorProperties.currentView.children.forEach((propertyView) => {
+                var id = propertyView.model.id;
+                propertyView.$el.toggleClass('scheduled-for-removal', this.attributesRemoved.get(id) !== undefined);
+            });
+        },
+        handleAttributeAdd: function(){
+            var difference = sync(this.attributesAdded, this.editorActions.currentView.model.get('attributesToAdd')[0]);
+            this.editorProperties.currentView.addProperties(this.attributesAdded.pluck('id'));
+            this.editorProperties.currentView.removeProperties(difference);
+            this.handleNewProperties();
+            this.handleFilterValue();
+        },
+        handleFilterValue: function(){
+            filter = this.editorFilter.currentView.model.get('value');
+            this.editorProperties.currentView.children.forEach((propertyView) => {
+                var identifier = propertyView.model.get('label') || propertyView.model.get('id');
+                if (identifier.indexOf(filter) >= 0){
+                    propertyView.show();
+                } else {
+                    propertyView.hide();
+                }
+            });
+        },
+        handleNewProperties: function(){
+            this.editorProperties.currentView.turnOnLimitedWidth();
+            this.$el.addClass('is-editing');
+            this.editorProperties.currentView.turnOnEditing();
         },
         edit: function(){
             this.$el.addClass('is-editing');
             this.editorProperties.currentView.turnOnEditing();
             this.editorProperties.currentView.focus();
-            this.afterEdit();
         },
         cancel: function(){
             this.$el.removeClass('is-editing');
+            this.attributesAdded.reset();
+            this.attributesRemoved.reset();
             this.editorProperties.currentView.revert();
             this.editorProperties.currentView.turnOffEditing();
             this.afterCancel();
         },
         save: function(){
             this.$el.removeClass('is-editing');
-            this.afterSave(this.editorProperties.currentView.toPatchJSON());
+            var ephemeralAttributes = this.attributesAdded.map((model) => model.id);
+            var attributesToRemove = this.attributesRemoved.map((model) => model.id);
+            this.afterSave(this.editorProperties.currentView.toPatchJSON(ephemeralAttributes, attributesToRemove));
+            this.attributesAdded.reset();
+            this.attributesRemoved.reset();
             this.editorProperties.currentView.revert();
             this.editorProperties.currentView.turnOffEditing();
         },
         afterCancel: function(){
-            //override
-        },
-        afterEdit: function(){
             //override
         },
         afterSave: function(){
