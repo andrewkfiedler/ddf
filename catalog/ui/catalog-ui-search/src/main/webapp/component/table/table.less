@@ -12,6 +12,7 @@
   .is-thead,
   .is-thead > th {
     background: inherit;
+    position: relative;
   }
 
   .is-thead > th {
@@ -32,12 +33,33 @@
     border-left: 1px solid @lighten-inherited-background-color;
   }
 
-  .table-header > .is-tbody {
+  .table-header .is-tbody {
     visibility: hidden;
   }
 
-  .table-body > .is-thead {
+  .table-body .is-thead {
     visibility: hidden;
+  }
+
+  .table-header {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    width: 100%;
+    background: inherit;
+    margin-right: 20px;
+  }
+
+  .table-body {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    height: 100%;
+    overflow: auto;
+    width: 100%;
   }
 
 }

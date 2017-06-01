@@ -17,9 +17,10 @@ var template = require('./table.hbs');
 var Marionette = require('marionette');
 var MarionetteRegion = require('js/Marionette.Region');
 var CustomElements = require('js/CustomElements');
+var Common = require('js/Common');
 
-function moveHeaders(elementToUpdate, elementToMatch) {
-    this.$el.find('th').css('transform', 'translate3d(0, '+ this.el.scrollTop+'px, 0)');
+function syncScrollbars(elementToUpdate, elementToMatch) {
+    elementToUpdate.scrollLeft = elementToMatch.scrollLeft;
 }
 
 module.exports = Marionette.LayoutView.extend({
@@ -27,38 +28,48 @@ module.exports = Marionette.LayoutView.extend({
     template: template,
     regions: {
         bodyThead: {
-            selector: 'thead',
+            selector: '.table-body thead',
             replaceElement: true
         },
         bodyTbody: {
-            selector: 'tbody',
+            selector: '.table-body tbody',
             replaceElement: true
-        }
+        },
+        headerThead: {
+            selector: '.table-header thead',
+            replaceElement: true
+        },
+        headerTbody: {
+            selector: '.table-header tbody',
+            replaceElement: true
+        },
     },
-    headerAnimationFrameId: undefined,
     getHeaderView: function(){
         console.log('You need to overwrite this function and provide the constructed HeaderView');
     },
     getBodyView: function(){
         console.log('You need to overwrite this function and provide the constructed BodyView');
     },
+    accountForScrollbar: function(){
+        this.$el.find('.table-header')[0].style.width = 'calc(100% - '+Common.getScrollBarDimensions().width+'px)';
+    },
     onRender: function() {
+        this.headerTbody.show(this.getBodyView(), {
+            replaceElement: true
+        });
+        this.headerThead.show(this.getHeaderView(), {
+            replaceElement: true
+        });
         this.bodyTbody.show(this.getBodyView(), {
             replaceElement: true
         });
         this.bodyThead.show(this.getHeaderView(), {
             replaceElement: true
         });
-        this.onDestroy();
-        this.startUpdatingHeaders();
+        this.accountForScrollbar();
+        this.syncScrollbars();
     },
-    startUpdatingHeaders: function(){
-        window.requestAnimationFrame(function(){
-            moveHeaders.call(this);
-            this.startUpdatingHeaders();
-        }.bind(this));
-    },
-    onDestroy: function(){
-        window.cancelAnimationFrame(this.headerAnimationFrameId);
+    syncScrollbars: function() {
+        this.$el.find('.table-body').on('scroll', syncScrollbars.bind(this, this.$el.find('.table-header')[0], this.$el.find('.table-body')[0]));
     }
 });

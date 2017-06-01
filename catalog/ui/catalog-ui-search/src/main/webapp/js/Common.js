@@ -17,7 +17,18 @@ define([
     'js/requestAnimationFramePolyfill'
 ], function ($, moment) {
 
+    function measureScrollbar() {
+      var $c = $("<div style='position:absolute; top:-10000px; left:-10000px; width:100px; height:100px; overflow:scroll;'></div>").appendTo("body");
+      var dim = {
+        width: $c.width() - $c[0].clientWidth,
+        height: $c.height() - $c[0].clientHeight
+      };
+      $c.remove();
+      return dim;
+    }
+
     var format = 'DD MMM YYYY HH:mm:ss.SSS';
+    var scrollBarDimensions = measureScrollbar();
 
     return {
         coreTransitionTime: 250,
@@ -107,6 +118,9 @@ define([
         },
         duplicate: function(reference){
             return JSON.parse(JSON.stringify(reference));
+        },
+        getScrollBarDimensions: function(){
+            return scrollBarDimensions;
         }
     };
 });
