@@ -25,10 +25,16 @@ define([
     'component/property/property.view',
     'component/singletons/metacard-definitions',
     'js/Common',
-    'properties'
-], function (wreqr, $, _, Marionette, CustomElements, template, Plotly, Property, PropertyView, metacardDefinitions, Common, properties) {
+    'properties',
+    'moment'
+], function (wreqr, $, _, Marionette, CustomElements, template, Plotly, Property, PropertyView, metacardDefinitions, Common, properties, moment) {
 
     var zeroWidthSpace = "\u200B";
+    var plotlyDateFormat = 'YYYY-MM-DD HH:mm:ss.SS';
+
+    function getPlotlyDate(date){
+        return moment(date).format(plotlyDateFormat);
+    }
 
     function calculateAvailableAttributes(results){
         var availableAttributes = [];
@@ -92,7 +98,8 @@ define([
         if (value !== undefined){
             switch(metacardDefinitions.metacardTypes[attribute].type){
                 case 'DATE':
-                    return values.indexOf(Common.getHumanReadableDate(value)) >= 0;
+                    var plotlyDate = getPlotlyDate(value);
+                    return plotlyDate >= values[0] && plotlyDate <= values[1];
                 case 'BOOLEAN':
                 case 'STRING':
                 case 'GEOMETRY':
@@ -107,7 +114,7 @@ define([
         if (value !== undefined){
             switch(metacardDefinitions.metacardTypes[attribute].type){
                 case 'DATE':
-                    valueArray.push(Common.getHumanReadableDate(value));
+                    valueArray.push(getPlotlyDate(value));
                     break;
                 case 'BOOLEAN':
                 case 'STRING':
@@ -127,12 +134,19 @@ define([
         }));
     }
 
-    function getValueFromClick(data){
-        if (data.points[0].x.constructor === Number){
-            var spread = data.points[0].data.xbins.size*0.5;
-            return [data.points[0].x - spread, data.points[0].x + spread];
-        } else {
-            return [data.points[0].x];
+    function getValueFromClick(data, categories){
+        switch (data.points[0].xaxis.type) {
+            case 'category':
+                return [data.points[0].x];
+            case 'date':
+                var currentDate = moment(data.points[0].x).format(plotlyDateFormat);
+                return _.find(categories, (category) => {
+                    return currentDate >= category[0] && currentDate <= category[1];
+                });
+            default:
+                return _.find(categories, (category) => {
+                    return data.points[0].x >= category[0] && data.points[0].x <= category[1];
+                });
         }
     }
 
@@ -259,7 +273,12 @@ define([
             var activeResults = this.options.selectionInterface.getActiveSearchResults();
             var selectedResults = this.options.selectionInterface.getSelectedResults();
             var xbins = Common.duplicate(plot._fullData[0].xbins);
-            xbins.end = xbins.end + xbins.size; //https://github.com/plotly/plotly.js/issues/1229
+            if (xbins.size.constructor !== String){
+                xbins.end = xbins.end + xbins.size; //https://github.com/plotly/plotly.js/issues/1229
+            } else {
+                // soooo plotly introduced this cool bin size shorthand where M3 means 3 months, M6 6 months etc.
+                xbins.end = xbins.end + parseInt(xbins.size.substring(1)) * 31 * 24 * 3600000; //https://github.com/plotly/plotly.js/issues/1229
+            }
             return [
                 {
                     x: calculateAttributeArray(activeResults, this.histogramAttribute.currentView.model.getValue()[0]),
@@ -342,18 +361,19 @@ define([
         },
         handleControlClick: function(data, alreadySelected){
             var attributeToCheck = this.histogramAttribute.currentView.model.getValue()[0];
+            var categories = this.retrieveCategoriesFromPlotly();
             if (alreadySelected){
                 this.options.selectionInterface.removeSelectedResult(findMatchesForAttributeValues(
                     this.options.selectionInterface.getActiveSearchResults(),
                     attributeToCheck,
-                    getValueFromClick(data)
+                    getValueFromClick(data, categories)
                 ));
                 this.pointsSelected.splice(this.pointsSelected.indexOf(getIndexClicked(data)), 1);
             } else {
                 this.options.selectionInterface.addSelectedResult(findMatchesForAttributeValues(
                     this.options.selectionInterface.getActiveSearchResults(),
                     attributeToCheck,
-                    getValueFromClick(data)
+                    getValueFromClick(data, categories)
                 ));
                 this.pointsSelected.push(getIndexClicked(data));
             }
@@ -401,9 +421,12 @@ define([
         retrieveCategoriesFromPlotly: function(){
             var histogramElement = this.el.querySelector('.histogram-container');
             var xaxis = histogramElement._fullLayout.xaxis;
-            if (xaxis._categories.length > 0){
-                return xaxis._categories;
-            } else {
+            switch(xaxis.type){
+                case 'category':
+                     return xaxis._categories;
+                case 'date':
+                    return this.retrieveCategoriesFromPlotlyForDates();
+                default:
                 var xbins = histogramElement._fullData[0].xbins;
                 var min = xbins.start;
                 var max = xbins.end;
@@ -416,6 +439,25 @@ define([
                 }
                 return categories;
             }
+        },
+        retrieveCategoriesFromPlotlyForDates: function(){
+            var histogramElement = this.el.querySelector('.histogram-container');
+            var categories = [];
+            var xbins = histogramElement._fullData[0].xbins;
+            var min = xbins.start;
+            var max = xbins.end;
+            var start = min;
+            var inMonths = xbins.size.constructor === String;
+            var binSize = inMonths ? parseInt(xbins.size.substring(1)) : xbins.size;
+            while (start < max){
+                var startDate = moment(start).format(plotlyDateFormat);
+                var endDate = inMonths ? moment(start).add(binSize, 'months').format(plotlyDateFormat) :
+                    moment(start).add(binSize, 'ms').format(plotlyDateFormat);
+                categories.push([startDate, endDate]);
+                start = parseInt(inMonths ? moment(start).add(binSize, 'months').format('x') :
+                    moment(start).add(binSize, 'ms').format('x'));
+            }
+            return categories;
         },
         resetKeyTracking: function(){
             this.shiftKey = false;
