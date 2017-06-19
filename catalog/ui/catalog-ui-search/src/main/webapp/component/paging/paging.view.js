@@ -26,7 +26,18 @@ define([
         template: template,
         initialize: function (options) {
             this.listenTo(this.model, 'reset', this.render);
+            this.listenTo(this.model.fullCollection, 'all', this.updateSelectionInterfaceComplete);
             this.updateSelectionInterface = _.debounce(this.updateSelectionInterface, 200, {leading: true, trailing: true});
+            this.updateSelectionInterfaceComplete();
+        },
+        updateSelectionInterfaceComplete: function(){
+            this.options.selectionInterface.setCompleteActiveSearchResults(this.model.fullCollection.reduce(function(results, result){
+                results.push(result);
+                if (result.duplicates) {
+                    results = results.concat(result.duplicates);
+                }
+                return results;
+            }, []));
         },
         updateSelectionInterface: function(){
             this.options.selectionInterface.setActiveSearchResults(this.model.reduce(function(results, result){
@@ -35,7 +46,7 @@ define([
                     results = results.concat(result.duplicates);
                 }
                 return results;
-            }, []))
+            }, []));
         },
         events: {
             'click .first': 'firstPage',

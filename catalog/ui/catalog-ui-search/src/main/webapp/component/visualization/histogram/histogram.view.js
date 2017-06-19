@@ -202,7 +202,7 @@ define([
             this.setupListeners();
         },
         showHistogram: function(){
-            if (this.histogramAttribute.currentView.model.getValue()[0] && this.options.selectionInterface.getActiveSearchResults().length !== 0){
+            if (this.histogramAttribute.currentView.model.getValue()[0] && this.options.selectionInterface.getCompleteActiveSearchResults().length !== 0){
                 var histogramElement = this.el.querySelector('.histogram-container');
                 //Plotly.purge(histogramElement);
                 Plotly.newPlot(histogramElement, this.determineInitialData(), getLayout(), {
@@ -219,7 +219,7 @@ define([
             }
         },
         updateHistogram: function(){
-            if (this.histogramAttribute.currentView.model.getValue()[0] && this.options.selectionInterface.getActiveSearchResults().length !== 0){
+            if (this.histogramAttribute.currentView.model.getValue()[0] && this.options.selectionInterface.getCompleteActiveSearchResults().length !== 0){
                 var histogramElement = this.el.querySelector('.histogram-container');
                 Plotly.deleteTraces(histogramElement, 1);
                 Plotly.addTraces(histogramElement, this.determineData(histogramElement)[1]);     
@@ -237,7 +237,7 @@ define([
                 model: new Property({
                     showValidationIssues: false,
                     enumFiltering: true,
-                    enum: calculateAvailableAttributes(this.options.selectionInterface.getActiveSearchResults()),
+                    enum: calculateAvailableAttributes(this.options.selectionInterface.getCompleteActiveSearchResults()),
                     value: defaultValue,
                     id: 'Group by'
                 })
@@ -252,7 +252,7 @@ define([
             this.handleEmpty();
         },
         determineInitialData: function(){
-            var activeResults = this.options.selectionInterface.getActiveSearchResults();
+            var activeResults = this.options.selectionInterface.getCompleteActiveSearchResults();
              return [
                 {
                     x: calculateAttributeArray(activeResults, this.histogramAttribute.currentView.model.getValue()[0]),
@@ -270,7 +270,7 @@ define([
              ];
         },
         determineData: function(plot){
-            var activeResults = this.options.selectionInterface.getActiveSearchResults();
+            var activeResults = this.options.selectionInterface.getCompleteActiveSearchResults();
             var selectedResults = this.options.selectionInterface.getSelectedResults();
             var xbins = Common.duplicate(plot._fullData[0].xbins);
             if (xbins.size.constructor !== String){
@@ -309,7 +309,7 @@ define([
 
         },
         handleEmpty: function(){
-            this.$el.toggleClass('is-empty', this.options.selectionInterface.getActiveSearchResults().length === 0);
+            this.$el.toggleClass('is-empty', this.options.selectionInterface.getCompleteActiveSearchResults().length === 0);
         },
         handleResize: function(){
             var histogramElement = this.el.querySelector('.histogram-container');
@@ -336,7 +336,7 @@ define([
             this.removeResizeHandler();
         },
         setupListeners: function(){
-            this.listenTo(this.options.selectionInterface, 'reset:activeSearchResults', this.onBeforeShow);
+            this.listenTo(this.options.selectionInterface, 'reset:completeActiveSearchResults', this.onBeforeShow);
             this.listenTo(this.options.selectionInterface.getSelectedResults(), 'update', this.updateHistogram);
             this.listenTo(this.options.selectionInterface.getSelectedResults(), 'add', this.updateHistogram);
             this.listenTo(this.options.selectionInterface.getSelectedResults(), 'remove', this.updateHistogram);
@@ -364,14 +364,14 @@ define([
             var categories = this.retrieveCategoriesFromPlotly();
             if (alreadySelected){
                 this.options.selectionInterface.removeSelectedResult(findMatchesForAttributeValues(
-                    this.options.selectionInterface.getActiveSearchResults(),
+                    this.options.selectionInterface.getCompleteActiveSearchResults(),
                     attributeToCheck,
                     getValueFromClick(data, categories)
                 ));
                 this.pointsSelected.splice(this.pointsSelected.indexOf(getIndexClicked(data)), 1);
             } else {
                 this.options.selectionInterface.addSelectedResult(findMatchesForAttributeValues(
-                    this.options.selectionInterface.getActiveSearchResults(),
+                    this.options.selectionInterface.getCompleteActiveSearchResults(),
                     attributeToCheck,
                     getValueFromClick(data, categories)
                 ));
@@ -406,7 +406,7 @@ define([
             var attributeToCheck = this.histogramAttribute.currentView.model.getValue()[0];
             var categories = this.retrieveCategoriesFromPlotly();
             var validCategories = categories.slice(firstIndex, lastIndex);
-            var activeSearchResults = this.options.selectionInterface.getActiveSearchResults();
+            var activeSearchResults = this.options.selectionInterface.getCompleteActiveSearchResults();
             this.options.selectionInterface.addSelectedResult(validCategories.reduce(function(results, category){
                 results = results.concat(findMatchesForAttributeValues(
                     activeSearchResults,
