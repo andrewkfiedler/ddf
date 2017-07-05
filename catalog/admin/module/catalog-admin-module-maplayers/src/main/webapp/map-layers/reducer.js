@@ -182,6 +182,12 @@ export const validate = (providers) => {
       errors = errors.setIn([i, 'proxyEnabled'], 'Proxy enabled settings needs to be true or false')
     }
 
+    const show = layer.get('show')
+
+    if (show === undefined) {
+      errors = errors.setIn([i, 'show'], 'Show must be true or false')
+    }
+
     const type = layer.get('type')
 
     if (type === '') {
@@ -210,6 +216,22 @@ export const validate = (providers) => {
     if (err !== undefined) {
       errors = errors.setIn([i, 'buffer'], err)
     }
+    
+    const buffer = provider.get('buffer')
+    let advConf
+    try {
+      advConf = JSON.parse(buffer)
+    } catch (e) {
+      errors = errors.setIn([i, 'buffer'], `Invalid JSON configuration`)
+    }
+
+    if (advConf) {
+      if (!('show' in advConf)) {
+        errors = errors.setIn([i, 'buffer'], `Show must be defined in JSON configuration`)
+      } else if (typeof advConf.show !== 'boolean') {
+        errors = errors.setIn([i, 'buffer'], `Show must be set to true or false`)
+      }
+    }
   })
 
   return errors
@@ -222,6 +244,7 @@ const emptyProvider = () => {
     type: '',
     alpha: '',
     proxyEnabled: true,
+    show: true,
     parameters: {}
   }
   const buffer = JSON.stringify(layer, null, 2)
