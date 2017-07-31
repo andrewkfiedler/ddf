@@ -42,6 +42,8 @@ public class QueryMetacardTypeImpl extends MetacardTypeImpl {
 
     public static final String QUERY_FEDERATION = "federation";
 
+    public static final String QUERY_IS_ADVANCED = "isAdvanced";
+
     private static final Set<AttributeDescriptor> DESCRIPTORS;
 
     static {
@@ -109,6 +111,13 @@ public class QueryMetacardTypeImpl extends MetacardTypeImpl {
                 false   /* tokenized */,
                 false    /* multivalued */,
                 BasicTypes.STRING_TYPE));
+
+        DESCRIPTORS.add(new AttributeDescriptorImpl(QUERY_IS_ADVANCED,
+                false   /* indexed */,
+                true    /* stored */,
+                false   /* tokenized */,
+                false    /* multivalued */,
+                BasicTypes.BOOLEAN_TYPE));
     }
 
     public QueryMetacardTypeImpl() {
