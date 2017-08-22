@@ -17,13 +17,16 @@
             <h4 class="modal-title">Session Expiring</h4>
         </div>
         <div class="modal-body">
-            You will be logged out automatically in <label id="timer">{{time}}</label> seconds.
-            If you need more time, press "Continue Working" now.
+            You will be logged out automatically in <label class="timer">{{time}}</label> seconds.
+            Press "Continue working" to remain logged in.
         </div>
         <div class="modal-footer">
             <div class="form-actions btn-group">
-                <button type="button" class="btn btn-primary submit-button" data-dismiss="modal">Continue Working</button>
-                <button type="button" id="logoutBtn" class="btn btn-medium btn-clear">Logout</button>
+                <button type="button" class="btn btn-primary submit-button" data-dismiss="modal">
+                    Continue Working
+                </button>
+                <button type="button" class="logoutBtn, btn btn-medium btn-clear">Logout
+                </button>
             </div>
         </div>
     </div>

@@ -32,7 +32,6 @@ import java.time.ZoneId;
 import java.util.Collections;
 import java.util.HashMap;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.Response;
@@ -87,20 +86,18 @@ public class SessionManagementServiceTest {
         when(principalCollection.asList()).thenReturn(Collections.singletonList(principal));
         when(subject.getPrincipals()).thenReturn(principalCollection);
         when(manager.getSubject(isA(SAMLAuthenticationToken.class))).thenReturn(subject);
-        when(token.getToken()).thenReturn(readXml(this.getClass()
-                .getClassLoader()
+        when(token.getToken()).thenReturn(readXml(getClass().getClassLoader()
                 .getResourceAsStream("saml.xml")).getDocumentElement());
         when(tokenHolder.getRealmTokenMap()).thenReturn(Collections.singletonMap("idp", token));
         when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(SecurityConstants.SAML_ASSERTION)).thenReturn(tokenHolder);
         sessionManagementService = new SessionManagementService();
         sessionManagementService.setSecurityManager(manager);
+        sessionManagementService.setRootContext("services");
     }
 
     @Test
-    public void testGetExpiry()
-            throws ParserConfigurationException, SAXException, IOException, ServletException {
-        SessionManagementService sessionManagementService = new SessionManagementService();
+    public void testGetExpiry() throws IOException {
         sessionManagementService.setClock(Clock.fixed(Instant.EPOCH, ZoneId.of("UTC")));
         Response expiry = sessionManagementService.getExpiry(request);
         assertThat(expiry.getStatus(), is(200));
@@ -110,19 +107,16 @@ public class SessionManagementServiceTest {
 
     @Test
     public void testGetExpirySoonest()
-            throws ServletException, IOException, ParserConfigurationException, SAXException {
-        SessionManagementService sessionManagementService = new SessionManagementService();
+            throws IOException, ParserConfigurationException, SAXException {
         sessionManagementService.setClock(Clock.fixed(Instant.EPOCH, ZoneId.of("UTC")));
         SecurityToken soonerToken = mock(SecurityToken.class);
-        String saml = IOUtils.toString(new InputStreamReader(this.getClass()
-                .getClassLoader()
+        String saml = IOUtils.toString(new InputStreamReader(getClass().getClassLoader()
                 .getResourceAsStream("saml.xml")));
         saml = saml.replace("2113", "2103");
         when(soonerToken.getToken()).thenReturn(readXml(IOUtils.toInputStream(saml,
                 "UTF-8")).getDocumentElement());
         SecurityToken laterToken = mock(SecurityToken.class);
-        saml = IOUtils.toString(new InputStreamReader(this.getClass()
-                .getClassLoader()
+        saml = IOUtils.toString(new InputStreamReader(getClass().getClassLoader()
                 .getResourceAsStream("saml.xml")));
         saml = saml.replace("2113", "2213");
         when(laterToken.getToken()).thenReturn(readXml(IOUtils.toInputStream(saml,
@@ -139,7 +133,7 @@ public class SessionManagementServiceTest {
     }
 
     @Test
-    public void testGetRenewal() throws ServletException, IOException {
+    public void testGetRenewal() {
         Response renewal = sessionManagementService.getRenewal(request);
         assertThat(renewal.getStatus(), is(200));
         verify(tokenHolder).addSecurityToken("idp", securityToken);
@@ -154,9 +148,8 @@ public class SessionManagementServiceTest {
 
     @Test
     public void testGetInvalidateNoQueryString() {
-        SessionManagementService sessionManagementService = new SessionManagementService();
         when(request.getRequestURL()).thenReturn(new StringBuffer(
-                "https://localhost:8993/services/session/invalidate"));
+                "https://localhost:8993/services/internal/session/invalidate"));
         when(request.getQueryString()).thenReturn(null);
         Response invalidate = sessionManagementService.getInvalidate(request);
         assertThat(invalidate.getStatus(), is(307));
@@ -166,9 +159,8 @@ public class SessionManagementServiceTest {
 
     @Test
     public void testGetInvalidateWithQueryString() {
-        SessionManagementService sessionManagementService = new SessionManagementService();
         when(request.getRequestURL()).thenReturn(new StringBuffer(
-                "https://localhost:8993/services/session/invalidate?prevurl=/admin/"));
+                "https://localhost:8993/services/internal/session/invalidate?prevurl=/admin/"));
         when(request.getQueryString()).thenReturn("prevurl=/admin/");
         Response invalidate = sessionManagementService.getInvalidate(request);
         assertThat(invalidate.getStatus(), is(307));

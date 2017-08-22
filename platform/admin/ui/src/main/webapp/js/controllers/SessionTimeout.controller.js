@@ -1,17 +1,17 @@
 /**
-* Copyright (c) Codice Foundation
-*
-* This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser
-* General Public License as published by the Free Software Foundation, either version 3 of the
-* License, or any later version.
-*
-* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
-* even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-* Lesser General Public License for more details. A copy of the GNU Lesser General Public License
-* is distributed along with this program and can be found at
-* <http://www.gnu.org/licenses/lgpl.html>.
-*
-**/
+ * Copyright (c) Codice Foundation
+ *
+ * This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser
+ * General Public License as published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details. A copy of the GNU Lesser General Public License
+ * is distributed along with this program and can be found at
+ * <http://www.gnu.org/licenses/lgpl.html>.
+ *
+ **/
 /* jshint browser: true */
 /* global define */
 define(['jquery',
@@ -19,34 +19,37 @@ define(['jquery',
         'marionette',
         'js/wreqr',
         'js/views/SessionTimeoutModal.view'
-    ], function($, _, Marionette, wreqr, SessionTimeoutModal) {
+    ], function ($, _, Marionette, wreqr, SessionTimeoutModal) {
         'use strict';
         var SessionTimeoutController;
 
-        var _this = null;
         var idleNoticeDuration = 60000;
         var idleTimeoutThreshold = 900000;  // Length of inactivity that will trigger user timeout
-                                            // See STIG V-69243
+        // See STIG V-69243
 
         SessionTimeoutController = Marionette.Controller.extend({
-            initialize: function() {
-                _this = this;
-                _this.initTimer();
+            initialize: function () {
+                this.initTimer();
 
-                wreqr.vent.on("sessionRenewed", _this.initTimer);
+                wreqr.vent.on("sessionRenewed", this.initTimer);
             },
 
-            initTimer: function() {
+            initTimer: function () {
                 var timer = null;
-                var start = Date.now();
                 var sessionRenewDate = 0;
                 var idleTimeoutDate = idleTimeoutThreshold - idleNoticeDuration + Date.now();
+                var modalShown = false;
+
+                wreqr.vent.on("continueClicked", function () {
+                    modalShown = false;
+                });
 
                 function setSessionRenewDate() {
-                    $.get("/services/session/expiry", function(res) {
+                    $.get("/services/internal/session/expiry", function (res) {
                         var msUntilTimeout = parseInt(res);
-                        if (msUntilTimeout === 0)
+                        if (msUntilTimeout === 0) {
                             clearTimeout(timer);
+                        }
 
                         var msUntilAutoRenew = Math.max(msUntilTimeout * 0.7, msUntilTimeout - 60000);
                         sessionRenewDate = Date.now() + msUntilAutoRenew;
@@ -57,23 +60,23 @@ define(['jquery',
                     var now = Date.now();
 
                     if (now >= sessionRenewDate) {
-                        $.get("/services/session/renew", function() {
+                        $.get("/services/internal/session/renew", function () {
                             console.log("session renewed");
                             setSessionRenewDate();
                         });
                     }
 
-                    if (now >= idleTimeoutDate) {
+                    if (now >= idleTimeoutDate && !modalShown) {
                         $(document).off('keydown mousedown scroll');
                         wreqr.vent.trigger('showModal', new SessionTimeoutModal({
                             time: idleNoticeDuration
                         }));
+                        modalShown = true;
                     }
-                    else
-                        timer = setTimeout(onInterval, 1000 - ((now - start) % 1000));
 
                 }
 
+                // handles on scroll, avoid expensive processing
                 function onUserActivity() {
                     idleTimeoutDate = idleTimeoutThreshold - idleNoticeDuration + Date.now();
                 }

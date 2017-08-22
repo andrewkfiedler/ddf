@@ -41,7 +41,7 @@ public class SecurityManagerImpl implements SecurityManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SecurityManagerImpl.class);
 
-    private DefaultSecurityManager internalManager;
+    private final DefaultSecurityManager internalManager;
 
     private Collection<Realm> realms;
 
@@ -73,6 +73,15 @@ public class SecurityManagerImpl implements SecurityManager {
         this.usernameAttributeList = usernameAttributeList;
     }
 
+    /**
+     * Will renew a user's session ONLY if the token is a SamlAuthenticationToken.
+     *
+     * @param token An object containing information about the user that can be used to populate the
+     *              subject.
+     * @return
+     * @throws SecurityServiceException
+     */
+    @Override
     public Subject getSubject(Object token) throws SecurityServiceException {
         if (token instanceof AuthenticationToken) {
             return getSubject((AuthenticationToken) token);
@@ -103,8 +112,7 @@ public class SecurityManagerImpl implements SecurityManager {
             return new SubjectImpl(info.getPrincipals(),
                     true,
                     new SimpleSession(UUID.randomUUID()
-                            .toString()),
-                    internalManager);
+                            .toString()), internalManager);
         } catch (Exception e) {
             throw new SecurityServiceException("Could not create a new subject", e);
         }
@@ -124,8 +132,7 @@ public class SecurityManagerImpl implements SecurityManager {
             return new SubjectImpl(createPrincipalFromToken(token),
                     true,
                     new SimpleSession(UUID.randomUUID()
-                            .toString()),
-                    internalManager);
+                            .toString()), internalManager);
         } catch (Exception e) {
             throw new SecurityServiceException("Could not create a new subject", e);
         }

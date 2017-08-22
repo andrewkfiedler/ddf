@@ -12,83 +12,82 @@
 /* jshint browser: true */
 /* global define */
 define([
-    'jquery',
-    'icanhaz',
-    'backbone',
-    'js/wreqr',
-    'js/views/Modal',
-    'properties',
-    'text!templates/sessionTimeoutModal.handlebars'
-],
-function ($, ich, Backbone, wreqr, Modal, properties, sessionTimeoutModalTemplate) {
-    ich.addTemplate('sessionTimeoutModalTemplate', sessionTimeoutModalTemplate);
+        'jquery',
+        'icanhaz',
+        'backbone',
+        'js/wreqr',
+        'js/views/Modal',
+        'properties',
+        'text!templates/sessionTimeoutModal.handlebars'
+    ],
+    function ($, ich, Backbone, wreqr, Modal, properties, sessionTimeoutModalTemplate) {
+        ich.addTemplate('sessionTimeoutModalTemplate', sessionTimeoutModalTemplate);
 
-    var _this = null;
-    var timer = null;
+        var timer = null;
 
-    var SessionTimeoutModal = Modal.extend({
-        template: 'sessionTimeoutModalTemplate',
-        model: null,
+        return Modal.extend({
+            template: 'sessionTimeoutModalTemplate',
+            model: null,
 
-        ui: {
-            logout: "#logoutBtn"
-        },
+            ui: {
+                logout: ".logoutBtn"
+            },
 
-        events: {
-            'click @ui.logout': 'logoutUser'
-        },
+            events: {
+                'click @ui.logout': 'logoutUser'
+            },
 
-        initialize: function(options) {
-            _this = this;
-            var msUntilTimeout = options.time;
-            this.model = new Backbone.Model({time: Math.ceil(msUntilTimeout / 1000)});
+            initialize: function (options) {
+                var msUntilTimeout = options.time;
+                this.model = new Backbone.Model({time: Math.ceil(msUntilTimeout / 1000)});
 
-            this.$el.one('hidden.bs.modal', this.refreshSession);
-            this.initTimer(msUntilTimeout);
-        },
+                this.$el.one('hidden.bs.modal', this.refreshSession);
+                this.initTimer(msUntilTimeout);
+            },
 
-        initTimer: function(msUntilTimeout) {
-            var start = Date.now();
-            var dateOfTimeout = start + msUntilTimeout;
-            var deltaTime = msUntilTimeout % 1000;
+            initTimer: function (msUntilTimeout) {
+                var start = Date.now();
+                var dateOfTimeout = start + msUntilTimeout;
+                var deltaTime = msUntilTimeout % 1000;
 
-            function onInterval() {
-                var now = Date.now();
+                function onInterval() {
+                    var now = Date.now();
 
-                if (dateOfTimeout > now) {
-                    var msRemaining = dateOfTimeout - now;
-                    var deltaTime = msRemaining % 1000;
+                    if (dateOfTimeout > now) {
+                        var msRemaining = dateOfTimeout - now;
+                        var deltaTime = msRemaining % 1000;
 
-                    $(_this.$el).find('#timer').text(Math.ceil(msRemaining / 1000));
-                    timer = setTimeout(onInterval, (deltaTime === 0) ? 1000 : deltaTime);
+                        $(this.$el).find('.timer').text(Math.ceil(msRemaining / 1000));
+                        timer = setTimeout(onInterval, (deltaTime === 0) ? 1000 : deltaTime);
+                    }
+                    else {
+                        this.logoutUser();
+                    }
                 }
-                else
-                    _this.logoutUser();
+
+                timer = setTimeout(onInterval, (deltaTime === 0) ? 1000 : deltaTime);
+            },
+
+            logoutUser: function () {
+                clearTimeout(timer);
+                window.location.replace("/services/internal/session/invalidate?prevurl=" + window.location.pathname);
+            },
+
+            refreshSession: function () {
+                clearTimeout(timer);
+                var that = this;
+                $.get("/services/internal/session/renew", that)
+                    .done(function () {
+                        console.log("session renewed");
+                        wreqr.vent.trigger("sessionRenewed");
+                    })
+                    .fail(function () {
+                        console.log("session renewal failed");
+                    })
+                    .always(function () {
+                        that.destroy();
+                        wreqr.vent.trigger("continueClicked");
+                    });
             }
-
-            timer = setTimeout(onInterval, (deltaTime === 0) ? 1000 : deltaTime);
-        },
-
-        logoutUser: function() {
-            clearTimeout(timer);
-            window.location.replace("/services/session/invalidate?prevurl=" + window.location.pathname);
-        },
-
-        refreshSession: function() {
-            clearTimeout(timer);
-            $.get("/services/session/renew")
-                .done(function() {
-                    console.log("session renewed");
-                    wreqr.vent.trigger("sessionRenewed");
-                })
-                .fail(function() {
-                    console.log("session renewal failed");
-                })
-                .always(function() {
-                    _this.destroy();
-                });
-        }
+        });
     });
-
-    return SessionTimeoutModal;
-});

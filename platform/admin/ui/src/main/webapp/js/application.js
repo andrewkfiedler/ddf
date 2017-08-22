@@ -30,7 +30,7 @@ define([
     'js/controllers/SystemUsage.controller',
     'text!templates/moduleTab.handlebars',
     'properties'
-    ],function (_, Backbone, Marionette, ich, $, poller, wreqr, Module, tabs, appHeader, header, footer, ModalController, SessionTimeoutController, SystemUsageController, moduleTab, Properties) {
+], function (_, Backbone, Marionette, ich, $, poller, wreqr, Module, tabs, appHeader, header, footer, ModalController, SessionTimeoutController, SystemUsageController, moduleTab, Properties) {
     'use strict';
 
     var Application = {};
@@ -38,7 +38,9 @@ define([
     // This was moved from the main.js file into here.
     // Since this modules has ui components, and it gets loaded before main.js, we need to init the renderer here for now until we sort this out.
     Marionette.Renderer.render = function (template, data) {
-        if(!template){return '';}
+        if (!template) {
+            return '';
+        }
         return ich[template](data);
     };
 
@@ -64,7 +66,6 @@ define([
         mainRegion: 'main',
         appHeader: '#appHeader',
         modalRegion: '#modalRegion',
-        sessionTimeoutModalRegion: '#sessionTimeoutModalRegion',
         alertsRegion: '.alerts'
     });
 
@@ -73,12 +74,12 @@ define([
         delay: 30000
     };
 
-    var addModuleRegions = function() {
+    var addModuleRegions = function () {
         //add tab regions
-        Application.ModuleModel.get('value').each(function(module) {
+        Application.ModuleModel.get('value').each(function (module) {
             var obj = {};
             obj[module.get('id')] = '#' + module.get('id');
-            if(!Application.App.getRegion(module.get('id'))) {
+            if (!Application.App.getRegion(module.get('id'))) {
                 Application.App.addRegions(obj);
             }
         });
@@ -104,7 +105,7 @@ define([
 
     modulePoller.start();
 
-    wreqr.vent.on('modulePoller:stop', function(){
+    wreqr.vent.on('modulePoller:stop', function () {
         modulePoller.stop();
     });
 

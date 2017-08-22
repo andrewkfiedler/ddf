@@ -25,7 +25,7 @@ define([
 
     var componentName = 'session-timeout-lightbox';
 
-    var LightboxView = Marionette.LayoutView.extend({
+    return Marionette.LayoutView.extend({
         template: LightboxTemplate,
         tagName: CustomElements.register(componentName),
         modelEvents: {
@@ -45,7 +45,7 @@ define([
             this.listenForClose();
         },
         listenForClose: function () {
-            this.$el.on(CustomElements.getNamespace()+'close-'+componentName, function () {
+            this.$el.on(CustomElements.getNamespace() + 'close-' + componentName, function () {
                 this.close();
             }.bind(this));
         },
@@ -57,14 +57,11 @@ define([
             this.model.close();
             this.lightboxContent.empty();
         }
-    },{
-        generateNewLightbox: function(){
-            console.log("Creating model");
+    }, {
+        generateNewLightbox: function () {
             return new this({
                 model: new Lightbox()
             });
         }
     });
-
-    return LightboxView;
 });

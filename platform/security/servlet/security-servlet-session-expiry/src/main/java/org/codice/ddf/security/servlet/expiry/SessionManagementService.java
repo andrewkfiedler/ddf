@@ -14,7 +14,6 @@
 package org.codice.ddf.security.servlet.expiry;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Clock;
@@ -22,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.GET;
@@ -51,38 +49,17 @@ public class SessionManagementService {
 
     private Clock clock = Clock.systemUTC();
 
+    private String rootContext;
+
     @GET
     @Path("/expiry")
-    public Response getExpiry(@Context HttpServletRequest request)
-            throws ServletException, IOException {
+    public Response getExpiry(@Context HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         long timeLeft = 0;
         if (session != null) {
             Object securityToken = session.getAttribute(SecurityConstants.SAML_ASSERTION);
             if (securityToken instanceof SecurityTokenHolder) {
-                List<SecurityAssertionImpl> values =
-                        ((SecurityTokenHolder) securityToken).getRealmTokenMap()
-                                .values()
-                                .stream()
-                                .map(SecurityAssertionImpl::new)
-                                .collect(Collectors.toList());
-                values.sort((o1, o2) -> {
-                    long l = o1.getNotOnOrAfter()
-                            .getTime() - o2.getNotOnOrAfter()
-                            .getTime();
-                    if (l > 0) {
-                        return 1;
-                    } else if (l < 0) {
-                        return -1;
-                    } else {
-                        return 0;
-                    }
-                });
-                timeLeft = values.isEmpty() ?
-                        0 :
-                        values.get(0)
-                                .getNotOnOrAfter()
-                                .getTime();
+                timeLeft = getTimeLeft((SecurityTokenHolder) securityToken);
             }
         }
         return Response.ok(new ByteArrayInputStream(Long.toString(Math.max(
@@ -91,11 +68,36 @@ public class SessionManagementService {
                 .build();
     }
 
+    private long getTimeLeft(SecurityTokenHolder securityToken) {
+        List<SecurityAssertionImpl> values = securityToken.getRealmTokenMap()
+                .values()
+                .stream()
+                .map(SecurityAssertionImpl::new)
+                .collect(Collectors.toList());
+        values.sort((o1, o2) -> {
+            long l = o1.getNotOnOrAfter()
+                    .getTime() - o2.getNotOnOrAfter()
+                    .getTime();
+            if (l > 0) {
+                return 1;
+            } else if (l < 0) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
+        return values.isEmpty() ?
+                0 :
+                values.get(0)
+                        .getNotOnOrAfter()
+                        .getTime();
+    }
+
     @GET
     @Path("/renew")
     public Response getRenewal(@Context HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        final Response[] response = new Response[1];
+        Response[] response = new Response[1];
         if (session != null) {
             Object securityToken = session.getAttribute(SecurityConstants.SAML_ASSERTION);
             if (securityToken instanceof SecurityTokenHolder) {
@@ -111,11 +113,13 @@ public class SessionManagementService {
                                 LOGGER.error("Failed to renew", e);
                             }
                         });
+                if (response[0] == null) {
+                    response[0] = Response.ok(new ByteArrayInputStream(Long.toString(getTimeLeft(
+                            tokenHolder))
+                            .getBytes(StandardCharsets.UTF_8)))
+                            .build();
+                }
             }
-        }
-        if (response[0] == null) {
-            response[0] = Response.ok()
-                    .build();
         }
         return response[0];
     }
@@ -126,7 +130,7 @@ public class SessionManagementService {
         StringBuffer requestURL = request.getRequestURL();
         String requestQueryString = request.getQueryString();
         return Response.temporaryRedirect(URI.create(requestURL.substring(0,
-                requestURL.indexOf("services"))
+                requestURL.indexOf(rootContext))
                 .concat("logout?noPrompt=true")
                 .concat(requestQueryString != null ? "&" + requestQueryString : "")))
                 .build();
@@ -152,5 +156,9 @@ public class SessionManagementService {
 
     public void setClock(Clock clock) {
         this.clock = clock;
+    }
+
+    public void setRootContext(String rootContext) {
+        this.rootContext = rootContext;
     }
 }
