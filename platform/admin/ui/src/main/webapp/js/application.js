@@ -26,10 +26,11 @@ define([
     'text!templates/header.handlebars',
     'text!templates/footer.handlebars',
     'js/controllers/Modal.controller',
+    'js/controllers/SessionTimeout.controller',
     'js/controllers/SystemUsage.controller',
     'text!templates/moduleTab.handlebars',
     'properties'
-    ],function (_, Backbone, Marionette, ich, $, poller, wreqr, Module, tabs, appHeader, header, footer, ModalController, SystemUsageController, moduleTab, Properties) {
+    ],function (_, Backbone, Marionette, ich, $, poller, wreqr, Module, tabs, appHeader, header, footer, ModalController, SessionTimeoutController, SystemUsageController, moduleTab, Properties) {
     'use strict';
 
     var Application = {};
@@ -51,7 +52,8 @@ define([
     Application.App = new Marionette.Application();
 
     Application.Controllers = {
-        modalController: new ModalController({application: Application.App})
+        modalController: new ModalController({application: Application.App}),
+        sessionTimeoutController: new SessionTimeoutController({application: Application.App})
     };
 
     //add regions
@@ -62,6 +64,7 @@ define([
         mainRegion: 'main',
         appHeader: '#appHeader',
         modalRegion: '#modalRegion',
+        sessionTimeoutModalRegion: '#sessionTimeoutModalRegion',
         alertsRegion: '.alerts'
     });
 

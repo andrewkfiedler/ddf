@@ -1,0 +1,17 @@
+@{customElementNamespace}session-timeout-modal {
+    .customElement;
+    overflow: hidden;
+
+    #message {
+        height: ~'calc(100% - @{minimumButtonSize} - 0.5rem)';
+    }
+
+    #message > div {
+        margin: 0.5rem 1rem 2rem 1rem;
+    }
+
+    button {
+        width: 100%;
+        height: @minimumButtonSize
+    }
+}
