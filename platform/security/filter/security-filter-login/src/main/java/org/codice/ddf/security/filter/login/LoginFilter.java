@@ -358,7 +358,7 @@ public class LoginFilter implements SecurityFilter {
                 }
                 if (savedToken != null) {
                     firstLogin = false;
-                    token.replaceReferenece(savedToken);
+                    token.replaceReference(savedToken);
                 }
                 if (token.isReference()) {
                     String msg = "Missing or invalid SAML assertion for provided reference.";
@@ -577,13 +577,18 @@ public class LoginFilter implements SecurityFilter {
 
             long afterMil = savedAssertion.getNotOnOrAfter()
                     .getTime();
+            long beforeMil = savedAssertion.getNotBefore() != null ?
+                    savedAssertion.getNotBefore()
+                            .getTime() :
+                    0;
             long timeoutMillis = (afterMil - System.currentTimeMillis());
 
             if (timeoutMillis <= 0) {
                 throw new InvalidSAMLReceivedException("SAML assertion has expired.");
             }
 
-            if (timeoutMillis <= 60000) { // within 60 seconds
+            if ((beforeMil > 0 && timeoutMillis < 0.3 * (afterMil - beforeMil))
+                    || afterMil - timeoutMillis < 60000) { // within 30% of duration or 60 seconds
                 try {
                     LOGGER.debug("Attempting to refresh user's SAML assertion.");
 

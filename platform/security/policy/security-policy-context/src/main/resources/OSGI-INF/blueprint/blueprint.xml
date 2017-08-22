@@ -51,6 +51,7 @@
                 <value>/idp</value>
                 <value>${org.codice.ddf.system.rootContext}/platform/config/ui</value>
                 <value>${org.codice.ddf.system.rootContext}/login</value>
+                <value>${org.codice.ddf.system.rootContext}/session</value>
                 <value>/logout</value>
             </array>
         </property>

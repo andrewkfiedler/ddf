@@ -48,7 +48,7 @@ public class SAMLAuthenticationToken extends BaseAuthenticationToken {
         return reference;
     }
 
-    public void replaceReferenece(SecurityToken token) {
+    public void replaceReference(SecurityToken token) {
         if (reference) {
             credentials = token;
             reference = false;
