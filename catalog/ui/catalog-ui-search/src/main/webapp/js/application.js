@@ -18,7 +18,6 @@ define([
     'backbone',
     'properties',
     'maptype',
-    'component/session-timeout-modal/session-timeout.controller',
     // Templates
     'templates/header.layout.handlebars',
     'templates/footer.layout.handlebars',
@@ -28,13 +27,10 @@ define([
     'modelbinder',
     'collectionbinder',
     'multiselect',
-], function ($, _, Marionette, Backbone, properties, maptype, SessionTimeoutController, header, footer) {
+], function ($, _, Marionette, Backbone, properties, maptype, header, footer) {
     var Application = {};
     Application.App = new Marionette.Application();
     Application.AppModel = new Backbone.Model(properties);
-    Application.Controllers = {
-        sessionTimeoutController: new SessionTimeoutController()
-    };
     // Set up the main regions that will be available at the Application level.
     Application.App.addRegions({
         loadingRegion: '#loading',
