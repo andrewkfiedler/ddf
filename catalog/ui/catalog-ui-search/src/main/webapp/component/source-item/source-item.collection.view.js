@@ -15,7 +15,7 @@
 /*global require*/
 var Marionette = require('marionette');
 var CustomElements = require('js/CustomElements');
-var SourceItemView = require('./source-item.view');
+var SourceItemView = require('./source-item.jsx');
 
 module.exports = Marionette.CollectionView.extend({
     tagName: CustomElements.register('source-item-collection'),
