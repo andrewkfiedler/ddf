@@ -20,7 +20,7 @@ define([
     'js/wreqr',
     'jquery',
     'underscore',
-    './AppCardItem.view',
+    'component/application-item/application-item.view',
     'text!applicationGrid',
     'text!addApplicationCard'
     ],function (Backbone, Marionette, ich, wreqr, $, _, AppCardItemView, applicationGrid, addApplicationCard) {

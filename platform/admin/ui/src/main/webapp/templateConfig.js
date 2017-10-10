@@ -27,7 +27,6 @@
             applicationOutline: 'templates/application/applicationOutline.handlebars',
             applicationOutlineButtons: 'templates/application/applicationOutlineButtons.handlebars',
             applicationGrid: 'templates/application/applicationGrid.handlebars',
-            applicationInfo: 'templates/application/applicationInfo.handlebars',
             featureTemplate: 'templates/application/features/features.handlebars',
             featureRowTemplate: 'templates/application/features/featureRow.handlebars',
             addApplicationCard: 'templates/application/addAppCard.handlebars',
