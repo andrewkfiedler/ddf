@@ -42,7 +42,8 @@ define([
         alertRegion: '#alert',
         ingestRegion: '#ingest',
         uploadRegion: '#upload',
-        controlPanelRegion: '#controlPanel'
+        controlPanelRegion: '#controlPanel',
+        aboutRegion: '#about'
     });
 
     const BannerView = Marionette.ItemView.extend({

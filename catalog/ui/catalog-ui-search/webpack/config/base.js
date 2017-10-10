@@ -16,6 +16,10 @@ let isDirty = require('child_process')
     .execSync('git st')
     .toString().indexOf('working directory clean') === -1;
 
+let commitDate = require('child_process')
+    .execSync('git log -1 --pretty=format:%cI')
+    .toString();
+
 module.exports = {
     devtool: 'source-map',
     context: resolve('./src/main/webapp/'),
@@ -62,7 +66,8 @@ module.exports = {
     plugins: [
         new webpack.DefinePlugin({
             __COMMIT_HASH__: JSON.stringify(commitHash),
-            __IS_DIRTY__: JSON.stringify(isDirty)
+            __IS_DIRTY__: JSON.stringify(isDirty),
+            __COMMIT_DATE__: JSON.stringify(commitDate)
         }),
         new CopyWebpackPlugin([
             {
