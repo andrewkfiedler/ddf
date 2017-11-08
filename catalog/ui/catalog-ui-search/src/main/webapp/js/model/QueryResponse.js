@@ -20,6 +20,11 @@ var Common = require('js/Common');
 require('backboneassociations');
 var QueryResponseSourceStatus = require('js/model/QueryResponseSourceStatus');
 var QueryResultCollection = require('js/model/QueryResult.collection');
+var QueryResponseWorker = require('component/singletons/workers/query-response-worker');
+let onMessageCallbacks = {};
+QueryResponseWorker.onmessage = function(e) {
+    console.log('Message received from worker: '+e.data.id);
+}
 
 function generateThumbnailUrl(url) {
     var newUrl = url;
@@ -39,12 +44,15 @@ function humanizeResourceSize(result) {
 }
 
 module.exports = Backbone.AssociatedModel.extend({
-    defaults: {
-        'queryId': undefined,
-        'results': [],
-        'queuedResults': [],
-        'merged': true,
-        'currentlyViewed': false
+    defaults: function() {
+        return {
+            id: Common.generateUUID(),
+            'queryId': undefined,
+            'results': [],
+            'queuedResults': [],
+            'merged': true,
+            'currentlyViewed': false
+        };   
     },
     relations: [{
             type: Backbone.Many,
@@ -64,6 +72,9 @@ module.exports = Backbone.AssociatedModel.extend({
     ],
     url: "/search/catalog/internal/cql",
     useAjaxSync: true,
+    onMessage: function(method) {
+        console.log(method);
+    },
     initialize: function () {
         this.listenTo(this.get('queuedResults'), 'add change remove reset', _.throttle(this.updateMerged, 2500, {
             leading: false
@@ -89,6 +100,7 @@ module.exports = Backbone.AssociatedModel.extend({
     },
     parse: function (resp, options) {
         metacardDefinitions.addMetacardDefinitions(resp.types);
+        QueryResponseWorker.postMessage({id: this.id, method: 'parse', arguments: resp});
         if (resp.results) {
             var queryId = this.getQueryId();
             var color = this.getColor();
