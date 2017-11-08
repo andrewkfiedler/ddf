@@ -55,8 +55,17 @@ define([
             this.listenTo(metacardInstance, 'change:currentMetacard', this.handleStatus); 
         },
         handleStatus: function(){
+            const isSearching = metacardInstance.get('currentResult').isSearching();
+            clearTimeout(this.searchingTimeoutId);
+            if (isSearching === true) {
+                this.$el.find('> .metacard-details > .details-searching').removeClass('is-hidden');
+            } else {
+                this.searchingTimeoutId = setTimeout(() => {
+                    this.$el.find('> .metacard-details > .details-searching').addClass('is-hidden');
+                }, 5000);
+            }
             this.$el.toggleClass('not-found', metacardInstance.get('currentMetacard') === undefined);
-            this.$el.toggleClass('is-searching', metacardInstance.get('currentResult').isSearching());
+            this.$el.toggleClass('is-searching', isSearching);
         },
         handleResultChange: function(){
             this.handleStatus();

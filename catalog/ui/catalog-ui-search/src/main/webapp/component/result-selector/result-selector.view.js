@@ -85,6 +85,7 @@ define([
             resultFilter: '.menu-resultFilter',
             resultSort: '.menu-resultSort'
         },
+        searchingTimeoutId: undefined,
         selectionInterface: store,
         initialize: function(options){
             this.selectionInterface = options.selectionInterface || store;
@@ -113,7 +114,16 @@ define([
             this.listenTo(this.model.get('result'), 'change:merged', this.handleMerged);
         },
         handleStatus: function(){
-            this.$el.toggleClass('is-searching', this.model.get('result').isSearching());
+            const isSearching = this.model.get('result').isSearching();
+            clearTimeout(this.searchingTimeoutId);
+            if (isSearching === true) {
+                this.$el.find('> .resultSelector-searching').removeClass('is-hidden');
+            } else {
+                this.searchingTimeoutId = setTimeout(() => {
+                    this.$el.find('> .resultSelector-searching').addClass('is-hidden');
+                }, 5000);
+            }
+            this.$el.toggleClass('is-searching', isSearching);
         },
         startListeningToStatus: function(){
             this.listenTo(this.model.get('result'), 'sync request error', this.handleStatus);

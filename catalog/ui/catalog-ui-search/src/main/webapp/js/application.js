@@ -104,6 +104,9 @@ define([
         ], function(){
             setTimeout(function(){
                 Application.App.loadingRegion.$el.removeClass('is-open');
+                setTimeout(function() {
+                    Application.App.loadingRegion.$el.addClass('is-hidden');
+                }, 1000);
             }, 0);
         });
     });
