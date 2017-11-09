@@ -18,7 +18,7 @@ var _get = require('lodash.get');
 var properties = require('properties');
 
 var spacingVariables = ['minimumButtonSize', 'minimumLineSize', 'minimumSpacing'];
-var colorVariables = ['baseColor', 'primary-color', 'positive-color', 'negative-color', 'warning-color', 'favorite-color', 'baseGrey', 'text-color', 'button-text-color', 'links-visited-color', 'links-color'];
+var colorVariables = [];
 var themeableVariables = spacingVariables.concat(colorVariables);
 
 function trimVariables(variables){

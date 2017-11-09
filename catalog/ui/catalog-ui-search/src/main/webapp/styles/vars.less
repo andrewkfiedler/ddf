@@ -11,19 +11,14 @@
 @links-color: @primary-color;
 
 //grey range
-@baseGrey: #424249;
-@tenGrey: shade(@baseGrey, 10%);
-@twentyGrey: shade(@baseGrey, 20%);
-@thirtyGrey: shade(@baseGrey, 30%);
-@fortyGrey: shade(@baseGrey, 40%);
-@fiftyGrey: shade(@baseGrey, 50%);
+@baseGrey: #35353a;
 
 //color usage
-@navigation-background-color: @fiftyGrey;
-@background-color: @fortyGrey;
-@dropdown-background-color: @thirtyGrey;
-@card-background-color: @twentyGrey;
-@text-color: contrast(@fortyGrey);
+@navigation-background-color: shade(@baseGrey, 30%);
+@background-color: shade(@baseGrey, 20%);
+@dropdown-background-color: @baseGrey;
+@card-background-color: shade(@baseGrey, 0%);
+@text-color: contrast(@baseGrey);
 @button-text-color: white;
 
 //relative coloring
@@ -31,10 +26,10 @@
 @medium-lighten-inherited-background-color: fade(@text-color, 20%);
 @heavily-lighten-inherited-background-color: fade(@text-color, 40%);
 @completely-lighten-inherited-background-color: fade(@text-color, 90%);
-@darken-inherited-background-color: rgba(0,0,0,.05);
-@medium-darken-inherited-background-color: rgba(0, 0, 0, .20);
-@heavily-darken-inherited-background-color: rgba(0,0,0,.4);
-@completely-darken-inherited-background-color: rgba(0, 0, 0, .9);
+@darken-inherited-background-color: fade(@baseGrey, 5%);
+@medium-darken-inherited-background-color: fade(@baseGrey, 20%);
+@heavily-darken-inherited-background-color: fade(@baseGrey, 40%);
+@completely-darken-inherited-background-color: fade(@baseGrey, 90%);
 
 //sizing
 @minimumButtonSize: 2.75rem;  //44px
