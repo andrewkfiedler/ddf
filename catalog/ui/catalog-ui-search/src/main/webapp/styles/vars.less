@@ -1,35 +1,8 @@
 //namespace
 @customElementNamespace: intrigue-;
 
-//color palette
-@primary-color: #3c6dd5;
-@positive-color: #428442;
-@negative-color: #8a423c;
-@warning-color: #c89600;
-@favorite-color: #d1d179;
-@links-visited-color: #9874e4;
-@links-color: @primary-color;
-
-//grey range
-@baseGrey: #35353a;
-
-//color usage
-@navigation-background-color: shade(@baseGrey, 30%);
-@background-color: shade(@baseGrey, 20%);
-@dropdown-background-color: @baseGrey;
-@card-background-color: shade(@baseGrey, 0%);
-@text-color: contrast(@baseGrey);
-@button-text-color: white;
-
-//relative coloring
-@lighten-inherited-background-color: fade(@text-color, 5%);
-@medium-lighten-inherited-background-color: fade(@text-color, 20%);
-@heavily-lighten-inherited-background-color: fade(@text-color, 40%);
-@completely-lighten-inherited-background-color: fade(@text-color, 90%);
-@darken-inherited-background-color: fade(@baseGrey, 5%);
-@medium-darken-inherited-background-color: fade(@baseGrey, 20%);
-@heavily-darken-inherited-background-color: fade(@baseGrey, 40%);
-@completely-darken-inherited-background-color: fade(@baseGrey, 90%);
+//fonts
+@import "fonts.less";
 
 //sizing
 @minimumButtonSize: 2.75rem;  //44px
@@ -75,3 +48,121 @@
 
 //opacity
 @minimumOpacity: 0.6;
+
+@theme: special;
+
+.theme() when (@theme = light) {
+
+    //grey range
+    @baseGrey: white;
+    @shadeAmt: 3;
+
+    //color palette
+    @primary-color: #3c6dd5;
+    @positive-color: #428442;
+    @negative-color: #8a423c;
+    @warning-color: #c89600;
+    @favorite-color: #d1d179;
+    @links-visited-color: #9874e4;
+    @links-color: @primary-color;
+
+    //color usage
+    @navigation-background-color: shade(@baseGrey, @shadeAmt*1.5);
+    @background-color: shade(@baseGrey, @shadeAmt);
+    @dropdown-background-color: @baseGrey;
+    @card-background-color: shade(@baseGrey, 0%);
+    @text-color: contrast(@baseGrey);
+    @button-text-color: white;
+
+    //relative coloring
+    @lighten-inherited-background-color: fade(@text-color, 5%);
+    @medium-lighten-inherited-background-color: fade(@text-color, 20%);
+    @heavily-lighten-inherited-background-color: fade(@text-color, 40%);
+    @completely-lighten-inherited-background-color: fade(@text-color, 90%);
+    @darken-inherited-background-color: fade(@baseGrey, 5%);
+    @medium-darken-inherited-background-color: fade(@baseGrey, 20%);
+    @heavily-darken-inherited-background-color: fade(@baseGrey, 40%);
+    @completely-darken-inherited-background-color: fade(@baseGrey, 90%);
+
+    @import "mixins.less";
+    @import "util.less";
+    @import "components/init.less";
+}
+
+.theme() when (@theme = dark) {
+    
+    //grey range
+    @baseGrey: #35353a;
+    @shadeAmt: 20;
+
+    //color palette
+    @primary-color: #3c6dd5;
+    @positive-color: #428442;
+    @negative-color: #8a423c;
+    @warning-color: #c89600;
+    @favorite-color: #d1d179;
+    @links-visited-color: #9874e4;
+    @links-color: @primary-color;
+
+    //color usage
+    @navigation-background-color: shade(@baseGrey, @shadeAmt*1.5);
+    @background-color: shade(@baseGrey, @shadeAmt);
+    @dropdown-background-color: @baseGrey;
+    @card-background-color: shade(@baseGrey, 0%);
+    @text-color: contrast(@baseGrey);
+    @button-text-color: white;
+
+    //relative coloring
+    @lighten-inherited-background-color: fade(@text-color, 5%);
+    @medium-lighten-inherited-background-color: fade(@text-color, 20%);
+    @heavily-lighten-inherited-background-color: fade(@text-color, 40%);
+    @completely-lighten-inherited-background-color: fade(@text-color, 90%);
+    @darken-inherited-background-color: fade(@baseGrey, 5%);
+    @medium-darken-inherited-background-color: fade(@baseGrey, 20%);
+    @heavily-darken-inherited-background-color: fade(@baseGrey, 40%);
+    @completely-darken-inherited-background-color: fade(@baseGrey, 90%);
+
+    @import "mixins.less";
+    @import "util.less";
+    @import "components/init.less";
+}
+
+.theme() when (@theme = special) {
+    
+    //grey range
+    @baseGrey: #e5e6e6;
+    @shadeAmt: 20;
+
+    //color palette
+    @primary-color: #507d88;
+    @positive-color: #719c3b;
+    @negative-color: #a12d0f;
+    @warning-color: #b45e29;
+    @favorite-color: #d1d179;
+    @links-visited-color: #9874e4;
+    @links-color: @primary-color;
+
+    //color usage
+    @navigation-background-color: #444444;
+    @background-color: #E5E6E6;
+    @dropdown-background-color: tint(@baseGrey, 100%);
+    @card-background-color: tint(@baseGrey, 100%);
+    @text-color: contrast(@baseGrey);
+    @button-text-color: white;
+
+    //relative coloring
+    @lighten-inherited-background-color: fade(@text-color, 5%);
+    @medium-lighten-inherited-background-color: fade(@text-color, 20%);
+    @heavily-lighten-inherited-background-color: fade(@text-color, 40%);
+    @completely-lighten-inherited-background-color: fade(@text-color, 90%);
+    @darken-inherited-background-color: fade(@baseGrey, 5%);
+    @medium-darken-inherited-background-color: fade(@baseGrey, 20%);
+    @heavily-darken-inherited-background-color: fade(@baseGrey, 40%);
+    @completely-darken-inherited-background-color: fade(@baseGrey, 90%);
+
+    @import "mixins.less";
+    @import "util.less";
+    @import "components/init.less";
+}
+
+.theme();

@@ -1,12 +1,12 @@
 @{customElementNamespace}workspaces-templates {
   .customElement;
 
-  color: @text-color;
+  color: contrast(@background-color);
   background: @background-color;
   height: @minimumLineSize + 2*@minimumButtonSize + 2*@minimumSpacing + 2*@minimumSpacing + 3*@minimumButtonSize;
   overflow: hidden;
   transition: height @coreTransitionTime ease-in-out;
-  border-bottom: 1px solid rgba(255, 255, 255, .10);
+  border-bottom: 1px solid @lighten-inherited-background-color;
 
   .home-templates-adhoc {
     text-align: center;
