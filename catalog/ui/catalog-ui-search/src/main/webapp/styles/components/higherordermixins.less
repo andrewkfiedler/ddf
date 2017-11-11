@@ -1,0 +1,7 @@
+.changeBackground(@newbackground: @background-color) {
+    background: @newbackground;
+    color: contrast(@newbackground);
+    .is-input(contrast(@newbackground));
+    .is-list(contrast(@newbackground));
+    .is-selected(contrast(@newbackground));
+}

@@ -19,8 +19,7 @@
     }
 
     > .slideout-content {
-        background: @navigation-background-color;
-        color: contrast(@navigation-background-color);
+        .changeBackground(@navigation-background-color);
         position: fixed;
         z-index: @zIndexSlideout;
         left: 100%;

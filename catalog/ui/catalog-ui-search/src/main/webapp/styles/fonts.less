@@ -1,12 +1,9 @@
-/* Moved @font-face declartions into a seperate file to keep source maps working in webpack dev server */
-@import "fonts.css";
-
 .is-bold {
-  font-family: 'Open Sans';
+  font-family: @boldFont;
 }
 
 .is-not-bold {
-  font-family: 'Open Sans Light';
+  font-family: @normalFont;
 }
 
 .is-small-font {

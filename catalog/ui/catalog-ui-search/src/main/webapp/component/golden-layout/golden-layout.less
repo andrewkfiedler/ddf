@@ -265,7 +265,7 @@
 @{customElementNamespace}golden-layout.is-minimised {
     > .golden-layout-toolbar {
         z-index: @zIndexContent;
-        background: @dropdown-background-color;
+        .changeBackground(@dropdown-background-color);
         transform: translateY(100%);
 
         > span {

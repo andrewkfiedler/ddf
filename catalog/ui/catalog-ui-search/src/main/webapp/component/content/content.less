@@ -22,7 +22,7 @@
   }
 
   .content-panelOne {
-    background: @background-color;
+    .changeBackground(@background-color);
     width: @panelOneWidth;
     position: relative;
     transition: width @coreTransitionTime ease-in-out;
@@ -39,7 +39,7 @@
   .content-panelThree {
     width: ~'calc(100% - @{panelOneWidth} - @{panelTwoWidth})';
     transition: width @coreTransitionTime ease-in-out;
-    background: @card-background-color;
+    .changeBackground(@card-background-color);
   }
 
   .content-panel {

@@ -153,15 +153,16 @@
   }
 }
 
-
-.is-input {
-  background: @lighten-inherited-background-color;
-  color: @text-color;
-  outline: none;
-  border: 2px solid @lighten-inherited-background-color;
-  border-radius: @border-radius;
+.is-input(@contrastColor: @text-color) {
+  .is-input,
+  input,
+  input.form-control, {
+    color: @contrastColor;
+    background: fade(@contrastColor, 5%);
+    border: 2px solid fade(@contrastColor, 5%);
+    outline: none;
+    border-radius: @border-radius;
+  }
 }
 
-.is-well {
-  border: @minimumSpacing solid @dropdown-background-color;
-}
+.is-input();

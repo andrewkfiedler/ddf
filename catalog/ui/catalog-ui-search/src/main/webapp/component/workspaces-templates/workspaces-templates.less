@@ -1,8 +1,7 @@
 @{customElementNamespace}workspaces-templates {
   .customElement;
 
-  color: contrast(@background-color);
-  background: @background-color;
+  .changeBackground(@background-color);
   height: @minimumLineSize + 2*@minimumButtonSize + 2*@minimumSpacing + 2*@minimumSpacing + 3*@minimumButtonSize;
   overflow: hidden;
   transition: height @coreTransitionTime ease-in-out;

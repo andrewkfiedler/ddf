@@ -87,18 +87,18 @@ module.exports = Backbone.Model.extend({
     getTheme: function(){
         var theme = this.toJSON();
 
-        colorModes.dark['baseGrey'] = theme.backgroundColor;
-        colorModes.dark['text-color'] = theme.textColor;
-        colorModes.dark['button-text-color'] = theme.buttonTextColor;
-        colorModes.dark['primary-color'] = theme.primaryColor;
-        colorModes.dark['positive-color'] = theme.positiveColor;
-        colorModes.dark['negative-color'] = theme.negativeColor;
-        colorModes.dark['warning-color'] = theme.warningColor;
-        colorModes.dark['favorite-color'] = theme.favoriteColor;
-        colorModes.dark['links-visited-color'] = theme.linksVisitedColor;
-        colorModes.dark['links-color'] = theme.linksColor;
+        // colorModes.dark['baseGrey'] = theme.backgroundColor;
+        // colorModes.dark['text-color'] = theme.textColor;
+        // colorModes.dark['button-text-color'] = theme.buttonTextColor;
+        // colorModes.dark['primary-color'] = theme.primaryColor;
+        // colorModes.dark['positive-color'] = theme.positiveColor;
+        // colorModes.dark['negative-color'] = theme.negativeColor;
+        // colorModes.dark['warning-color'] = theme.warningColor;
+        // colorModes.dark['favorite-color'] = theme.favoriteColor;
+        // colorModes.dark['links-visited-color'] = theme.linksVisitedColor;
+        // colorModes.dark['links-color'] = theme.linksColor;
 
-        return _.defaults(theme, spacingModes[theme.spacingMode], colorModes[theme.colorMode]);
+        return _.defaults(theme, spacingModes[theme.spacingMode]/* , colorModes[theme.colorMode] */);
     },
     getColorMode: function(){
         return this.get('colorMode');
