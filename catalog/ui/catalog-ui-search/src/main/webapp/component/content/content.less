@@ -7,7 +7,7 @@
 
   position: relative;
   z-index: @zIndexContent;
-  background: @background-color;
+  background: @backgroundAccentContent;
 
   > .content-menu {
     width: 100%;
@@ -22,7 +22,7 @@
   }
 
   .content-panelOne {
-    .changeBackground(@background-color);
+    .changeBackground(@backgroundAccentContent);
     width: @panelOneWidth;
     position: relative;
     transition: width @coreTransitionTime ease-in-out;
@@ -32,14 +32,14 @@
   .content-panel.content-panelTwo {
     width: @panelTwoWidth;
     position: relative;
-    background: @dropdown-background-color;
+    background: @backgroundDropdown;
     transition: width @coreTransitionTime ease-in-out;
   }
 
   .content-panelThree {
     width: ~'calc(100% - @{panelOneWidth} - @{panelTwoWidth})';
     transition: width @coreTransitionTime ease-in-out;
-    .changeBackground(@card-background-color);
+    .changeBackground(@backgroundContent);
   }
 
   .content-panel {

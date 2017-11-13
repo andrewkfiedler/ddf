@@ -49,7 +49,7 @@
 //opacity
 @minimumOpacity: 0.6;
 
-@theme: dark;
+@theme: special;
 
 .theme() when (@theme = light) {
 
@@ -67,10 +67,12 @@
     @links-color: @primary-color;
 
     //color usage
-    @navigation-background-color: shade(@baseGrey, @shadeAmt*1.5);
-    @background-color: shade(@baseGrey, @shadeAmt);
-    @dropdown-background-color: @baseGrey;
-    @card-background-color: shade(@baseGrey, 0%);
+    @backgroundNavigation: shade(@baseGrey, @shadeAmt*1.5);
+    @backgroundAccentContent: shade(@baseGrey, @shadeAmt);
+    @backgroundDropdown: @baseGrey;
+    @backgroundContent: @baseGrey;
+    @backgroundModal: @baseGrey;
+    @backgroundSlideout: @baseGrey;
     @text-color: contrast(@baseGrey);
     @button-text-color: white;
 
@@ -110,10 +112,12 @@
     @links-color: @primary-color;
 
     //color usage
-    @navigation-background-color: shade(@baseGrey, @shadeAmt*1.5);
-    @background-color: shade(@baseGrey, @shadeAmt);
-    @dropdown-background-color: @baseGrey;
-    @card-background-color: shade(@baseGrey, 0%);
+    @backgroundNavigation: shade(@baseGrey, @shadeAmt*1.5);
+    @backgroundAccentContent: shade(@baseGrey, @shadeAmt);
+    @backgroundDropdown: @baseGrey;
+    @backgroundContent: shade(@baseGrey, 0%);
+    @backgroundModal: shade(@baseGrey, @shadeAmt*1.5);
+    @backgroundSlideout: shade(@baseGrey, @shadeAmt*1.5);
     @text-color: contrast(@baseGrey);
     @button-text-color: white;
 
@@ -153,11 +157,12 @@
     @links-color: @primary-color;
 
     //color usage
-    @navigation-background-color: #194F7B;
-    @accent-color: #E5E6E6;
-    @background-color: #444444;
-    @dropdown-background-color: white;
-    @card-background-color: white;
+    @backgroundNavigation: #194F7B;
+    @backgroundAccentContent: #424349;
+    @backgroundDropdown: white;
+    @backgroundContent: #EEEEEE;
+    @backgroundModal: @backgroundNavigation;
+    @backgroundSlideout: @backgroundNavigation;
     @text-color: contrast(@baseGrey);
     @button-text-color: white;
 

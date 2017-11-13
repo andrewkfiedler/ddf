@@ -24,7 +24,7 @@
     }
 
     .lm_tabdropdown_list {
-        background: @dropdown-background-color !important;
+        background: @backgroundDropdown !important;
     }
 
     .lm_header .lm_tabdropdown_list {
@@ -265,7 +265,7 @@
 @{customElementNamespace}golden-layout.is-minimised {
     > .golden-layout-toolbar {
         z-index: @zIndexContent;
-        .changeBackground(@dropdown-background-color);
+        .changeBackground(@backgroundDropdown);
         transform: translateY(100%);
 
         > span {
@@ -280,7 +280,7 @@
         }
         .to-toggle-size,
         .to-show {
-            background: @dropdown-background-color;
+            background: @backgroundDropdown;
             display: inline-block;
             opacity: 1;
             .dropshadow;
@@ -306,7 +306,7 @@
 
         .to-toggle-size,
         .to-add {
-            background: @dropdown-background-color;
+            background: @backgroundDropdown;
             .dropshadow;
         }
     }

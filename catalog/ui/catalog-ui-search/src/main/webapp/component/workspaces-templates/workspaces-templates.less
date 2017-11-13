@@ -1,7 +1,7 @@
 @{customElementNamespace}workspaces-templates {
   .customElement;
 
-  .changeBackground(@background-color);
+  .changeBackground(@backgroundAccentContent);
   height: @minimumLineSize + 2*@minimumButtonSize + 2*@minimumSpacing + 2*@minimumSpacing + 3*@minimumButtonSize;
   overflow: hidden;
   transition: height @coreTransitionTime ease-in-out;
@@ -92,7 +92,7 @@
   }
 
   .home-templates-expanded {
-    background: @background-color;
+    background: @backgroundAccentContent;
     position: absolute;
     top: 0px;
     left: 0px;

@@ -163,6 +163,27 @@
     outline: none;
     border-radius: @border-radius;
   }
+  input::placeholder,
+  input::-ms-input-placeholder {
+    color: fadeout(@contrastColor, 50%);
+  }
+  .input-group > .input-group-addon,
+  .ui-multiselect.ui-widget {
+    color: @contrastColor;
+    background: fade(@contrastColor, 5%);
+    border-color: fade(@contrastColor, 5%);
+  }
+  label.btn {
+    color: @contrastColor;
+    background: fade(@contrastColor, 15%);
+  }
+  label.btn + label.btn {
+    border-left: 1px solid fade(@contrastColor, 40%);
+  }
+  .btn-group,
+  .input-group {
+    border: 1px solid fade(@contrastColor, 40%);
+  }
 }
 
 .is-input();
