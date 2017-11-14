@@ -2,8 +2,8 @@
   .is-list {
     > *,
     > * > td {
-      border-top: 1px solid fade(@contrastColor, 5%);
-      border-bottom: 1px solid fade(@contrastColor, 5%);
+      border-top: 1px solid fade(@contrastColor, 10%);
+      border-bottom: 1px solid fade(@contrastColor, 10%);
     }
   }
 
@@ -19,8 +19,8 @@
   .is-list.is-inline {
     > *,
     > * > td {
-      border-left: 1px solid fade(@contrastColor, 5%);
-      border-right: 1px solid fade(@contrastColor, 5%);
+      border-left: 1px solid fade(@contrastColor, 10%);
+      border-right: 1px solid fade(@contrastColor, 10%);
     }
   }
   
@@ -29,6 +29,13 @@
     > *:hover > td {
       border-left: 1px solid fade(@contrastColor, 20%);
       border-right: 1px solid fade(@contrastColor, 20%);
+    }
+  }
+
+  .is-action-list {
+    > *:hover,
+    > *.is-active {
+      background: fade(@contrastColor, 10%);
     }
   }
 }

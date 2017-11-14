@@ -49,7 +49,7 @@
 //opacity
 @minimumOpacity: 0.6;
 
-@theme: special;
+@theme: dark;
 
 .theme() when (@theme = light) {
 
@@ -77,14 +77,10 @@
     @button-text-color: white;
 
     //relative coloring
-    @lighten-inherited-background-color: fade(@text-color, 5%);
     @medium-lighten-inherited-background-color: fade(@text-color, 20%);
     @heavily-lighten-inherited-background-color: fade(@text-color, 40%);
-    @completely-lighten-inherited-background-color: fade(@text-color, 90%);
-    @darken-inherited-background-color: fade(@baseGrey, 5%);
     @medium-darken-inherited-background-color: fade(@baseGrey, 20%);
     @heavily-darken-inherited-background-color: fade(@baseGrey, 40%);
-    @completely-darken-inherited-background-color: fade(@baseGrey, 90%);
 
     //fonts
     @normalFont: 'Open Sans Light';
@@ -122,14 +118,10 @@
     @button-text-color: white;
 
     //relative coloring
-    @lighten-inherited-background-color: fade(@text-color, 5%);
     @medium-lighten-inherited-background-color: fade(@text-color, 20%);
     @heavily-lighten-inherited-background-color: fade(@text-color, 40%);
-    @completely-lighten-inherited-background-color: fade(@text-color, 90%);
-    @darken-inherited-background-color: fade(@baseGrey, 5%);
     @medium-darken-inherited-background-color: fade(@baseGrey, 20%);
     @heavily-darken-inherited-background-color: fade(@baseGrey, 40%);
-    @completely-darken-inherited-background-color: fade(@baseGrey, 90%);
 
     //fonts
     @normalFont: 'Open Sans Light';
@@ -158,23 +150,19 @@
 
     //color usage
     @backgroundNavigation: #194F7B;
-    @backgroundAccentContent: #424349;
-    @backgroundDropdown: white;
-    @backgroundContent: #EEEEEE;
+    @backgroundAccentContent: rgb(242, 246, 250);
+    @backgroundDropdown: rgb(58, 42, 42);
+    @backgroundContent: rgb(242, 221, 221);
     @backgroundModal: @backgroundNavigation;
-    @backgroundSlideout: @backgroundNavigation;
+    @backgroundSlideout: black;
     @text-color: contrast(@baseGrey);
     @button-text-color: white;
 
     //relative coloring
-    @lighten-inherited-background-color: fade(@text-color, 5%);
     @medium-lighten-inherited-background-color: fade(@text-color, 20%);
     @heavily-lighten-inherited-background-color: fade(@text-color, 40%);
-    @completely-lighten-inherited-background-color: fade(@text-color, 90%);
-    @darken-inherited-background-color: fade(@baseGrey, 5%);
     @medium-darken-inherited-background-color: fade(@baseGrey, 20%);
     @heavily-darken-inherited-background-color: fade(@baseGrey, 40%);
-    @completely-darken-inherited-background-color: fade(@baseGrey, 90%);
 
     //fonts
     @normalFont: 'Open Sans';

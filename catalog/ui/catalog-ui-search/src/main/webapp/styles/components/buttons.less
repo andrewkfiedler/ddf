@@ -49,7 +49,7 @@ button.is-positive {
 
 button.is-neutral {
   color: inherit;
-  .button-mixin(@lighten-inherited-background-color);
+  .button-mixin(rgba(0,0,0,0));
   background: rgba(0,0,0,0);
 }
 
@@ -62,7 +62,7 @@ button.is-neutral.is-opaque {
 button.is-link,
 .is-button.is-link {
   color: @links-color;
-  .button-mixin(@lighten-inherited-background-color);
+  .button-mixin(rgba(0,0,0,0));
   background: rgba(0,0,0,0);
 }
 

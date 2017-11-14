@@ -5,7 +5,7 @@
   height: @minimumLineSize + 2*@minimumButtonSize + 2*@minimumSpacing + 2*@minimumSpacing + 3*@minimumButtonSize;
   overflow: hidden;
   transition: height @coreTransitionTime ease-in-out;
-  border-bottom: 1px solid @lighten-inherited-background-color;
+  border-bottom: 1px solid fade(contrast(@backgroundAccentContent), 5%);
 
   .home-templates-adhoc {
     text-align: center;
@@ -75,7 +75,7 @@
     height: 2.5 * @minimumButtonSize;
     text-align: center;
     width: 100%;
-    background: @lighten-inherited-background-color;
+    background: fade(contrast(@backgroundAccentContent), 5%);
     color: @primary-color;
     font-size: @largeFontSize*3;
     cursor: pointer;

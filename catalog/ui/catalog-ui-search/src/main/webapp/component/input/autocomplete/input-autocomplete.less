@@ -1,8 +1,5 @@
 @{customElementNamespace}input.is-autocomplete {
     .select2-container--default .select2-selection--single {
-        background: @darken-inherited-background-color;
-        border: 1px solid @heavily-lighten-inherited-background-color;
-        border-radius: @border-radius;
         height: auto;
 
         .select2-selection__rendered {
@@ -25,10 +22,9 @@
 // can't namespace because dropdown gets appended to end of document body
 .select2-dropdown {
     z-index: @zIndexDropdown;
-    background-color: @backgroundDropdown;
+    .changeBackground(@backgroundDropdown);
     border-radius: @border-radius;
-    border-color: @heavily-lighten-inherited-background-color;
-    color: @text-color;
+    border-color: fade(contrast(@backgroundDropdown), 50%);
 }
 
 .select2-results__option {
@@ -41,6 +37,6 @@
 }
 
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
-    background: @lighten-inherited-background-color;
-    color: @text-color;
+    background: fade(contrast(@backgroundDropdown), 5%);
+    color: contrast(@backgroundDropdown);
 }

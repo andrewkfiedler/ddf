@@ -7,8 +7,7 @@
   html, body {
     height: 100%;
     width: 100%;
-    color: @text-color;
-    background: @backgroundAccentContent;
+    .changeBackground(@backgroundAccentContent);
     .is-not-bold();
     font-size: inherit;
     transition: font-size @coreTransitionTime ease-out;

@@ -7,7 +7,6 @@
 
   position: relative;
   z-index: @zIndexContent;
-  background: @backgroundAccentContent;
 
   > .content-menu {
     width: 100%;
@@ -23,10 +22,10 @@
 
   .content-panelOne {
     .changeBackground(@backgroundAccentContent);
+    border-right: 1px solid fade(contrast(@backgroundAccentContent), 5%);
     width: @panelOneWidth;
     position: relative;
     transition: width @coreTransitionTime ease-in-out;
-    border-right: 1px solid @lighten-inherited-background-color;
   }
 
   .content-panel.content-panelTwo {
