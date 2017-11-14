@@ -49,13 +49,12 @@
 //opacity
 @minimumOpacity: 0.6;
 
-@theme: dark;
+@theme: special;
 
 .theme() when (@theme = light) {
 
     //grey range
     @baseGrey: white;
-    @shadeAmt: 3;
 
     //color palette
     @primary-color: #3c6dd5;
@@ -67,20 +66,13 @@
     @links-color: @primary-color;
 
     //color usage
-    @backgroundNavigation: shade(@baseGrey, @shadeAmt*1.5);
-    @backgroundAccentContent: shade(@baseGrey, @shadeAmt);
-    @backgroundDropdown: @baseGrey;
-    @backgroundContent: @baseGrey;
-    @backgroundModal: @baseGrey;
-    @backgroundSlideout: @baseGrey;
-    @text-color: contrast(@baseGrey);
+    @backgroundNavigation: white;
+    @backgroundAccentContent: white;
+    @backgroundDropdown: white;
+    @backgroundContent: white;
+    @backgroundModal: white;
+    @backgroundSlideout: white;
     @button-text-color: white;
-
-    //relative coloring
-    @medium-lighten-inherited-background-color: fade(@text-color, 20%);
-    @heavily-lighten-inherited-background-color: fade(@text-color, 40%);
-    @medium-darken-inherited-background-color: fade(@baseGrey, 20%);
-    @heavily-darken-inherited-background-color: fade(@baseGrey, 40%);
 
     //fonts
     @normalFont: 'Open Sans Light';
@@ -96,7 +88,6 @@
     
     //grey range
     @baseGrey: #35353a;
-    @shadeAmt: 20;
 
     //color palette
     @primary-color: #3c6dd5;
@@ -108,20 +99,13 @@
     @links-color: @primary-color;
 
     //color usage
-    @backgroundNavigation: shade(@baseGrey, @shadeAmt*1.5);
-    @backgroundAccentContent: shade(@baseGrey, @shadeAmt);
-    @backgroundDropdown: @baseGrey;
-    @backgroundContent: shade(@baseGrey, 0%);
-    @backgroundModal: shade(@baseGrey, @shadeAmt*1.5);
-    @backgroundSlideout: shade(@baseGrey, @shadeAmt*1.5);
-    @text-color: contrast(@baseGrey);
+    @backgroundNavigation: #252529;
+    @backgroundAccentContent: #2A2A2E;
+    @backgroundDropdown: #35353a;
+    @backgroundContent: #35353a;
+    @backgroundModal: #252529;
+    @backgroundSlideout: #252529;
     @button-text-color: white;
-
-    //relative coloring
-    @medium-lighten-inherited-background-color: fade(@text-color, 20%);
-    @heavily-lighten-inherited-background-color: fade(@text-color, 40%);
-    @medium-darken-inherited-background-color: fade(@baseGrey, 20%);
-    @heavily-darken-inherited-background-color: fade(@baseGrey, 40%);
 
     //fonts
     @normalFont: 'Open Sans Light';
@@ -137,7 +121,6 @@
     
     //grey range
     @baseGrey: #e5e6e6;
-    @shadeAmt: 20;
 
     //color palette
     @primary-color: #507d88;
@@ -151,18 +134,11 @@
     //color usage
     @backgroundNavigation: #194F7B;
     @backgroundAccentContent: rgb(242, 246, 250);
-    @backgroundDropdown: rgb(58, 42, 42);
+    @backgroundDropdown: rgb(255, 247, 247);
     @backgroundContent: rgb(242, 221, 221);
-    @backgroundModal: @backgroundNavigation;
+    @backgroundModal: white;
     @backgroundSlideout: black;
-    @text-color: contrast(@baseGrey);
     @button-text-color: white;
-
-    //relative coloring
-    @medium-lighten-inherited-background-color: fade(@text-color, 20%);
-    @heavily-lighten-inherited-background-color: fade(@text-color, 40%);
-    @medium-darken-inherited-background-color: fade(@baseGrey, 20%);
-    @heavily-darken-inherited-background-color: fade(@baseGrey, 40%);
 
     //fonts
     @normalFont: 'Open Sans';
