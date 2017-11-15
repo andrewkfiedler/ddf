@@ -49,9 +49,50 @@
 //opacity
 @minimumOpacity: 0.6;
 
-@theme: special;
-
 @import 'fonts.less';
+
+@theme: custom;
+
+@links-visited-color: #9874e4;
+@links-color: @primary-color;
+@button-text-color: white;
+
+//color palette
+@customPrimaryColor: #3c6dd5;
+@customPositiveColor: #428442;
+@customNegativeColor: #8a423c;
+@customWarningColor: #c89600;
+@customFavoriteColor: #d1d179;
+
+//color usage
+@customBackgroundNavigation: #252529;
+@customBackgroundAccentContent: #2A2A2E;
+@customBackgroundDropdown: #35353a;
+@customBackgroundContent: #35353a;
+@customBackgroundModal: #252529;
+@customBackgroundSlideout: #252529;
+
+.theme() when (@theme = dark) {
+    
+    //color palette
+    @primary-color: #3c6dd5;
+    @positive-color: #428442;
+    @negative-color: #8a423c;
+    @warning-color: #c89600;
+    @favorite-color: #d1d179;
+
+    //color usage
+    @backgroundNavigation: #252529;
+    @backgroundAccentContent: #2A2A2E;
+    @backgroundDropdown: #35353a;
+    @backgroundContent: #35353a;
+    @backgroundModal: #252529;
+    @backgroundSlideout: #252529;
+
+    @import "mixins.less";
+    @import "util.less";
+    @import "components/init.less";
+}
 
 .theme() when (@theme = light) {
 
@@ -61,8 +102,6 @@
     @negative-color: #8a423c;
     @warning-color: #c89600;
     @favorite-color: #d1d179;
-    @links-visited-color: #9874e4;
-    @links-color: @primary-color;
 
     //color usage
     @backgroundNavigation: white;
@@ -71,39 +110,13 @@
     @backgroundContent: white;
     @backgroundModal: white;
     @backgroundSlideout: white;
-    @button-text-color: white;
 
     @import "mixins.less";
     @import "util.less";
     @import "components/init.less";
 }
 
-.theme() when (@theme = dark) {
-
-    //color palette
-    @primary-color: #3c6dd5;
-    @positive-color: #428442;
-    @negative-color: #8a423c;
-    @warning-color: #c89600;
-    @favorite-color: #d1d179;
-    @links-visited-color: #9874e4;
-    @links-color: @primary-color;
-
-    //color usage
-    @backgroundNavigation: #252529;
-    @backgroundAccentContent: #2A2A2E;
-    @backgroundDropdown: #35353a;
-    @backgroundContent: #35353a;
-    @backgroundModal: #252529;
-    @backgroundSlideout: #252529;
-    @button-text-color: white;
-
-    @import "mixins.less";
-    @import "util.less";
-    @import "components/init.less";
-}
-
-.theme() when (@theme = special) {
+.theme() when (@theme = sea) {
 
     //color palette
     @primary-color: #507d88;
@@ -111,8 +124,6 @@
     @negative-color: #a12d0f;
     @warning-color: #b45e29;
     @favorite-color: #d1d179;
-    @links-visited-color: #9874e4;
-    @links-color: @primary-color;
 
     //color usage
     @backgroundNavigation: rgb(159, 214, 255);
@@ -121,7 +132,28 @@
     @backgroundContent: rgb(242, 221, 221);
     @backgroundModal: white;
     @backgroundSlideout: rgb(11, 9, 9);
-    @button-text-color: white;
+
+    @import "mixins.less";
+    @import "util.less";
+    @import "components/init.less";
+}
+
+.theme() when (@theme = custom) {
+    
+    //color palette
+    @primary-color: @customPrimaryColor;
+    @positive-color: @customPositiveColor;
+    @negative-color: @customNegativeColor;
+    @warning-color: @customWarningColor;
+    @favorite-color: @customFavoriteColor;
+
+    //color usage
+    @backgroundNavigation: @customBackgroundNavigation;
+    @backgroundAccentContent: @customBackgroundAccentContent;
+    @backgroundDropdown: @customBackgroundDropdown;
+    @backgroundContent: @customBackgroundContent;
+    @backgroundModal: @customBackgroundModal;
+    @backgroundSlideout: @customBackgroundSlideout;
 
     @import "mixins.less";
     @import "util.less";
