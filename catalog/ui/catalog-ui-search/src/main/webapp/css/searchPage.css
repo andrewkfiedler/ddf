@@ -1333,21 +1333,6 @@ div.modal-body div.preferenceTabButtons {
     height: 350px;
 }
 
-/* spectrum color picker style follows */
-div.sp-replacer {
-    width: 100%;
-}
-
-div.sp-dd {
-    float: right;
-}
-
-div.sp-preview {
-    width: 97%;
-}
-
-/* end spectrum color picker style */
-
 /* end style for preference modal map layer */
 
 .cesium-viewer-toolbar {

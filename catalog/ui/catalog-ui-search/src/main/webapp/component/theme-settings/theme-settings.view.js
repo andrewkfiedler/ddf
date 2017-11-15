@@ -81,8 +81,9 @@ module.exports = Marionette.LayoutView.extend({
             this.$el.find('.theme-custom').append('<div class="theme-'+colorVariable+'"></div>');
             this.addRegion(colorVariable, '.theme-'+colorVariable);
             var propertyModel = new Property({
-                label: colorVariable,
-                value: [getPreferences(user).get('theme').get(colorVariable)]
+                label: colorVariable.replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); }).substring(7),
+                value: [getPreferences(user).get('theme').get(colorVariable)],
+                type: 'COLOR'
             });
             this[colorVariable].show(new PropertyView({
                 model: propertyModel
