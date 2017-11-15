@@ -1,9 +1,9 @@
 .is-bold {
-  font-family: @boldFont;
+  font-weight: bolder;
 }
 
 .is-not-bold {
-  font-family: @normalFont;
+  font-weight: lighter;
 }
 
 .is-small-font {
@@ -16,4 +16,12 @@
 
 .is-large-font {
   font-size: @largeFontSize;
+}
+
+.changeFontWeight (@contrastColor) when (@contrastColor = white) {
+  font-weight: 300;
+}
+
+.changeFontWeight (@contrastColor) when (@contrastColor = black) {
+  font-weight: 400;
 }
