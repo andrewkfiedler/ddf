@@ -171,26 +171,30 @@ public class ConfigurationApplication implements SparkApplication {
 
   private Boolean showLogo = false;
 
-  private String backgroundColor;
+  private String theme;
 
-  private String textColor;
+  private String customPrimaryColor;
 
-  private String buttonTextColor;
+  private String customPositiveColor;
 
-  private String primaryColor;
+  private String customNegativeColor;
 
-  private String positiveColor;
+  private String customWarningColor;
 
-  private String negativeColor;
+  private String customFavoriteColor;
 
-  private String warningColor;
+  private String customBackgroundNavigation;
 
-  private String favoriteColor;
+  private String customBackgroundAccentContent;
 
-  private String linksVisitedColor;
+  private String customBackgroundDropdown;
 
-  private String linksColor;
-  
+  private String customBackgroundContent;
+
+  private String customBackgroundModal;
+
+  private String customBackgroundSlideout;
+
   public ConfigurationApplication() {}
 
   public List<Long> getScheduleFrequencyList() {
@@ -374,16 +378,18 @@ public class ConfigurationApplication implements SparkApplication {
     config.put("showRelevanceScores", showRelevanceScores);
     config.put("relevancePrecision", relevancePrecision);
     config.put("showLogo", showLogo);
-    config.put("backgroundColor", backgroundColor);
-    config.put("textColor", textColor);
-    config.put("buttonTextColor", buttonTextColor);
-    config.put("primaryColor", primaryColor);
-    config.put("positiveColor", positiveColor);
-    config.put("negativeColor", negativeColor);
-    config.put("warningColor", warningColor);
-    config.put("favoriteColor", favoriteColor);
-    config.put("linksVisitedColor", linksVisitedColor);
-    config.put("linksColor", linksColor);
+    config.put("theme", theme);
+    config.put("customPrimaryColor", customPrimaryColor);
+    config.put("customPositiveColor", customPositiveColor);
+    config.put("customNegativeColor", customNegativeColor);
+    config.put("customWarningColor", customWarningColor);
+    config.put("customFavoriteColor", customFavoriteColor);
+    config.put("customBackgroundNavigation", customBackgroundNavigation);
+    config.put("customBackgroundAccentContent", customBackgroundAccentContent);
+    config.put("customBackgroundDropdown", customBackgroundDropdown);
+    config.put("customBackgroundContent", customBackgroundContent);
+    config.put("customBackgroundModal", customBackgroundModal);
+    config.put("customBackgroundSlideout", customBackgroundSlideout);
 
     return config;
   }
@@ -891,83 +897,99 @@ public class ConfigurationApplication implements SparkApplication {
     this.mapHome = mapHome;
   }
 
-  public String getBackgroundColor() {
-    return backgroundColor;
+  public String getTheme() {
+    return theme;
   }
 
-  public void setBackgroundColor(String backgroundColor) {
-    this.backgroundColor = backgroundColor;
+  public void setTheme(String theme) {
+    this.theme = theme;
   }
 
-  public String getTextColor() {
-    return textColor;
+  public String getCustomPrimaryColor() {
+    return customPrimaryColor;
   }
 
-  public void setTextColor(String textColor) {
-    this.textColor = textColor;
+  public void setCustomPrimaryColor(String customPrimaryColor) {
+    this.customPrimaryColor = customPrimaryColor;
   }
 
-  public String getButtonTextColor() {
-    return buttonTextColor;
+  public String getCustomPositiveColor() {
+    return customPositiveColor;
   }
 
-  public void setButtonTextColor(String buttonTextColor) {
-    this.buttonTextColor = buttonTextColor;
+  public void setCustomPositiveColor(String customPositiveColor) {
+    this.customPositiveColor = customPositiveColor;
   }
 
-  public String getPrimaryColor() {
-    return primaryColor;
+  public String getCustomNegativeColor() {
+    return customNegativeColor;
   }
 
-  public void setPrimaryColor(String primaryColor) {
-    this.primaryColor = primaryColor;
+  public void setCustomNegativeColor(String customNegativeColor) {
+    this.customNegativeColor = customNegativeColor;
   }
 
-  public String getPositiveColor() {
-    return positiveColor;
+  public String getCustomWarningColor() {
+    return customWarningColor;
   }
 
-  public void setPositiveColor(String positiveColor) {
-    this.positiveColor = positiveColor;
+  public void setCustomWarningColor(String customWarningColor) {
+    this.customWarningColor = customWarningColor;
   }
 
-  public String getNegativeColor() {
-    return negativeColor;
+  public String getCustomFavoriteColor() {
+    return customFavoriteColor;
   }
 
-  public void setNegativeColor(String negativeColor) {
-    this.negativeColor = negativeColor;
+  public void setCustomFavoriteColor(String customFavoriteColor) {
+    this.customFavoriteColor = customFavoriteColor;
   }
 
-  public String getWarningColor() {
-    return warningColor;
+  public String getCustomBackgroundNavigation() {
+    return customBackgroundNavigation;
   }
 
-  public void setWarningColor(String warningColor) {
-    this.warningColor = warningColor;
+  public void setCustomBackgroundNavigation(String customBackgroundNavigation) {
+    this.customBackgroundNavigation = customBackgroundNavigation;
   }
 
-  public String getFavoriteColor() {
-    return favoriteColor;
+  public String getCustomBackgroundAccentContent() {
+    return customBackgroundAccentContent;
   }
 
-  public void setFavoriteColor(String favoriteColor) {
-    this.favoriteColor = favoriteColor;
+  public void setCustomBackgroundAccentContent(String customBackgroundAccentContent) {
+    this.customBackgroundAccentContent = customBackgroundAccentContent;
   }
 
-  public String getLinksVisitedColor() {
-    return linksVisitedColor;
+  public String getCustomBackgroundDropdown() {
+    return customBackgroundDropdown;
   }
 
-  public void setLinksVisitedColor(String linksVisitedColor) {
-    this.linksVisitedColor = linksVisitedColor;
+  public void setCustomBackgroundDropdown(String customBackgroundDropdown) {
+    this.customBackgroundDropdown = customBackgroundDropdown;
   }
 
-  public String getLinksColor() {
-    return linksColor;
+  public String getCustomBackgroundContent() {
+    return customBackgroundContent;
   }
 
-  public void setLinksColor(String linksColor) {
-    this.linksColor = linksColor;
+  public void setCustomBackgroundContent(String customBackgroundContent) {
+    this.customBackgroundContent = customBackgroundContent;
+  }
+
+  public String getCustomBackgroundModal() {
+    return customBackgroundModal;
+  }
+
+  public void setCustomBackgroundModal(String customBackgroundModal) {
+    this.customBackgroundModal = customBackgroundModal;
+  }
+
+  public String getCustomBackgroundSlideout() {
+    return customBackgroundSlideout;
+  }
+
+  public void setCustomBackgroundSlideout(String customBackgroundSlideout) {
+    this.customBackgroundSlideout = customBackgroundSlideout;
   }
 }

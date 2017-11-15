@@ -302,76 +302,94 @@
           default="false"
           required="false"/>
 
-        <AD id="backgroundColor"
-            name="Background Color"
-            description="Root background color used to calculate various shades used by the background."
+        <AD id="theme" 
+            name="Theme" 
+            description="Specifies the default theme.  Custom requires filling out the colors below."
+            required="true" 
             type="String"
-            default="#424249"
-            required="true"/>
+            default="dark">
+              <Option label="Dark" value="dark"/>
+              <Option label="Light" value="light"/>
+              <Option label="Sea" value="sea"/>
+              <Option label="Custom" value="custom"/>
+        </AD>
 
-        <AD id="textColor"
-            name="Text Color"
-            description="Text color."
-            type="String"
-            default="contrast(@fortyGrey)"
-            required="true"/>
-
-        <AD id="buttonTextColor"
-            name="Button Text Color"
-            description="Button text color."
-            type="String"
-            default="white"
-            required="true"/>
-
-        <AD id="primaryColor"
-            name="Primary Foreground Color"
-            description="Primary foreground color."
+        <AD id="customPrimaryColor"
+            name="Primary Color"
+            description="Primary Color"
             type="String"
             default="#3c6dd5"
             required="true"/>
 
-        <AD id="positiveColor"
+        <AD id="customPositiveColor"
             name="Positive Color"
-            description="Positive color used for positive events, such as success-messages, save-buttons and increment-buttons."
+            description="Positive Color"
             type="String"
             default="#428442"
             required="true"/>
 
-        <AD id="negativeColor"
+        <AD id="customNegativeColor"
             name="Negative Color"
-            description="Negative color used for negative events, such as failure-messages, cancel-buttons and decrement-buttons."
+            description="Negative Color"
             type="String"
             default="#8a423c"
             required="true"/>
 
-        <AD id="warningColor"
+        <AD id="customWarningColor"
             name="Warning Color"
-            description="Warning color."
+            description="Warning Color"
             type="String"
             default="#c89600"
             required="true"/>
 
-        <AD id="favoriteColor"
+        <AD id="customFavoriteColor"
             name="Favorite Color"
-            description="Favorite color."
+            description="Favor Color"
             type="String"
             default="#d1d179"
             required="true"/>
 
-        <AD id="linksVisitedColor"
-            name="Links Visited Color"
-            description="Links visited color."
+        <AD id="customBackgroundNavigation"
+            name="Background Navigation"
+            description="Background Navigation"
             type="String"
-            default="#9874e4"
+            default="#252529"
             required="true"/>
 
-        <AD id="linksColor"
-            name="Links Color"
-            description="Links color."
+        <AD id="customBackgroundAccentContent"
+            name="Background Accent Content"
+            description="Background Accent Content"
             type="String"
-            default="@primary-color"
+            default="#2A2A2E"
             required="true"/>
 
+        <AD id="customBackgroundDropdown"
+            name="Background Dropdown"
+            description="Background Dropdown"
+            type="String"
+            default="#35353a"
+            required="true"/>
+
+        <AD id="customBackgroundContent"
+            name="Background Content"
+            description="Background Content"
+            type="String"
+            default="#35353a"
+            required="true"/>
+
+        <AD id="customBackgroundModal"
+            name="Background Modal"
+            description="Background Modal"
+            type="String"
+            default="#252529"
+            required="true"/>
+
+        <AD id="customBackgroundSlideout"
+            name="Background Slideout"
+            description="Background Slideout"
+            type="String"
+            default="#252529"
+            required="true"/>
     </OCD>
 
     <Designate pid="org.codice.ddf.catalog.ui.config">

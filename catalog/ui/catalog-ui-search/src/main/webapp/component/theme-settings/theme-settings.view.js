@@ -38,44 +38,8 @@ function getAnimationMode(user){
     return getPreferences(user).get('animation');
 }
 
-function getBackgroundColor(user){
-    return getPreferences(user).get('theme').getBackgroundColor();
-}
-
-function getTextColor(user){
-    return getPreferences(user).get('theme').getTextColor();
-}
-
-function getButtonTextColor(user){
-    return getPreferences(user).get('theme').getButtonTextColor();
-}
-
-function getPrimaryColor(user){
-    return getPreferences(user).get('theme').getPrimaryColor();
-}
-
-function getPositiveColor(user){
-    return getPreferences(user).get('theme').getPositiveColor();
-}
-
-function getNegativeColor(user){
-    return getPreferences(user).get('theme').getNegativeColor();
-}
-
-function getWarningColor(user){
-    return getPreferences(user).get('theme').getWarningColor();
-}
-
-function getFavoriteColor(user){
-    return getPreferences(user).get('theme').getFavoriteColor();
-}
-
-function getLinksVisitedColor(user){
-    return getPreferences(user).get('theme').getLinksVisitedColor();
-}
-
-function getLinksColor(user){
-    return getPreferences(user).get('theme').getLinksColor();
+function getTheme(user){
+    return getPreferences(user).get('theme').getColorMode();
 }
 
 module.exports = Marionette.LayoutView.extend({
@@ -84,32 +48,55 @@ module.exports = Marionette.LayoutView.extend({
     regions: {
         fontSize: '.theme-font-size',
         spacingMode: '.theme-spacing-mode',
+        theme: '.theme-theme',
         animationMode: '.theme-animation',
-        backgroundColor: '.theme-background-color',
-        textColor: '.theme-text-color',
-        buttonTextColor: '.theme-button-text-color',
-        primaryColor: '.theme-primary-color',
-        positiveColor: '.theme-positive-color',
-        negativeColor: '.theme-negative-color',
-        warningColor: '.theme-warning-color',
-        favoriteColor: '.theme-favorite-color',
-        linksVisitedColor: '.theme-links-visited-color',
-        linksColor: '.theme-links-color'
+        customPrimaryColor: '.theme-customPrimaryColor',
+        customPositiveColor: '.theme-customPositiveColor',
+        customNegativeColor: '.theme-customNegativeColor',
+        customWarningColor: '.theme-customWarningColor',
+        customFavoriteColor: '.theme-customFavoriteColor',
+        customBackgroundNavigation: '.theme-customBackgroundNavigation',
+        customBackgroundAccentContent: '.theme-customBackgroundAccentContent',
+        customBackgroundDropdown: '.theme-customBackgroundDropdown',
+        customBackgroundContent: '.theme-customBackgroundContent',
+        customBackgroundModal: '.theme-customBackgroundModal',
+        customBackgroundSlideout: '.theme-customBackgroundSlideout'
     },
     onBeforeShow: function() {
         this.showFontSize();
         this.showSpacingMode();
         this.showAnimation();
-        this.showBackgroundColor();
-        this.showTextColor();
-        this.showButtonTextColor();
-        this.showPrimaryColor();
-        this.showPositiveColor();
-        this.showNegativeColor();
-        this.showWarningColor();
-        this.showFavoritColor();
-        this.showLinksVisitedColor();
-        this.showLinksColor();
+        this.showTheme();
+        this.showCustomColors();
+        this.handleTheme();
+        this.listenTo(getPreferences(user).get('theme'), 'change:theme', this.handleTheme);
+    },
+    handleTheme: function() {
+        var theme = getTheme(user);
+        this.$el.toggleClass('has-custom-theme', theme === 'custom');
+    },
+    showCustomColors: function() {
+        var customColors = getPreferences(user).get('theme').getCustomColorNames();
+        customColors.forEach((colorVariable) => {
+            this.$el.find('.theme-custom').append('<div class="theme-'+colorVariable+'"></div>');
+            this.addRegion(colorVariable, '.theme-'+colorVariable);
+            var propertyModel = new Property({
+                label: colorVariable.replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); }).substring(7),
+                value: [getPreferences(user).get('theme').get(colorVariable)],
+                type: 'COLOR'
+            });
+            this[colorVariable].show(new PropertyView({
+                model: propertyModel
+            }));
+            this[colorVariable].currentView.turnOnLimitedWidth();
+            this[colorVariable].currentView.turnOnEditing();
+            this.listenTo(propertyModel, 'change:value', () => {
+                var preferences = getPreferences(user);
+                var newValue = propertyModel.getValue()[0];
+                preferences.get('theme').set(colorVariable, newValue);
+                getPreferences(user).savePreferences();
+            });
+        });
     },
     showAnimation: function(){
         var animationModel = new Property({
@@ -176,125 +163,35 @@ module.exports = Marionette.LayoutView.extend({
         this.spacingMode.currentView.turnOnEditing();
         this.listenTo(spacingModeModel, 'change:value', this.saveSpacingChanges);
     },
-    showBackgroundColor: function() {
-        var backgroundColorModel = new Property({
-            label: 'Base Background Color',
-            value: [getBackgroundColor(user)]
+    showTheme: function(){
+        var themeModel = new Property({
+            enum: [
+                {
+                    label: 'Dark',
+                    value: 'dark'
+                },
+                {
+                    label: 'Light',
+                    value: 'light'
+                },
+                {
+                    label: 'Sea',
+                    value: 'sea'
+                },
+                {
+                    label: 'Custom',
+                    value: 'custom'
+                }
+            ],
+            value: [getTheme(user)],
+            id: 'Theme'
         });
-        this.backgroundColor.show(new PropertyView({
-            model: backgroundColorModel
+        this.theme.show(new PropertyView({
+            model: themeModel
         }));
-        this.backgroundColor.currentView.turnOnLimitedWidth();
-        this.backgroundColor.currentView.turnOnEditing();
-        this.listenTo(backgroundColorModel, 'change:value', this.saveBackgroundColorChanges);
-    },
-    showTextColor: function() {
-        var textColorModel = new Property({
-            label: 'Text Color',
-            value: [getTextColor(user)]
-        });
-        this.textColor.show(new PropertyView({
-            model: textColorModel
-        }));
-        this.textColor.currentView.turnOnLimitedWidth();
-        this.textColor.currentView.turnOnEditing();
-        this.listenTo(textColorModel, 'change:value', this.saveTextColorChanges);
-    },
-    showButtonTextColor: function() {
-        var buttonTextColorModel = new Property({
-            label: 'Button Text Color',
-            value: [getButtonTextColor(user)]
-        });
-        this.buttonTextColor.show(new PropertyView({
-            model: buttonTextColorModel
-        }));
-        this.buttonTextColor.currentView.turnOnLimitedWidth();
-        this.buttonTextColor.currentView.turnOnEditing();
-        this.listenTo(buttonTextColorModel, 'change:value', this.saveButtonTextColorChanges);
-    },
-    showPrimaryColor: function() {
-        var primaryColorModel = new Property({
-            label: 'Primary Color',
-            value: [getPrimaryColor(user)]
-        });
-        this.primaryColor.show(new PropertyView({
-            model: primaryColorModel
-        }));
-        this.primaryColor.currentView.turnOnLimitedWidth();
-        this.primaryColor.currentView.turnOnEditing();
-        this.listenTo(primaryColorModel, 'change:value', this.savePrimaryColorChanges);
-    },
-    showPositiveColor: function() {
-        var positiveColorModel = new Property({
-            label: 'Positive Color',
-            value: [getPositiveColor(user)]
-        });
-        this.positiveColor.show(new PropertyView({
-            model: positiveColorModel
-        }));
-        this.positiveColor.currentView.turnOnLimitedWidth();
-        this.positiveColor.currentView.turnOnEditing();
-        this.listenTo(positiveColorModel, 'change:value', this.savePositiveColorChanges);
-    },
-    showNegativeColor: function() {
-        var negativeColorModel = new Property({
-            label: 'Negative Color',
-            value: [getNegativeColor(user)]
-        });
-        this.negativeColor.show(new PropertyView({
-            model: negativeColorModel
-        }));
-        this.negativeColor.currentView.turnOnLimitedWidth();
-        this.negativeColor.currentView.turnOnEditing();
-        this.listenTo(negativeColorModel, 'change:value', this.saveNegativeColorChanges);
-    },
-    showWarningColor: function() {
-        var warningColorModel = new Property({
-            label: 'Warning Color',
-            value: [getWarningColor(user)]
-        });
-        this.warningColor.show(new PropertyView({
-            model: warningColorModel
-        }));
-        this.warningColor.currentView.turnOnLimitedWidth();
-        this.warningColor.currentView.turnOnEditing();
-        this.listenTo(warningColorModel, 'change:value', this.saveWarningColorChanges);
-    },
-    showFavoritColor: function() {
-        var favoriteColorModel = new Property({
-            label: 'Favorite Color',
-            value: [getFavoriteColor(user)]
-        });
-        this.favoriteColor.show(new PropertyView({
-            model: favoriteColorModel
-        }));
-        this.favoriteColor.currentView.turnOnLimitedWidth();
-        this.favoriteColor.currentView.turnOnEditing();
-        this.listenTo(favoriteColorModel, 'change:value', this.saveFavoriteColorChanges);
-    },
-    showLinksVisitedColor: function() {
-        var linksVisitedColorModel = new Property({
-            label: 'Links Visited Color',
-            value: [getLinksVisitedColor(user)]
-        });
-        this.linksVisitedColor.show(new PropertyView({
-            model: linksVisitedColorModel
-        }));
-        this.linksVisitedColor.currentView.turnOnLimitedWidth();
-        this.linksVisitedColor.currentView.turnOnEditing();
-        this.listenTo(linksVisitedColorModel, 'change:value', this.saveLinksVisitedColorChanges);
-    },
-    showLinksColor: function() {
-        var linksColorModel = new Property({
-            label: 'Links Color',
-            value: [getLinksColor(user)]
-        });
-        this.linksColor.show(new PropertyView({
-            model: linksColorModel
-        }));
-        this.linksColor.currentView.turnOnLimitedWidth();
-        this.linksColor.currentView.turnOnEditing();
-        this.listenTo(linksColorModel, 'change:value', this.saveLinksColorChanges);
+        this.theme.currentView.turnOnLimitedWidth();
+        this.theme.currentView.turnOnEditing();
+        this.listenTo(themeModel, 'change:value', this.saveThemeChanges);
     },
     saveFontChanges: function(){
         var preferences = getPreferences(user);
@@ -313,64 +210,10 @@ module.exports = Marionette.LayoutView.extend({
         preferences.get('theme').set('spacingMode', newSpacingMode);
         getPreferences(user).savePreferences();
     },
-    saveBackgroundColorChanges: function(){
+    saveThemeChanges: function() {
         var preferences = getPreferences(user);
-        var newBackgroundColor = this.backgroundColor.currentView.model.getValue()[0];
-        preferences.get('theme').set('backgroundColor', newBackgroundColor);
-        getPreferences(user).savePreferences();
-    },
-    saveTextColorChanges: function(){
-        var preferences = getPreferences(user);
-        var newTextColor = this.textColor.currentView.model.getValue()[0];
-        preferences.get('theme').set('textColor', newTextColor);
-        getPreferences(user).savePreferences();
-    },
-    saveButtonTextColorChanges: function(){
-        var preferences = getPreferences(user);
-        var newButtonTextColor = this.buttonTextColor.currentView.model.getValue()[0];
-        preferences.get('theme').set('buttonTextColor', newButtonTextColor);
-        getPreferences(user).savePreferences();
-    },
-    savePrimaryColorChanges: function(){
-        var preferences = getPreferences(user);
-        var newPrimaryColor = this.primaryColor.currentView.model.getValue()[0];
-        preferences.get('theme').set('primaryColor', newPrimaryColor);
-        getPreferences(user).savePreferences();
-    },
-    savePositiveColorChanges: function(){
-        var preferences = getPreferences(user);
-        var newPositiveColor = this.positiveColor.currentView.model.getValue()[0];
-        preferences.get('theme').set('positiveColor', newPositiveColor);
-        getPreferences(user).savePreferences();
-    },
-    saveNegativeColorChanges: function(){
-        var preferences = getPreferences(user);
-        var newNegativeColor = this.negativeColor.currentView.model.getValue()[0];
-        preferences.get('theme').set('negativeColor', newNegativeColor);
-        getPreferences(user).savePreferences();
-    },
-    saveWarningColorChanges: function(){
-        var preferences = getPreferences(user);
-        var newWarningColor = this.warningColor.currentView.model.getValue()[0];
-        preferences.get('theme').set('warningColor', newWarningColor);
-        getPreferences(user).savePreferences();
-    },
-    saveFavoriteColorChanges: function(){
-        var preferences = getPreferences(user);
-        var newFavoriteColor = this.favoriteColor.currentView.model.getValue()[0];
-        preferences.get('theme').set('favoriteColor', newFavoriteColor);
-        getPreferences(user).savePreferences();
-    },
-    saveLinksVisitedColorChanges: function(){
-        var preferences = getPreferences(user);
-        var newLinksVisitedColor = this.linksVisitedColor.currentView.model.getValue()[0];
-        preferences.get('theme').set('linksVisitedColor', newLinksVisitedColor);
-        getPreferences(user).savePreferences();
-    },
-    saveLinksColorChanges: function(){
-        var preferences = getPreferences(user);
-        var newLinksColor = this.linksColor.currentView.model.getValue()[0];
-        preferences.get('theme').set('linksColor', newLinksColor);
+        var newTheme = this.theme.currentView.model.getValue()[0];
+        preferences.get('theme').set('theme', newTheme);
         getPreferences(user).savePreferences();
     },
     saveChanges: function(){
