@@ -51,10 +51,9 @@
 
 @theme: special;
 
-.theme() when (@theme = light) {
+@import 'fonts.less';
 
-    //grey range
-    @baseGrey: white;
+.theme() when (@theme = light) {
 
     //color palette
     @primary-color: #3c6dd5;
@@ -74,16 +73,12 @@
     @backgroundSlideout: white;
     @button-text-color: white;
 
-    @import "fonts.less";
     @import "mixins.less";
     @import "util.less";
     @import "components/init.less";
 }
 
 .theme() when (@theme = dark) {
-    
-    //grey range
-    @baseGrey: #35353a;
 
     //color palette
     @primary-color: #3c6dd5;
@@ -103,16 +98,12 @@
     @backgroundSlideout: #252529;
     @button-text-color: white;
 
-    @import "fonts.less";
     @import "mixins.less";
     @import "util.less";
     @import "components/init.less";
 }
 
 .theme() when (@theme = special) {
-    
-    //grey range
-    @baseGrey: #e5e6e6;
 
     //color palette
     @primary-color: #507d88;
@@ -132,7 +123,6 @@
     @backgroundSlideout: rgb(11, 9, 9);
     @button-text-color: white;
 
-    @import "fonts.less";
     @import "mixins.less";
     @import "util.less";
     @import "components/init.less";
