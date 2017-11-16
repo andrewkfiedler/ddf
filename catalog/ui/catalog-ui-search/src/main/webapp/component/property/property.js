@@ -195,6 +195,9 @@ define([
                 case 'AUTOCOMPLETE':
                     calculatedType = 'autocomplete';
                     break;
+                case 'COLOR':
+                    calculatedType = 'color';
+                    break;
                 case 'STRING':
                 case 'XML':
                 default:
