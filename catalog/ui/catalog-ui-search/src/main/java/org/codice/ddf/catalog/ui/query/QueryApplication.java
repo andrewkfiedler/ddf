@@ -18,6 +18,7 @@ import static spark.Spark.after;
 import static spark.Spark.before;
 import static spark.Spark.exception;
 import static spark.Spark.get;
+import static spark.Spark.path;
 import static spark.Spark.post;
 
 import com.google.common.base.Stopwatch;
@@ -78,72 +79,79 @@ public class QueryApplication implements SparkApplication {
 
   @Override
   public void init() {
-    before(
-        (req, res) -> {
-          res.type(APPLICATION_JSON);
-        });
+    path(
+        "/internal",
+        () -> {
+          before(
+              "/*",
+              (req, res) -> {
+                res.type(APPLICATION_JSON);
+              });
 
-    post(
-        "/cql",
-        APPLICATION_JSON,
-        (req, res) -> {
-          CqlRequest cqlRequest = mapper.readValue(util.safeGetBody(req), CqlRequest.class);
+          post(
+              "/cql",
+              APPLICATION_JSON,
+              (req, res) -> {
+                CqlRequest cqlRequest = mapper.readValue(util.safeGetBody(req), CqlRequest.class);
 
-          CqlQueryResponse cqlQueryResponse = executeCqlQuery(cqlRequest);
-          String result = mapper.toJson(cqlQueryResponse);
-          return result;
-        });
+                CqlQueryResponse cqlQueryResponse = executeCqlQuery(cqlRequest);
+                String result = mapper.toJson(cqlQueryResponse);
+                return result;
+              });
 
-    after(
-        "/cql",
-        (req, res) -> {
-          res.header("Content-Encoding", "gzip");
-        });
+          after(
+              "/cql",
+              (req, res) -> {
+                res.header("Content-Encoding", "gzip");
+              });
 
-    get(
-        "/geofeature/suggestions",
-        (req, res) -> {
-          String query = req.queryParams("q");
-          List<String> results = this.featureService.getSuggestedFeatureNames(query, 10);
-          return mapper.toJson(results);
-        });
+          get(
+              "/geofeature/suggestions",
+              (req, res) -> {
+                String query = req.queryParams("q");
+                List<String> results = this.featureService.getSuggestedFeatureNames(query, 10);
+                return mapper.toJson(results);
+              });
 
-    get(
-        "/geofeature",
-        (req, res) -> {
-          String name = req.queryParams("name");
-          SimpleFeature feature = this.featureService.getFeatureByName(name);
-          if (feature == null) {
-            res.status(404);
-            return mapper.toJson(ImmutableMap.of("message", "Feature not found"));
-          } else {
-            return new FeatureJSON().toString(feature);
-          }
-        });
+          get(
+              "/geofeature",
+              (req, res) -> {
+                String name = req.queryParams("name");
+                SimpleFeature feature = this.featureService.getFeatureByName(name);
+                if (feature == null) {
+                  res.status(404);
+                  return mapper.toJson(ImmutableMap.of("message", "Feature not found"));
+                } else {
+                  return new FeatureJSON().toString(feature);
+                }
+              });
 
-    exception(
-        UnsupportedQueryException.class,
-        (e, request, response) -> {
-          response.status(400);
-          response.header(CONTENT_TYPE, APPLICATION_JSON);
-          response.body(mapper.toJson(ImmutableMap.of("message", "Unsupported query request.")));
-          LOGGER.error("Query endpoint failed", e);
-        });
+          exception(
+              UnsupportedQueryException.class,
+              (e, request, response) -> {
+                response.status(400);
+                response.header(CONTENT_TYPE, APPLICATION_JSON);
+                response.body(
+                    mapper.toJson(ImmutableMap.of("message", "Unsupported query request.")));
+                LOGGER.error("Query endpoint failed", e);
+              });
 
-    exception(IOException.class, util::handleIOException);
+          exception(IOException.class, util::handleIOException);
 
-    exception(EntityTooLargeException.class, util::handleEntityTooLargeException);
+          exception(EntityTooLargeException.class, util::handleEntityTooLargeException);
 
-    exception(RuntimeException.class, util::handleRuntimeException);
+          exception(RuntimeException.class, util::handleRuntimeException);
 
-    exception(
-        Exception.class,
-        (e, request, response) -> {
-          response.status(500);
-          response.header(CONTENT_TYPE, APPLICATION_JSON);
-          response.body(
-              mapper.toJson(ImmutableMap.of("message", "Error while processing query request.")));
-          LOGGER.error("Query endpoint failed", e);
+          exception(
+              Exception.class,
+              (e, request, response) -> {
+                response.status(500);
+                response.header(CONTENT_TYPE, APPLICATION_JSON);
+                response.body(
+                    mapper.toJson(
+                        ImmutableMap.of("message", "Error while processing query request.")));
+                LOGGER.error("Query endpoint failed", e);
+              });
         });
   }
 

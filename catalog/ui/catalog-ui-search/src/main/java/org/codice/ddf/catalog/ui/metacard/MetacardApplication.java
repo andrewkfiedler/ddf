@@ -18,11 +18,12 @@ import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static org.apache.commons.lang.StringUtils.isEmpty;
-import static spark.Spark.after;
+import static spark.Spark.before;
 import static spark.Spark.delete;
 import static spark.Spark.exception;
 import static spark.Spark.get;
 import static spark.Spark.patch;
+import static spark.Spark.path;
 import static spark.Spark.post;
 import static spark.Spark.put;
 
@@ -210,554 +211,572 @@ public class MetacardApplication implements SparkApplication {
 
   @Override
   public void init() {
-    get(
-        "/metacardtype",
-        (req, res) -> {
-          return util.getJson(util.getMetacardTypeMap());
-        });
+    path(
+        "/internal",
+        () -> {
+          get(
+              "/metacardtype",
+              (req, res) -> {
+                return util.getJson(util.getMetacardTypeMap());
+              });
 
-    get(
-        "/metacard/:id",
-        (req, res) -> {
-          String id = req.params(":id");
-          return util.metacardToJson(id);
-        });
+          get(
+              "/metacard/:id",
+              (req, res) -> {
+                String id = req.params(":id");
+                return util.metacardToJson(id);
+              });
 
-    get(
-        "/metacard/:id/attribute/validation",
-        (req, res) -> {
-          String id = req.params(":id");
-          return util.getJson(validator.getValidation(util.getMetacard(id)));
-        });
+          get(
+              "/metacard/:id/attribute/validation",
+              (req, res) -> {
+                String id = req.params(":id");
+                return util.getJson(validator.getValidation(util.getMetacard(id)));
+              });
 
-    get(
-        "/metacard/:id/validation",
-        (req, res) -> {
-          String id = req.params(":id");
-          return util.getJson(validator.getFullValidation(util.getMetacard(id)));
-        });
+          get(
+              "/metacard/:id/validation",
+              (req, res) -> {
+                String id = req.params(":id");
+                return util.getJson(validator.getFullValidation(util.getMetacard(id)));
+              });
 
-    post(
-        "/metacards",
-        APPLICATION_JSON,
-        (req, res) -> {
-          List<String> ids =
-              JsonFactory.create().parser().parseList(String.class, util.safeGetBody(req));
-          List<Metacard> metacards =
-              util.getMetacards(ids, "*")
-                  .entrySet()
-                  .stream()
-                  .map(Map.Entry::getValue)
-                  .map(Result::getMetacard)
-                  .collect(Collectors.toList());
+          post(
+              "/metacards",
+              APPLICATION_JSON,
+              (req, res) -> {
+                List<String> ids =
+                    JsonFactory.create().parser().parseList(String.class, util.safeGetBody(req));
+                List<Metacard> metacards =
+                    util.getMetacards(ids, "*")
+                        .entrySet()
+                        .stream()
+                        .map(Map.Entry::getValue)
+                        .map(Result::getMetacard)
+                        .collect(Collectors.toList());
 
-          return util.metacardsToJson(metacards);
-        });
+                return util.metacardsToJson(metacards);
+              });
 
-    delete(
-        "/metacards",
-        APPLICATION_JSON,
-        (req, res) -> {
-          List<String> ids =
-              JsonFactory.create().parser().parseList(String.class, util.safeGetBody(req));
-          DeleteResponse deleteResponse =
-              catalogFramework.delete(
-                  new DeleteRequestImpl(new ArrayList<>(ids), Metacard.ID, null));
-          if (deleteResponse.getProcessingErrors() != null
-              && !deleteResponse.getProcessingErrors().isEmpty()) {
-            res.status(500);
-            return ImmutableMap.of("message", "Unable to archive metacards.");
-          }
+          delete(
+              "/metacards",
+              APPLICATION_JSON,
+              (req, res) -> {
+                List<String> ids =
+                    JsonFactory.create().parser().parseList(String.class, util.safeGetBody(req));
+                DeleteResponse deleteResponse =
+                    catalogFramework.delete(
+                        new DeleteRequestImpl(new ArrayList<>(ids), Metacard.ID, null));
+                if (deleteResponse.getProcessingErrors() != null
+                    && !deleteResponse.getProcessingErrors().isEmpty()) {
+                  res.status(500);
+                  return ImmutableMap.of("message", "Unable to archive metacards.");
+                }
 
-          return ImmutableMap.of("message", "Successfully archived metacards.");
-        },
-        util::getJson);
+                return ImmutableMap.of("message", "Successfully archived metacards.");
+              },
+              util::getJson);
 
-    patch(
-        "/metacards",
-        APPLICATION_JSON,
-        (req, res) -> {
-          String body = util.safeGetBody(req);
-          List<MetacardChanges> metacardChanges =
-              JsonFactory.createUseJSONDates().parser().parseList(MetacardChanges.class, body);
+          patch(
+              "/metacards",
+              APPLICATION_JSON,
+              (req, res) -> {
+                String body = util.safeGetBody(req);
+                List<MetacardChanges> metacardChanges =
+                    JsonFactory.createUseJSONDates()
+                        .parser()
+                        .parseList(MetacardChanges.class, body);
 
-          UpdateResponse updateResponse = patchMetacards(metacardChanges);
-          if (updateResponse.getProcessingErrors() != null
-              && !updateResponse.getProcessingErrors().isEmpty()) {
-            res.status(500);
-            return updateResponse.getProcessingErrors();
-          }
+                UpdateResponse updateResponse = patchMetacards(metacardChanges);
+                if (updateResponse.getProcessingErrors() != null
+                    && !updateResponse.getProcessingErrors().isEmpty()) {
+                  res.status(500);
+                  return updateResponse.getProcessingErrors();
+                }
 
-          return body;
-        });
+                return body;
+              });
 
-    put(
-        "/validate/attribute/:attribute",
-        TEXT_PLAIN,
-        (req, res) -> {
-          String attribute = req.params(":attribute");
-          String value = util.safeGetBody(req);
-          return util.getJson(validator.validateAttribute(attribute, value));
-        });
+          put(
+              "/validate/attribute/:attribute",
+              TEXT_PLAIN,
+              (req, res) -> {
+                String attribute = req.params(":attribute");
+                String value = util.safeGetBody(req);
+                return util.getJson(validator.validateAttribute(attribute, value));
+              });
 
-    get(
-        "/history/:id",
-        (req, res) -> {
-          String id = req.params(":id");
-          List<Result> queryResponse = getMetacardHistory(id);
-          if (queryResponse.isEmpty()) {
-            res.status(204);
-            return "[]";
-          }
-          List<HistoryResponse> response =
-              queryResponse
-                  .stream()
-                  .map(Result::getMetacard)
-                  .map(
-                      mc ->
-                          new HistoryResponse(
-                              mc.getId(),
-                              (String) mc.getAttribute(MetacardVersion.EDITED_BY).getValue(),
-                              (Date) mc.getAttribute(MetacardVersion.VERSIONED_ON).getValue()))
-                  .sorted(Comparator.comparing(HistoryResponse::getVersioned))
-                  .collect(Collectors.toList());
-          return util.getJson(response);
-        });
+          get(
+              "/history/:id",
+              (req, res) -> {
+                String id = req.params(":id");
+                List<Result> queryResponse = getMetacardHistory(id);
+                if (queryResponse.isEmpty()) {
+                  res.status(204);
+                  return "[]";
+                }
+                List<HistoryResponse> response =
+                    queryResponse
+                        .stream()
+                        .map(Result::getMetacard)
+                        .map(
+                            mc ->
+                                new HistoryResponse(
+                                    mc.getId(),
+                                    (String) mc.getAttribute(MetacardVersion.EDITED_BY).getValue(),
+                                    (Date)
+                                        mc.getAttribute(MetacardVersion.VERSIONED_ON).getValue()))
+                        .sorted(Comparator.comparing(HistoryResponse::getVersioned))
+                        .collect(Collectors.toList());
+                return util.getJson(response);
+              });
 
-    get(
-        "/history/revert/:id/:revertid",
-        (req, res) -> {
-          String id = req.params(":id");
-          String revertId = req.params(":revertid");
+          get(
+              "/history/revert/:id/:revertid",
+              (req, res) -> {
+                String id = req.params(":id");
+                String revertId = req.params(":revertid");
 
-          Metacard versionMetacard = util.getMetacard(revertId);
+                Metacard versionMetacard = util.getMetacard(revertId);
 
-          List<Result> queryResponse = getMetacardHistory(id);
-          if (queryResponse == null || queryResponse.isEmpty()) {
-            throw new NotFoundException("Could not find metacard with id: " + id);
-          }
+                List<Result> queryResponse = getMetacardHistory(id);
+                if (queryResponse == null || queryResponse.isEmpty()) {
+                  throw new NotFoundException("Could not find metacard with id: " + id);
+                }
 
-          Optional<Metacard> contentVersion =
-              queryResponse
-                  .stream()
-                  .map(Result::getMetacard)
-                  .filter(
-                      mc ->
-                          getVersionedOnDate(mc).isAfter(getVersionedOnDate(versionMetacard))
-                              || getVersionedOnDate(mc).equals(getVersionedOnDate(versionMetacard)))
-                  .filter(mc -> CONTENT_ACTIONS.contains(Action.ofMetacard(mc)))
-                  .filter(mc -> mc.getResourceURI() != null)
-                  .filter(mc -> ContentItem.CONTENT_SCHEME.equals(mc.getResourceURI().getScheme()))
-                  .sorted(
-                      Comparator.comparing(
-                          (Metacard mc) ->
-                              util.parseToDate(
-                                  mc.getAttribute(MetacardVersion.VERSIONED_ON).getValue())))
-                  .findFirst();
+                Optional<Metacard> contentVersion =
+                    queryResponse
+                        .stream()
+                        .map(Result::getMetacard)
+                        .filter(
+                            mc ->
+                                getVersionedOnDate(mc).isAfter(getVersionedOnDate(versionMetacard))
+                                    || getVersionedOnDate(mc)
+                                        .equals(getVersionedOnDate(versionMetacard)))
+                        .filter(mc -> CONTENT_ACTIONS.contains(Action.ofMetacard(mc)))
+                        .filter(mc -> mc.getResourceURI() != null)
+                        .filter(
+                            mc ->
+                                ContentItem.CONTENT_SCHEME.equals(mc.getResourceURI().getScheme()))
+                        .sorted(
+                            Comparator.comparing(
+                                (Metacard mc) ->
+                                    util.parseToDate(
+                                        mc.getAttribute(MetacardVersion.VERSIONED_ON).getValue())))
+                        .findFirst();
 
-          if (!contentVersion.isPresent()) {
-            /* no content versions, just restore metacard */
-            revertMetacard(versionMetacard, id, false);
-          } else {
-            revertContentandMetacard(contentVersion.get(), versionMetacard, id);
-          }
-          return util.metacardToJson(MetacardVersionImpl.toMetacard(versionMetacard, types));
-        });
+                if (!contentVersion.isPresent()) {
+                  /* no content versions, just restore metacard */
+                  revertMetacard(versionMetacard, id, false);
+                } else {
+                  revertContentandMetacard(contentVersion.get(), versionMetacard, id);
+                }
+                return util.metacardToJson(MetacardVersionImpl.toMetacard(versionMetacard, types));
+              });
 
-    get(
-        "/associations/:id",
-        (req, res) -> {
-          String id = req.params(":id");
-          return util.getJson(associated.getAssociations(id));
-        });
+          get(
+              "/associations/:id",
+              (req, res) -> {
+                String id = req.params(":id");
+                return util.getJson(associated.getAssociations(id));
+              });
 
-    put(
-        "/associations/:id",
-        (req, res) -> {
-          String id = req.params(":id");
-          String body = util.safeGetBody(req);
-          List<Associated.Edge> edges =
-              JsonFactory.create().parser().parseList(Associated.Edge.class, body);
-          associated.putAssociations(id, edges);
-          return body;
-        });
+          put(
+              "/associations/:id",
+              (req, res) -> {
+                String id = req.params(":id");
+                String body = util.safeGetBody(req);
+                List<Associated.Edge> edges =
+                    JsonFactory.create().parser().parseList(Associated.Edge.class, body);
+                associated.putAssociations(id, edges);
+                return body;
+              });
 
-    post(
-        "/subscribe/:id",
-        (req, res) -> {
-          String email = getSubjectEmail();
-          if (isEmpty(email)) {
-            throw new NotFoundException("Login to subscribe to workspace.");
-          }
-          String id = req.params(":id");
-          subscriptions.addEmail(id, email);
-          return ImmutableMap.of(
-              "message", String.format("Successfully subscribed to id = %s.", id));
-        },
-        util::getJson);
+          post(
+              "/subscribe/:id",
+              (req, res) -> {
+                String email = getSubjectEmail();
+                if (isEmpty(email)) {
+                  throw new NotFoundException("Login to subscribe to workspace.");
+                }
+                String id = req.params(":id");
+                subscriptions.addEmail(id, email);
+                return ImmutableMap.of(
+                    "message", String.format("Successfully subscribed to id = %s.", id));
+              },
+              util::getJson);
 
-    post(
-        "/unsubscribe/:id",
-        (req, res) -> {
-          String email = getSubjectEmail();
-          if (isEmpty(email)) {
-            throw new NotFoundException("Login to un-subscribe from workspace.");
-          }
-          String id = req.params(":id");
-          subscriptions.removeEmail(id, email);
-          return ImmutableMap.of(
-              "message", String.format("Successfully un-subscribed to id = %s.", id));
-        },
-        util::getJson);
+          post(
+              "/unsubscribe/:id",
+              (req, res) -> {
+                String email = getSubjectEmail();
+                if (isEmpty(email)) {
+                  throw new NotFoundException("Login to un-subscribe from workspace.");
+                }
+                String id = req.params(":id");
+                subscriptions.removeEmail(id, email);
+                return ImmutableMap.of(
+                    "message", String.format("Successfully un-subscribed to id = %s.", id));
+              },
+              util::getJson);
 
-    get(
-        "/workspaces/:id",
-        (req, res) -> {
-          String id = req.params(":id");
-          String email = getSubjectEmail();
-          Metacard metacard = util.getMetacard(id);
+          get(
+              "/workspaces/:id",
+              (req, res) -> {
+                String id = req.params(":id");
+                String email = getSubjectEmail();
+                Metacard metacard = util.getMetacard(id);
 
-          // NOTE: the isEmpty is to guard against users with no email (such as guest).
-          boolean isSubscribed =
-              !isEmpty(email) && subscriptions.getEmails(metacard.getId()).contains(email);
+                // NOTE: the isEmpty is to guard against users with no email (such as guest).
+                boolean isSubscribed =
+                    !isEmpty(email) && subscriptions.getEmails(metacard.getId()).contains(email);
 
-          return ImmutableMap.builder()
-              .putAll(transformer.transform(metacard))
-              .put("subscribed", isSubscribed)
-              .build();
-        },
-        util::getJson);
+                return ImmutableMap.builder()
+                    .putAll(transformer.transform(metacard))
+                    .put("subscribed", isSubscribed)
+                    .build();
+              },
+              util::getJson);
 
-    get(
-        "/workspaces",
-        (req, res) -> {
-          String email = getSubjectEmail();
-          Map<String, Result> workspaceMetacards =
-              util.getMetacardsByFilter(WorkspaceAttributes.WORKSPACE_TAG);
+          get(
+              "/workspaces",
+              (req, res) -> {
+                String email = getSubjectEmail();
+                Map<String, Result> workspaceMetacards =
+                    util.getMetacardsByFilter(WorkspaceAttributes.WORKSPACE_TAG);
 
-          // NOTE: the isEmpty is to guard against users with no email (such as guest).
-          Set<String> ids =
-              isEmpty(email) ? Collections.emptySet() : subscriptions.getSubscriptions(email);
+                // NOTE: the isEmpty is to guard against users with no email (such as guest).
+                Set<String> ids =
+                    isEmpty(email) ? Collections.emptySet() : subscriptions.getSubscriptions(email);
 
-          return workspaceMetacards
-              .entrySet()
-              .stream()
-              .map(Map.Entry::getValue)
-              .map(Result::getMetacard)
-              .map(
-                  metacard -> {
-                    boolean isSubscribed = ids.contains(metacard.getId());
-                    try {
-                      return ImmutableMap.builder()
-                          .putAll(transformer.transform(metacard))
-                          .put("subscribed", isSubscribed)
-                          .build();
-                    } catch (RuntimeException e) {
-                      LOGGER.debug(
-                          "Could not transform metacard. WARNING: This indicates there is invalid data in the system. Metacard title: '{}', id:'{}'",
-                          metacard.getTitle(),
-                          metacard.getId(),
-                          e);
+                return workspaceMetacards
+                    .entrySet()
+                    .stream()
+                    .map(Map.Entry::getValue)
+                    .map(Result::getMetacard)
+                    .map(
+                        metacard -> {
+                          boolean isSubscribed = ids.contains(metacard.getId());
+                          try {
+                            return ImmutableMap.builder()
+                                .putAll(transformer.transform(metacard))
+                                .put("subscribed", isSubscribed)
+                                .build();
+                          } catch (RuntimeException e) {
+                            LOGGER.debug(
+                                "Could not transform metacard. WARNING: This indicates there is invalid data in the system. Metacard title: '{}', id:'{}'",
+                                metacard.getTitle(),
+                                metacard.getId(),
+                                e);
+                          }
+                          return null;
+                        })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+              },
+              util::getJson);
+
+          post(
+              "/workspaces",
+              APPLICATION_JSON,
+              (req, res) -> {
+                Map<String, Object> incoming =
+                    JsonFactory.create().parser().parseMap(util.safeGetBody(req));
+                Metacard saved = saveMetacard(transformer.transform(incoming));
+                Map<String, Object> response = transformer.transform(saved);
+
+                res.status(201);
+                return util.getJson(response);
+              });
+
+          put(
+              "/workspaces/:id",
+              APPLICATION_JSON,
+              (req, res) -> {
+                String id = req.params(":id");
+
+                Map<String, Object> workspace =
+                    JsonFactory.create().parser().parseMap(util.safeGetBody(req));
+
+                Metacard metacard = transformer.transform(workspace);
+                metacard.setAttribute(new AttributeImpl(Metacard.ID, id));
+
+                Metacard updated = updateMetacard(id, metacard);
+                return util.getJson(transformer.transform(updated));
+              });
+
+          delete(
+              "/workspaces/:id",
+              APPLICATION_JSON,
+              (req, res) -> {
+                String id = req.params(":id");
+                catalogFramework.delete(new DeleteRequestImpl(id));
+                return ImmutableMap.of("message", "Successfully deleted.");
+              },
+              util::getJson);
+
+          get(
+              "/enumerations/metacardtype/:type",
+              APPLICATION_JSON,
+              (req, res) -> {
+                return util.getJson(enumExtractor.getEnumerations(req.params(":type")));
+              });
+
+          get(
+              "/enumerations/attribute/:attribute",
+              APPLICATION_JSON,
+              (req, res) -> {
+                return util.getJson(
+                    enumExtractor.getAttributeEnumerations(req.params(":attribute")));
+              });
+
+          get(
+              "/localcatalogid",
+              (req, res) -> {
+                return String.format(
+                    "{\"%s\":\"%s\"}", "local-catalog-id", catalogFramework.getId());
+              });
+
+          post(
+              "/transform/csv",
+              APPLICATION_JSON,
+              (req, res) -> {
+                String body = util.safeGetBody(req);
+                CsvTransform queryTransform = mapper.readValue(body, CsvTransform.class);
+                Map<String, Object> transformMap = mapper.parser().parseMap(body);
+                queryTransform.setMetacards(
+                    (List<Map<String, Object>>) transformMap.get("metacards"));
+
+                List<Result> metacards =
+                    queryTransform
+                        .getTransformedMetacards(types, attributeRegistry)
+                        .stream()
+                        .map(ResultImpl::new)
+                        .collect(Collectors.toList());
+
+                Set<String> matchedHiddenFields = Collections.emptySet();
+                if (queryTransform.isApplyGlobalHidden()) {
+                  matchedHiddenFields = getHiddenFields(metacards);
+                }
+
+                SourceResponseImpl response =
+                    new SourceResponseImpl(null, metacards, Long.valueOf(metacards.size()));
+
+                Map<String, Serializable> arguments =
+                    ImmutableMap.<String, Serializable>builder()
+                        .put(
+                            "hiddenFields",
+                            new HashSet<>(
+                                Sets.union(matchedHiddenFields, queryTransform.getHiddenFields())))
+                        .put("columnOrder", new ArrayList<>(queryTransform.getColumnOrder()))
+                        .put("aliases", new HashMap<>(queryTransform.getColumnAliasMap()))
+                        .build();
+
+                BinaryContent content = csvQueryResponseTransformer.transform(response, arguments);
+
+                String acceptEncoding = req.headers("Accept-Encoding");
+                // Very naive way to handle accept encoding, does not respect full spec
+                boolean shouldGzip =
+                    StringUtils.isNotBlank(acceptEncoding)
+                        && acceptEncoding.toLowerCase().contains("gzip");
+
+                // Respond with content
+                res.type("text/csv");
+                String attachment =
+                    String.format("attachment;filename=export-%s.csv", Instant.now().toString());
+                res.header("Content-Disposition", attachment);
+                if (shouldGzip) {
+                  res.raw().addHeader("Content-Encoding", "gzip");
+                }
+
+                try ( //
+                OutputStream servletOutputStream = res.raw().getOutputStream();
+                    InputStream resultStream = content.getInputStream()) {
+                  if (shouldGzip) {
+                    try (OutputStream gzipServletOutputStream =
+                        new GZIPOutputStream(servletOutputStream)) {
+                      IOUtils.copy(resultStream, gzipServletOutputStream);
                     }
-                    return null;
-                  })
-              .filter(Objects::nonNull)
-              .collect(Collectors.toList());
-        },
-        util::getJson);
+                  } else {
+                    IOUtils.copy(resultStream, servletOutputStream);
+                  }
+                }
+                return "";
+              });
 
-    post(
-        "/workspaces",
-        APPLICATION_JSON,
-        (req, res) -> {
-          Map<String, Object> incoming =
-              JsonFactory.create().parser().parseMap(util.safeGetBody(req));
-          Metacard saved = saveMetacard(transformer.transform(incoming));
-          Map<String, Object> response = transformer.transform(saved);
+          post(
+              "/annotations",
+              (req, res) -> {
+                Map<String, Object> incoming =
+                    JsonFactory.create().parser().parseMap(util.safeGetBody(req));
+                String workspaceId = incoming.get("workspace").toString();
+                String queryId = incoming.get("parent").toString();
+                String annotation = incoming.get("note").toString();
+                String user = getSubjectEmail();
+                if (user == null) {
+                  res.status(401);
+                  return util.getResponseWrapper(
+                      ERROR_RESPONSE_TYPE,
+                      "You are not authorized to create notes! A user email is required. "
+                          + "Please ensure you are logged in and/or have a valid email registered in the system.");
+                }
+                if (StringUtils.isBlank(annotation)) {
+                  res.status(400);
+                  return util.getResponseWrapper(ERROR_RESPONSE_TYPE, "No annotation!");
+                }
+                NoteMetacard noteMetacard = new NoteMetacard(queryId, user, annotation);
 
-          res.status(201);
-          return util.getJson(response);
+                Metacard workspaceMetacard = util.findWorkspace(workspaceId);
+
+                if (workspaceMetacard == null) {
+                  res.status(404);
+                  return util.getResponseWrapper(
+                      ERROR_RESPONSE_TYPE, "Cannot find the workspace metacard!");
+                }
+
+                util.copyAttributes(workspaceMetacard, SECURITY_ATTRIBUTES, noteMetacard);
+
+                Metacard note = saveMetacard(noteMetacard);
+
+                SecurityLogger.auditWarn(
+                    "Attaching an annotation to a resource: resource={} annotation={}",
+                    SecurityUtils.getSubject(),
+                    workspaceId,
+                    noteMetacard.getId());
+
+                Map<String, String> responseNote = noteUtil.getResponseNote(note);
+                if (responseNote == null) {
+                  res.status(500);
+                  return util.getResponseWrapper(
+                      ERROR_RESPONSE_TYPE, "Cannot serialize note metacard to json!");
+                }
+                return util.getResponseWrapper(SUCCESS_RESPONSE_TYPE, util.getJson(responseNote));
+              });
+
+          get(
+              "/annotations/:queryid",
+              (req, res) -> {
+                String queryId = req.params(":queryid");
+
+                List<Metacard> retrievedMetacards =
+                    noteUtil.getAssociatedMetacardsByTwoAttributes(
+                        NoteConstants.PARENT_ID, Core.METACARD_TAGS, queryId, "note");
+                ArrayList<String> getResponse = new ArrayList<>();
+                retrievedMetacards.sort(Comparator.comparing(Metacard::getCreatedDate));
+                for (Metacard metacard : retrievedMetacards) {
+                  Map<String, String> responseNote = noteUtil.getResponseNote(metacard);
+                  if (responseNote != null) {
+                    getResponse.add(util.getJson(responseNote));
+                  }
+                }
+                return util.getResponseWrapper(SUCCESS_RESPONSE_TYPE, getResponse.toString());
+              });
+
+          put(
+              "/annotations/:id",
+              APPLICATION_JSON,
+              (req, res) -> {
+                Map<String, Object> incoming =
+                    JsonFactory.create().parser().parseMap(util.safeGetBody(req));
+                String noteMetacardId = req.params(":id");
+                String note = incoming.get("note").toString();
+                Metacard metacard;
+                try {
+                  metacard = util.getMetacard(noteMetacardId);
+                } catch (NotFoundException e) {
+                  LOGGER.debug("Note metacard was not found for updating. id={}", noteMetacardId);
+                  res.status(404);
+                  return util.getResponseWrapper(
+                      ERROR_RESPONSE_TYPE, "Note metacard was not found!");
+                }
+
+                Attribute attribute = metacard.getAttribute(Core.METACARD_OWNER);
+                if (attribute != null
+                    && attribute.getValue() != null
+                    && !attribute.getValue().equals(getSubjectEmail())) {
+                  res.status(401);
+                  return util.getResponseWrapper(
+                      ERROR_RESPONSE_TYPE, "Owner of note metacard is invalid!");
+                }
+                metacard.setAttribute(new AttributeImpl(NoteConstants.COMMENT, note));
+                metacard = updateMetacard(metacard.getId(), metacard);
+                Map<String, String> responseNote = noteUtil.getResponseNote(metacard);
+                return util.getResponseWrapper(SUCCESS_RESPONSE_TYPE, util.getJson(responseNote));
+              });
+
+          delete(
+              "/annotations/:id",
+              (req, res) -> {
+                String noteToDeleteMetacardId = req.params(":id");
+                Metacard metacard;
+                try {
+                  metacard = util.getMetacard(noteToDeleteMetacardId);
+                } catch (NotFoundException e) {
+                  LOGGER.debug(
+                      "Note metacard was not found for deleting. id={}", noteToDeleteMetacardId);
+                  res.status(404);
+                  return util.getResponseWrapper(
+                      ERROR_RESPONSE_TYPE, "Note metacard was not found!");
+                }
+                Attribute attribute = metacard.getAttribute(Core.METACARD_OWNER);
+                if (attribute != null
+                    && attribute.getValue() != null
+                    && !attribute.getValue().equals(getSubjectEmail())) {
+                  res.status(401);
+                  return util.getResponseWrapper(
+                      ERROR_RESPONSE_TYPE, "Owner of note metacard is invalid!");
+                }
+                DeleteResponse deleteResponse =
+                    catalogFramework.delete(new DeleteRequestImpl(noteToDeleteMetacardId));
+                if (deleteResponse.getDeletedMetacards() != null
+                    && !deleteResponse.getDeletedMetacards().isEmpty()) {
+                  Map<String, String> responseNote =
+                      noteUtil.getResponseNote(deleteResponse.getDeletedMetacards().get(0));
+                  return util.getResponseWrapper(SUCCESS_RESPONSE_TYPE, util.getJson(responseNote));
+                }
+                res.status(500);
+                return util.getResponseWrapper(
+                    ERROR_RESPONSE_TYPE, "Could not delete note metacard!");
+              });
+
+          before(
+              "/*",
+              (req, res) -> {
+                res.type(APPLICATION_JSON);
+              });
+
+          exception(
+              IngestException.class,
+              (ex, req, res) -> {
+                LOGGER.debug("Failed to ingest metacard", ex);
+                res.status(404);
+                res.header(CONTENT_TYPE, APPLICATION_JSON);
+                res.body(util.getJson(ImmutableMap.of("message", UPDATE_ERROR_MESSAGE)));
+              });
+
+          exception(
+              NotFoundException.class,
+              (ex, req, res) -> {
+                LOGGER.debug("Failed to find metacard.", ex);
+                res.status(404);
+                res.header(CONTENT_TYPE, APPLICATION_JSON);
+                res.body(util.getJson(ImmutableMap.of("message", ex.getMessage())));
+              });
+
+          exception(
+              NumberFormatException.class,
+              (ex, req, res) -> {
+                res.status(400);
+                res.header(CONTENT_TYPE, APPLICATION_JSON);
+                res.body(util.getJson(ImmutableMap.of("message", "Invalid values for numbers")));
+              });
+
+          exception(EntityTooLargeException.class, util::handleEntityTooLargeException);
+
+          exception(IOException.class, util::handleIOException);
+
+          exception(RuntimeException.class, util::handleRuntimeException);
         });
-
-    put(
-        "/workspaces/:id",
-        APPLICATION_JSON,
-        (req, res) -> {
-          String id = req.params(":id");
-
-          Map<String, Object> workspace =
-              JsonFactory.create().parser().parseMap(util.safeGetBody(req));
-
-          Metacard metacard = transformer.transform(workspace);
-          metacard.setAttribute(new AttributeImpl(Metacard.ID, id));
-
-          Metacard updated = updateMetacard(id, metacard);
-          return util.getJson(transformer.transform(updated));
-        });
-
-    delete(
-        "/workspaces/:id",
-        APPLICATION_JSON,
-        (req, res) -> {
-          String id = req.params(":id");
-          catalogFramework.delete(new DeleteRequestImpl(id));
-          return ImmutableMap.of("message", "Successfully deleted.");
-        },
-        util::getJson);
-
-    get(
-        "/enumerations/metacardtype/:type",
-        APPLICATION_JSON,
-        (req, res) -> {
-          return util.getJson(enumExtractor.getEnumerations(req.params(":type")));
-        });
-
-    get(
-        "/enumerations/attribute/:attribute",
-        APPLICATION_JSON,
-        (req, res) -> {
-          return util.getJson(enumExtractor.getAttributeEnumerations(req.params(":attribute")));
-        });
-
-    get(
-        "/localcatalogid",
-        (req, res) -> {
-          return String.format("{\"%s\":\"%s\"}", "local-catalog-id", catalogFramework.getId());
-        });
-
-    post(
-        "/transform/csv",
-        APPLICATION_JSON,
-        (req, res) -> {
-          String body = util.safeGetBody(req);
-          CsvTransform queryTransform = mapper.readValue(body, CsvTransform.class);
-          Map<String, Object> transformMap = mapper.parser().parseMap(body);
-          queryTransform.setMetacards((List<Map<String, Object>>) transformMap.get("metacards"));
-
-          List<Result> metacards =
-              queryTransform
-                  .getTransformedMetacards(types, attributeRegistry)
-                  .stream()
-                  .map(ResultImpl::new)
-                  .collect(Collectors.toList());
-
-          Set<String> matchedHiddenFields = Collections.emptySet();
-          if (queryTransform.isApplyGlobalHidden()) {
-            matchedHiddenFields = getHiddenFields(metacards);
-          }
-
-          SourceResponseImpl response =
-              new SourceResponseImpl(null, metacards, Long.valueOf(metacards.size()));
-
-          Map<String, Serializable> arguments =
-              ImmutableMap.<String, Serializable>builder()
-                  .put(
-                      "hiddenFields",
-                      new HashSet<>(
-                          Sets.union(matchedHiddenFields, queryTransform.getHiddenFields())))
-                  .put("columnOrder", new ArrayList<>(queryTransform.getColumnOrder()))
-                  .put("aliases", new HashMap<>(queryTransform.getColumnAliasMap()))
-                  .build();
-
-          BinaryContent content = csvQueryResponseTransformer.transform(response, arguments);
-
-          String acceptEncoding = req.headers("Accept-Encoding");
-          // Very naive way to handle accept encoding, does not respect full spec
-          boolean shouldGzip =
-              StringUtils.isNotBlank(acceptEncoding)
-                  && acceptEncoding.toLowerCase().contains("gzip");
-
-          // Respond with content
-          res.type("text/csv");
-          String attachment =
-              String.format("attachment;filename=export-%s.csv", Instant.now().toString());
-          res.header("Content-Disposition", attachment);
-          if (shouldGzip) {
-            res.raw().addHeader("Content-Encoding", "gzip");
-          }
-
-          try ( //
-          OutputStream servletOutputStream = res.raw().getOutputStream();
-              InputStream resultStream = content.getInputStream()) {
-            if (shouldGzip) {
-              try (OutputStream gzipServletOutputStream =
-                  new GZIPOutputStream(servletOutputStream)) {
-                IOUtils.copy(resultStream, gzipServletOutputStream);
-              }
-            } else {
-              IOUtils.copy(resultStream, servletOutputStream);
-            }
-          }
-          return "";
-        });
-
-    post(
-        "/annotations",
-        (req, res) -> {
-          Map<String, Object> incoming =
-              JsonFactory.create().parser().parseMap(util.safeGetBody(req));
-          String workspaceId = incoming.get("workspace").toString();
-          String queryId = incoming.get("parent").toString();
-          String annotation = incoming.get("note").toString();
-          String user = getSubjectEmail();
-          if (user == null) {
-            res.status(401);
-            return util.getResponseWrapper(
-                ERROR_RESPONSE_TYPE,
-                "You are not authorized to create notes! A user email is required. "
-                    + "Please ensure you are logged in and/or have a valid email registered in the system.");
-          }
-          if (StringUtils.isBlank(annotation)) {
-            res.status(400);
-            return util.getResponseWrapper(ERROR_RESPONSE_TYPE, "No annotation!");
-          }
-          NoteMetacard noteMetacard = new NoteMetacard(queryId, user, annotation);
-
-          Metacard workspaceMetacard = util.findWorkspace(workspaceId);
-
-          if (workspaceMetacard == null) {
-            res.status(404);
-            return util.getResponseWrapper(
-                ERROR_RESPONSE_TYPE, "Cannot find the workspace metacard!");
-          }
-
-          util.copyAttributes(workspaceMetacard, SECURITY_ATTRIBUTES, noteMetacard);
-
-          Metacard note = saveMetacard(noteMetacard);
-
-          SecurityLogger.auditWarn(
-              "Attaching an annotation to a resource: resource={} annotation={}",
-              SecurityUtils.getSubject(),
-              workspaceId,
-              noteMetacard.getId());
-
-          Map<String, String> responseNote = noteUtil.getResponseNote(note);
-          if (responseNote == null) {
-            res.status(500);
-            return util.getResponseWrapper(
-                ERROR_RESPONSE_TYPE, "Cannot serialize note metacard to json!");
-          }
-          return util.getResponseWrapper(SUCCESS_RESPONSE_TYPE, util.getJson(responseNote));
-        });
-
-    get(
-        "/annotations/:queryid",
-        (req, res) -> {
-          String queryId = req.params(":queryid");
-
-          List<Metacard> retrievedMetacards =
-              noteUtil.getAssociatedMetacardsByTwoAttributes(
-                  NoteConstants.PARENT_ID, Core.METACARD_TAGS, queryId, "note");
-          ArrayList<String> getResponse = new ArrayList<>();
-          retrievedMetacards.sort(Comparator.comparing(Metacard::getCreatedDate));
-          for (Metacard metacard : retrievedMetacards) {
-            Map<String, String> responseNote = noteUtil.getResponseNote(metacard);
-            if (responseNote != null) {
-              getResponse.add(util.getJson(responseNote));
-            }
-          }
-          return util.getResponseWrapper(SUCCESS_RESPONSE_TYPE, getResponse.toString());
-        });
-
-    put(
-        "/annotations/:id",
-        APPLICATION_JSON,
-        (req, res) -> {
-          Map<String, Object> incoming =
-              JsonFactory.create().parser().parseMap(util.safeGetBody(req));
-          String noteMetacardId = req.params(":id");
-          String note = incoming.get("note").toString();
-          Metacard metacard;
-          try {
-            metacard = util.getMetacard(noteMetacardId);
-          } catch (NotFoundException e) {
-            LOGGER.debug("Note metacard was not found for updating. id={}", noteMetacardId);
-            res.status(404);
-            return util.getResponseWrapper(ERROR_RESPONSE_TYPE, "Note metacard was not found!");
-          }
-
-          Attribute attribute = metacard.getAttribute(Core.METACARD_OWNER);
-          if (attribute != null
-              && attribute.getValue() != null
-              && !attribute.getValue().equals(getSubjectEmail())) {
-            res.status(401);
-            return util.getResponseWrapper(
-                ERROR_RESPONSE_TYPE, "Owner of note metacard is invalid!");
-          }
-          metacard.setAttribute(new AttributeImpl(NoteConstants.COMMENT, note));
-          metacard = updateMetacard(metacard.getId(), metacard);
-          Map<String, String> responseNote = noteUtil.getResponseNote(metacard);
-          return util.getResponseWrapper(SUCCESS_RESPONSE_TYPE, util.getJson(responseNote));
-        });
-
-    delete(
-        "/annotations/:id",
-        (req, res) -> {
-          String noteToDeleteMetacardId = req.params(":id");
-          Metacard metacard;
-          try {
-            metacard = util.getMetacard(noteToDeleteMetacardId);
-          } catch (NotFoundException e) {
-            LOGGER.debug("Note metacard was not found for deleting. id={}", noteToDeleteMetacardId);
-            res.status(404);
-            return util.getResponseWrapper(ERROR_RESPONSE_TYPE, "Note metacard was not found!");
-          }
-          Attribute attribute = metacard.getAttribute(Core.METACARD_OWNER);
-          if (attribute != null
-              && attribute.getValue() != null
-              && !attribute.getValue().equals(getSubjectEmail())) {
-            res.status(401);
-            return util.getResponseWrapper(
-                ERROR_RESPONSE_TYPE, "Owner of note metacard is invalid!");
-          }
-          DeleteResponse deleteResponse =
-              catalogFramework.delete(new DeleteRequestImpl(noteToDeleteMetacardId));
-          if (deleteResponse.getDeletedMetacards() != null
-              && !deleteResponse.getDeletedMetacards().isEmpty()) {
-            Map<String, String> responseNote =
-                noteUtil.getResponseNote(deleteResponse.getDeletedMetacards().get(0));
-            return util.getResponseWrapper(SUCCESS_RESPONSE_TYPE, util.getJson(responseNote));
-          }
-          res.status(500);
-          return util.getResponseWrapper(ERROR_RESPONSE_TYPE, "Could not delete note metacard!");
-        });
-
-    after(
-        (req, res) -> {
-          res.type(APPLICATION_JSON);
-        });
-
-    exception(
-        IngestException.class,
-        (ex, req, res) -> {
-          LOGGER.debug("Failed to ingest metacard", ex);
-          res.status(404);
-          res.header(CONTENT_TYPE, APPLICATION_JSON);
-          res.body(util.getJson(ImmutableMap.of("message", UPDATE_ERROR_MESSAGE)));
-        });
-
-    exception(
-        NotFoundException.class,
-        (ex, req, res) -> {
-          LOGGER.debug("Failed to find metacard.", ex);
-          res.status(404);
-          res.header(CONTENT_TYPE, APPLICATION_JSON);
-          res.body(util.getJson(ImmutableMap.of("message", ex.getMessage())));
-        });
-
-    exception(
-        NumberFormatException.class,
-        (ex, req, res) -> {
-          res.status(400);
-          res.header(CONTENT_TYPE, APPLICATION_JSON);
-          res.body(util.getJson(ImmutableMap.of("message", "Invalid values for numbers")));
-        });
-
-    exception(EntityTooLargeException.class, util::handleEntityTooLargeException);
-
-    exception(IOException.class, util::handleIOException);
-
-    exception(RuntimeException.class, util::handleRuntimeException);
   }
 
   private Set<String> getHiddenFields(List<Result> metacards) {

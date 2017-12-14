@@ -9,7 +9,7 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-/*global require*/
+/*global require, window*/
 var $ = require('jquery');
 var wreqr = require('wreqr');
 var _ = require('underscore');
@@ -25,10 +25,15 @@ import { lessWorkerModel } from './../component/singletons/less.worker-instance'
 lessWorkerModel.subscribe((data) => {
     if (data.method === 'render') {
         updateTheme(data.css);
+        updateCachedTheme(data.css);
         wreqr.vent.trigger('resize');
         $(window).trigger('resize');
     }
 });
+
+function updateCachedTheme(css) {   
+    window.localStorage.setItem('cachedTheme', css);
+}
 
 function updateTheme(css) {
     var existingUserStyles = $('[data-theme=user]');
