@@ -171,7 +171,7 @@ define([
            return moment(date).fromNow();
         },
         getImageSrc: function(img){
-            if (img === "" || img.substring(0, 4) === 'http') {
+            if (img === undefined || img === "" || img.substring(0, 4) === 'http') {
                 return img;
             } else {
                 return "data:image/png;base64," + img;

@@ -111,7 +111,7 @@ public class SparkServlet extends HttpServlet {
     populateSparkApplications(config);
 
     sparkApplications.stream().sequential().forEach(SparkApplication::init);
-
+    StaticFilesConfiguration.servletInstance.configure("/static");
     filterPath = getConfigPath(filterMappingPattern, config);
     matcherFilter =
         new MatcherFilter(
@@ -126,6 +126,10 @@ public class SparkServlet extends HttpServlet {
   @Override
   protected void service(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
+    if (req.getRequestURI().equals("/search/catalog")) {
+      resp.sendRedirect("/search/catalog/");
+      return;
+    }
     final String relativePath = getRelativePath(req, filterPath);
 
     HttpServletRequestWrapper requestWrapper;
@@ -134,7 +138,7 @@ public class SparkServlet extends HttpServlet {
     }
 
     // handle static resources
-    boolean consumed = StaticFilesConfiguration.servletInstance.consume(req, resp);
+    boolean consumed = StaticFilesConfiguration.servletInstance.consume(requestWrapper, resp);
 
     if (consumed) {
       return;

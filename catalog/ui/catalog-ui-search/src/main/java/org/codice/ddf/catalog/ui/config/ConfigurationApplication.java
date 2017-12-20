@@ -17,6 +17,7 @@ import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 import static org.boon.HTTP.APPLICATION_JSON;
 import static spark.Spark.exception;
 import static spark.Spark.get;
+import static spark.Spark.path;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -182,29 +183,29 @@ public class ConfigurationApplication implements SparkApplication {
   /** The current historian configuration. */
   private HistorianConfiguration historianConfiguration;
 
-  private String theme;
+  private String theme = "dark";
 
-  private String customPrimaryColor;
+  private String customPrimaryColor = "#3c6dd5";
 
-  private String customPositiveColor;
+  private String customPositiveColor = "#428442";
 
-  private String customNegativeColor;
+  private String customNegativeColor = "#8a423c";
 
-  private String customWarningColor;
+  private String customWarningColor = "#c89600";
 
-  private String customFavoriteColor;
+  private String customFavoriteColor = "#d1d179";
 
-  private String customBackgroundNavigation;
+  private String customBackgroundNavigation = "#252529";
 
-  private String customBackgroundAccentContent;
+  private String customBackgroundAccentContent = "#2A2A2E";
 
-  private String customBackgroundDropdown;
+  private String customBackgroundDropdown = "#35353a";
 
-  private String customBackgroundContent;
+  private String customBackgroundContent = "#35353a";
 
-  private String customBackgroundModal;
+  private String customBackgroundModal = "#252529";
 
-  private String customBackgroundSlideout;
+  private String customBackgroundSlideout = "#252529";
 
   public ConfigurationApplication() {}
 
@@ -412,15 +413,19 @@ public class ConfigurationApplication implements SparkApplication {
 
   @Override
   public void init() {
-    get("/config", (req, res) -> this.getConfig(), objectMapper::toJson);
+    path(
+        "/internal",
+        () -> {
+          get("/config", (req, res) -> this.getConfig(), objectMapper::toJson);
 
-    exception(
-        Exception.class,
-        (ex, req, res) -> {
-          res.status(500);
-          res.header(CONTENT_TYPE, APPLICATION_JSON);
-          LOGGER.warn("Failed to serve request.", ex);
-          res.body(objectMapper.toJson(ImmutableMap.of("message", ex.getMessage())));
+          exception(
+              Exception.class,
+              (ex, req, res) -> {
+                res.status(500);
+                res.header(CONTENT_TYPE, APPLICATION_JSON);
+                LOGGER.warn("Failed to serve request.", ex);
+                res.body(objectMapper.toJson(ImmutableMap.of("message", ex.getMessage())));
+              });
         });
   }
 

@@ -105,8 +105,9 @@ module.exports = {
         ]),
         new HtmlWebpackPlugin({
             title: 'My App',
-            filename: 'index.html',
-            template: 'index.html'
+            filename: 'home.html',
+            template: 'index.html',
+            inject: false
         })
     ],
     module: {
@@ -167,11 +168,11 @@ module.exports = {
             }
         ],
         postLoaders: [
-            {
-                test: /\.js$/,
-                exclude: [/node_modules/],
-                loader: 'jshint-loader'
-            }
+            // {
+            //     test: /\.js$/,
+            //     exclude: [/node_modules/],
+            //     loader: 'jshint-loader'
+            // }
         ]
     },
     resolve: {

@@ -263,9 +263,30 @@
             <groupId>com.vividsolutions</groupId>
             <artifactId>jts</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.asual.lesscss</groupId>
+            <artifactId>lesscss-engine</artifactId>
+            <version>1.5.1</version>
+        </dependency>
+        <dependency>
+			<groupId>org.mozilla</groupId>
+			<artifactId>rhino</artifactId>
+			<version>1.7R4</version>
+		</dependency>
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>${basedir}/target/webapp</directory>
+                <filtering>true</filtering>
+                <targetPath>static</targetPath>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>com.github.eirslett</groupId>
@@ -343,7 +364,9 @@
                             spark-core,
                             spatial4j,
                             versioning-common,
-                            alerts
+                            alerts,
+                            lesscss-engine,
+                            rhino
                         </Embed-Dependency>
                         <Web-ContextPath>/search/catalog</Web-ContextPath>
                         <_wab>src/main/webapp,${project.build.directory}/webapp</_wab>

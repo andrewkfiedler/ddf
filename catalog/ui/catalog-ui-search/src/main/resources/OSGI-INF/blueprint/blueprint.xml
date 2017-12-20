@@ -152,6 +152,15 @@
         <argument ref="configurationApplication" />
     </bean>
 
+    <bean id="userUtil" class="org.codice.ddf.catalog.ui.util.UserUtil">
+        <cm:managed-properties
+                persistent-id="org.codice.ddf.catalog.ui.config"
+                update-strategy="component-managed"
+                update-method="updateAdminConfig"/>
+        <argument ref="persistentStore"/>
+        <argument ref="configurationApplication"/>
+    </bean>
+
     <bean id="noteUtil" class="org.codice.ddf.catalog.ui.metacard.notes.NoteUtil">
         <argument ref="filterBuilder"/>
         <argument ref="catalogFramework"/>
@@ -257,8 +266,13 @@
     <reference id="persistentStore" interface="org.codice.ddf.persistence.PersistentStore"/>
 
     <bean id="userApplication" class="org.codice.ddf.catalog.ui.security.UserApplication">
-        <argument ref="persistentStore"/>
         <argument ref="endpointUtil"/>
+        <argument ref="userUtil"/>
+    </bean>
+
+    <bean id="assetsApplication" class="org.codice.ddf.catalog.ui.assets.AssetsApplication">
+        <argument ref="endpointUtil"/>
+        <argument ref="userUtil"/>
     </bean>
 
     <bean id="rootReqSupplier" class="org.codice.ddf.catalog.ui.RootContextRequestSupplier"/>
@@ -270,15 +284,16 @@
                 <ref component-id="userApplication"/>
                 <ref component-id="configurationApplication"/>
                 <ref component-id="feedbackApplication"/>
+                <ref component-id="assetsApplication"/>
             </list>
         </property>
         <property name="requestSupplier" ref="rootReqSupplier"/>
-        <property name="filterMappingPattern" value="/search/catalog/internal/*"/>
+        <property name="filterMappingPattern" value="/search/catalog/*"/>
     </bean>
 
     <service ref="sparkServlet" interface="javax.servlet.Servlet">
         <service-properties>
-            <entry key="urlPatterns" value="/search/catalog/internal/*"/>
+            <entry key="urlPatterns" value="/search/catalog/*"/>
         </service-properties>
     </service>
 

@@ -14,6 +14,7 @@
 package org.codice.ddf.catalog.ui.query;
 
 import static spark.Spark.exception;
+import static spark.Spark.path;
 import static spark.Spark.post;
 import static spark.route.RouteOverview.enableRouteOverview;
 
@@ -69,47 +70,52 @@ public class FeedbackApplication implements SparkApplication {
 
   @Override
   public void init() {
-    post(
-        "/feedback",
-        APPLICATION_JSON,
-        (req, res) -> {
-          if (StringUtils.isNotEmpty(emailDestination)) {
-            FeedbackRequest feedback = parseFeedbackRequest(util.safeGetBody(req));
-            feedback.setAuthUsername(getCurrentUser());
+    path(
+        "/internal",
+        () -> {
+          post(
+              "/feedback",
+              APPLICATION_JSON,
+              (req, res) -> {
+                if (StringUtils.isNotEmpty(emailDestination)) {
+                  FeedbackRequest feedback = parseFeedbackRequest(util.safeGetBody(req));
+                  feedback.setAuthUsername(getCurrentUser());
 
-            String emailSubject = getEmailSubject(feedback);
-            String emailBody = getEmailBody(feedback);
-            if (emailBody != null) {
-              emailBody = emailBody.replaceAll("\\\\n", "\n");
-            }
+                  String emailSubject = getEmailSubject(feedback);
+                  String emailBody = getEmailBody(feedback);
+                  if (emailBody != null) {
+                    emailBody = emailBody.replaceAll("\\\\n", "\n");
+                  }
 
-            Session emailSession = smtpClient.createSession();
-            MimeMessage message = new MimeMessage(emailSession);
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailDestination));
-            message.setSubject(emailSubject);
-            message.setContent(emailBody, "text/html; charset=utf-8");
-            smtpClient.send(message);
+                  Session emailSession = smtpClient.createSession();
+                  MimeMessage message = new MimeMessage(emailSession);
+                  message.addRecipient(
+                      Message.RecipientType.TO, new InternetAddress(emailDestination));
+                  message.setSubject(emailSubject);
+                  message.setContent(emailBody, "text/html; charset=utf-8");
+                  smtpClient.send(message);
 
-            res.body("{}");
-            res.status(200);
-            return res;
-          } else {
-            res.status(500);
-            res.body("No destination email configured, feedback cannot be submitted.");
-            LOGGER.debug("Feedback submission failed, destination email is not configured.");
-            return res;
-          }
+                  res.body("{}");
+                  res.status(200);
+                  return res;
+                } else {
+                  res.status(500);
+                  res.body("No destination email configured, feedback cannot be submitted.");
+                  LOGGER.debug("Feedback submission failed, destination email is not configured.");
+                  return res;
+                }
+              });
+
+          exception(
+              Exception.class,
+              (e, request, response) -> {
+                response.status(500);
+                response.body("Error submitting feedback");
+                LOGGER.debug("Feedback submission failed", e);
+              });
+
+          enableRouteOverview();
         });
-
-    exception(
-        Exception.class,
-        (e, request, response) -> {
-          response.status(500);
-          response.body("Error submitting feedback");
-          LOGGER.debug("Feedback submission failed", e);
-        });
-
-    enableRouteOverview();
   }
 
   public void setConfigurationApplication(ConfigurationApplication configurationApplication) {

@@ -25,7 +25,29 @@
     <meta name="author" content="">
 
     <link id="favicon" rel="icon" type="image/png" href="data:image/png;base64,">
-
+    <% for (key in htmlWebpackPlugin.files.css) { %>
+    <% if (htmlWebpackPlugin.files.cssIntegrity) { %>
+    <link
+        href="<%= htmlWebpackPlugin.files.css[key] %>"
+        rel="stylesheet"
+        integrity="<%= htmlWebpackPlugin.files.cssIntegrity[key] %>"
+        crossorigin="<%= webpackConfig.output.crossOriginLoading %>">
+    <% } else { %>
+    <link href="<%= htmlWebpackPlugin.files.css[key] %>" rel="stylesheet">
+    <% } %>
+    <% } %>
+    <link href="internal/user/css/baseTheme" rel="stylesheet" type="text/css">
+    <script> 
+        (function() {
+            var cachedTheme = window.localStorage.getItem('cachedTheme');
+            if (cachedTheme !== null) {
+                var userStyles = document.createElement('style');
+                userStyles.setAttribute('data-theme', 'user');
+                userStyles.textContent = cachedTheme;
+                document.head.parentNode.insertBefore(userStyles, document.head.nextSibling);
+            }
+        })();
+    </script>
 </head>
 <body>
 <header></header>
@@ -74,6 +96,17 @@
         </div>
     </div>
     <iframe name="autocomplete" style="display:none" src="/search/catalog/blank.html"></iframe>
-<footer></footer>
+    <footer></footer>
+    <% for (key in htmlWebpackPlugin.files.chunks) { %>
+    <% if (htmlWebpackPlugin.files.jsIntegrity) { %>
+    <script
+        src="<%= htmlWebpackPlugin.files.chunks[key].entry %>"
+        type="text/javascript"
+        integrity="<%= htmlWebpackPlugin.files.jsIntegrity[htmlWebpackPlugin.files.js.indexOf(htmlWebpackPlugin.files.chunks[key].entry)] %>"
+        crossorigin="<%= webpackConfig.output.crossOriginLoading %>"></script>
+    <% } else { %>
+    <script src="<%= htmlWebpackPlugin.files.chunks[key].entry %>" type="text/javascript"></script>
+    <% } %>
+    <% } %>
 </body>
 </html>
