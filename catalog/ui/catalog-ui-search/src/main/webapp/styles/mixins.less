@@ -73,11 +73,11 @@
   cursor: pointer;
   opacity: @minimumOpacity;
 
-  &:hover {
+  &:hover:not(.is-disabled) {
     opacity: 1;
   }
 
-  &.is-active {
+  &.is-active:not(.is-disabled) {
     opacity: 1;
   }
 }

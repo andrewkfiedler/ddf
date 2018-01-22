@@ -1,0 +1,42 @@
+{{!--
+/**
+ * Copyright (c) Codice Foundation
+ *
+ * This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 3 of the License, or any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details. A copy of the GNU Lesser General Public License is distributed along with this program and can be found at
+ * <http://www.gnu.org/licenses/lgpl.html>.
+ *
+ **/
+ --}}
+<div class="list-container"  data-listid="{{id}}">
+    <div class="list-color" style="background: {{color}}" data-help="Color used to indicate a result came from this list.">
+    </div>
+    <div class="list-details">
+        <div class="details-header">
+            <span class="header-icon" data-help="The icon you've given to the list.">
+                <span class="{{bindAttr attr="class" selector=".details-header > .header-icon > span" event="change:icon" key=(path "icon")}}"></span>
+            </span>
+            <span class="header-title" data-help="The name you've given to the list.">
+                {{bind selector=".details-header > .header-title" event="change:title" key=(path "title")}}
+            </span>
+        </div>
+        <div class="details-feed" data-help="Shows the status of the list, such as the number of results.">
+        </div>
+        <div class="details-footer">
+            <button class="list-run is-button" title="Runs the search." data-help="Runs the search.">
+                <span class="fa fa-play"></span>
+            </button>
+            <button class="list-stop is-button" title="Stops a search in the progress of executing.  If results have already returned from some sources, you won't lose them." data-help="Stops a search in the progress of executing.  If results have already returned from some sources, you won't lose them.">
+                <span class="fa fa-stop"></span>
+            </button>
+            <div class="list-edit is-button" title="Edits the search criteria." data-help="Edits the search criteria.">
+                <span class="fa fa-pencil"></span>
+            </div>
+            <div class="list-actions is-button" title="Shows a list of actions to take on the list." data-help="Shows a list of actions to take on the list.">
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+@{customElementNamespace}result-add {
+    .customElement;
+    padding: @minimumSpacing;
+
+    .is-existing-list {
+        width: 100%;
+        display: block;
+        padding: 0px @largeSpacing;
+        text-align: left;
+        height: @minimumButtonSize;
+        line-height: @minimumButtonSize;
+    }
+
+    .is-existing-list.fails-filter::after {
+        content: '(filtered)';
+    }
+
+    .is-existing-list.already-contains::after {
+        content: '(contains)';
+    }
+    
+    button {
+        width: 100%;
+        display: block;
+        padding: 0px @largeSpacing;
+    }
+}

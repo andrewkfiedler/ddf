@@ -12,22 +12,20 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-/*global require*/
-
+/*global define, alert*/
 var Marionette = require('marionette');
-var template = require('./query-status.hbs');
 var CustomElements = require('js/CustomElements');
-var TableView = require('component/table/query-status/table-query-status.view');
+var ListItemView = require('./list-item.view');
 
-module.exports = Marionette.LayoutView.extend({
-    template: template,
-    tagName: CustomElements.register('query-status'),
-    regions: {
-        table: '.table-container'
+module.exports = Marionette.CollectionView.extend({
+    setDefaultCollection: function(){
+        this.collection = this.options.workspaceLists;
     },
-    onBeforeShow: function(){
-        this.table.show(new TableView({
-            model: this.model
-        }));
+    tagName: CustomElements.register('list-item-collection'),
+    childView: ListItemView,
+    initialize: function (options) {
+        if (!options.collection) {
+            this.setDefaultCollection();
+        }
     }
 });
