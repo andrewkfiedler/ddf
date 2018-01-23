@@ -23,9 +23,15 @@
                 {{bind selector=".details-header > .header-title" event="change:title" key=(path "title")}}
             </span>
         </div>
+        <div class="details-empty" data-help="Shows the list is empty.">
+            Empty
+        </div>
         <div class="details-feed" data-help="Shows the status of the list, such as the number of results.">
         </div>
         <div class="details-footer">
+            <button class="list-delete is-button" title="Runs the search." data-help="Runs the search.">
+                <span class="fa fa-minus"></span>
+            </button>
             <button class="list-run is-button" title="Runs the search." data-help="Runs the search.">
                 <span class="fa fa-play"></span>
             </button>

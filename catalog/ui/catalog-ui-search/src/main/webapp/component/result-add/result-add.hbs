@@ -16,7 +16,16 @@
 </div>
 <div class="is-divider"></div>
 {{#each this}}
-    <button data-id="{{id}}" class="is-button is-neutral is-existing-list {{#if matchesFilter}}matches-filter{{else}}fails-filter is-disabled{{/if}} {{#if alreadyContains}}already-contains is-disabled{{/if}}">
+    <button data-id="{{id}}" class="is-button is-neutral is-existing-list {{#if matchesFilter}}matches-filter{{else}}fails-filter is-disabled{{/if}} {{#if alreadyContains}}already-contains{{/if}}">
+        {{#if matchesFilter}} 
+            <span class="fa {{#if alreadyContains}}fa-check-square{{else}}fa-square{{/if}}">
+
+            </span>
+        {{else}}
+            <span class="fa fa-ban">
+
+            </span>
+        {{/if}}
         <span class="{{icon}}">
 
         </span>

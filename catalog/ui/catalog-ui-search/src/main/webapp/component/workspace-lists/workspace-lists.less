@@ -5,4 +5,20 @@
     .list-select {
         padding: @minimumSpacing;
     }
+
+    .list-empty {
+        display: none;
+    }
+}
+
+@{customElementNamespace}workspace-lists.is-empty {
+
+    .list-empty {
+        display: block;
+    }
+
+    .list-select,
+    .list-results {
+        display: none;
+    }
 }

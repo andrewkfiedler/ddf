@@ -37,6 +37,9 @@ function getRelevantIcon(iconName) {
 }
 
 function generateCql(bookmarks) {
+    if (bookmarks.length === 0) {
+        return '';
+    }
     return cql.write({
         type: 'AND',
         filters: [{
@@ -78,6 +81,12 @@ module.exports = Backbone.AssociatedModel.extend({
         this.updateQuery();
         this.listenTo(this, 'add:bookmarks remove:bookmarks update:bookmarks change:bookmarks', this.updateQuery);
     },
+    removeBookmarks: function(bookmarks) {
+        if (!Array.isArray(bookmarks)) {
+            bookmarks = [bookmarks];
+        }
+        this.set('bookmarks', this.get('bookmarks').filter((id) => bookmarks.indexOf(id) === -1));
+    },
     addBookmarks: function(bookmarks) {
         if (!Array.isArray(bookmarks)) {
             bookmarks = [bookmarks];
@@ -89,6 +98,9 @@ module.exports = Backbone.AssociatedModel.extend({
     },
     getIcon: function() {
         return getRelevantIcon(this.get('icon'));
+    },
+    isEmpty: function() {
+        return this.get('bookmarks').length === 0;
     }
 }, {
     getIconMapping: function() {

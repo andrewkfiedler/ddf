@@ -13,23 +13,23 @@
  *
  **/
 /*global define, require, module*/
-var Marionette = require("marionette");
-var _ = require("underscore");
+var Marionette = require('marionette');
+var _ = require('underscore');
 var _merge = require('lodash/merge');
-var $ = require("jquery");
-var template = require("./list-item.hbs");
-var CustomElements = require("js/CustomElements");
-require("behaviors/button.behavior");
+var $ = require('jquery');
+var template = require('./list-item.hbs');
+var CustomElements = require('js/CustomElements');
+require('behaviors/button.behavior');
 var DropdownView = require('component/dropdown/popout/dropdown.popout.view');
 var ListEditorView = require('component/list-editor/list-editor.view');
 var QueryFeedView = require('component/query-feed/query-feed.view');
 
 module.exports = Marionette.LayoutView.extend({
-  tagName: CustomElements.register("list-item"),
+  tagName: CustomElements.register('list-item'),
   template: template,
   attributes: function() {
     return {
-      "data-listid": this.model.id
+      'data-listid': this.model.id
     };
   },
   regions: {
@@ -37,18 +37,24 @@ module.exports = Marionette.LayoutView.extend({
     queryFeed: '.details-feed'
   },
   events: {
-    "click .list-run": "runList",
-    "click .list-stop": "stopList"
+    'click .list-run': 'runList',
+    'click .list-stop': 'stopList',
+    'click .list-delete': 'deleteList'
   },
   behaviors: {
     button: {}
   },
   initialize: function() {
-    if (this.model.get('query').has("result")) {
+    if (this.model.get('query').has('result')) {
       this.startListeningToStatus();
     } else {
-      this.listenTo(this.model.get('query'), "change:result", this.resultAdded);
+      this.listenTo(this.model.get('query'), 'change:result', this.resultAdded);
     }
+    this.listenTo(this.model, 'change:bookmarks', this.handleEmptyList);
+    this.handleEmptyList();
+  },
+  handleEmptyList: function() {
+    this.$el.toggleClass('is-empty', this.model.isEmpty());
   },
   onRender: function() {
     this.setupEdit();
@@ -67,35 +73,40 @@ module.exports = Marionette.LayoutView.extend({
     }));
   },
   resultAdded: function(model) {
-    if (this.model.get('query').has("result") && _.isUndefined(this.model.get('query').previous("result"))) {
+    if (this.model.get('query').has('result') && _.isUndefined(this.model.get('query').previous('result'))) {
       this.startListeningToStatus();
     }
   },
   startListeningToStatus: function() {
     this.handleStatus();
     this.listenTo(
-      this.model.get('query').get("result"),
-      "sync request error",
+      this.model.get('query').get('result'),
+      'sync request error',
       this.handleStatus
     );
   },
   handleStatus: function() {
     this.$el.toggleClass(
-      "is-searching",
-      this.model.get('query').get("result").isSearching()
+      'is-searching',
+      this.model.get('query').get('result').isSearching()
     );
   },
   runList: function(e) {
-    this.model.get("query").startSearch();
+    this.model.get('query').startSearch();
     e.stopPropagation();
   },
   stopList: function(e) {
-    this.model.get("query").cancelCurrentSearches();
+    this.model.get('query').cancelCurrentSearches();
+    e.stopPropagation();
+  },
+  deleteList: function(e) {
+    this.model.get('query').cancelCurrentSearches();
+    this.model.collection.remove(this.model);
     e.stopPropagation();
   },
   serializeData: function() {
     return _merge(this.model.toJSON({
-      additionalProperties: ["cid", "color"]
+      additionalProperties: ['cid', 'color']
     }), {
       icon: this.model.getIcon()
     });

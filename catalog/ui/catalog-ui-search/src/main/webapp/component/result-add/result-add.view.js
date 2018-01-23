@@ -30,10 +30,15 @@ module.exports = Marionette.LayoutView.extend({
   tagName: CustomElements.register('result-add'),
   template: template,
   events: {
-    'click .is-existing-list.matches-filter:not(.already-contains)': 'addToList'
+    'click .is-existing-list.matches-filter:not(.already-contains)': 'addToList',
+    'click .is-existing-list.matches-filter.already-contains': 'removeFromList'
   },
   regions: {
     newList: '.create-new-list'
+  },
+  removeFromList: function(e) {
+    var listId = $(e.currentTarget).data('id');
+    store.getCurrentWorkspace().get('lists').get(listId).removeBookmarks(this.model.get('metacard').id);
   },
   addToList: function(e){
     var listId = $(e.currentTarget).data('id');

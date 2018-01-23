@@ -58,7 +58,7 @@ module.exports = Marionette.LayoutView.extend({
             model: new DropdownModel({
                 value: this.getPreselectedList()
             }),
-            workspaceLists: store.getCurrentWorkspace().get('lists')
+            workspaceLists: this.model
         }));
         this.listenTo(this.listSelect.currentView.model, 'change:value', this.updateResultsList);
         //this.listEmpty.show(new WorkspaceExploreView());
@@ -67,6 +67,7 @@ module.exports = Marionette.LayoutView.extend({
         this.listenTo(this.model, 'add', this.handleEmptyLists);
         this.listenTo(this.model, 'remove', this.handleEmptyLists);
         this.listenTo(this.model, 'update', this.handleEmptyLists);
+        this.listenTo(this.model, 'change:bookmarks', this.handleEmptyList);
     },
     handleEmptyLists: function() {
         this.$el.toggleClass('is-empty', this.model.isEmpty());
@@ -74,15 +75,26 @@ module.exports = Marionette.LayoutView.extend({
             this.listSelect.currentView.model.set('value', this.model.first().id);
         }
     },
+    handleEmptyList: function() {
+        if (this.model.get(selectedListId) && this.model.get(selectedListId).isEmpty()) {
+            this.listResults.empty();
+            this.$el.addClass('is-empty-list');
+        } else {
+            this.$el.removeClass('is-empty-list');
+        }
+    },
     updateResultsList: function() {
         var listId = this.listSelect.currentView.model.get('value');
         if (listId){
             selectedListId = listId;
-            this.listResults.show(new ResultSelectorView({
-                model: store.getCurrentWorkspace().get('lists').get(listId).get('query')
-            }));
+            if (!this.model.get(selectedListId).isEmpty()) {
+                this.listResults.show(new ResultSelectorView({
+                    model: this.model.get(selectedListId).get('query')
+                }));
+            }
         } else {
             this.listResults.empty();
         }
+        this.handleEmptyList();
     }
 });
