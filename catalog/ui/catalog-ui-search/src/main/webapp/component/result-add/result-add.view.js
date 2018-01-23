@@ -31,7 +31,7 @@ module.exports = Marionette.LayoutView.extend({
   template: template,
   events: {
     'click .is-existing-list.matches-filter:not(.already-contains)': 'addToList',
-    'click .is-existing-list.matches-filter.already-contains': 'removeFromList'
+    'click .is-existing-list.already-contains': 'removeFromList'
   },
   regions: {
     newList: '.create-new-list'

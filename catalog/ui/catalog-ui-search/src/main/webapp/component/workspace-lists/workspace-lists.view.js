@@ -20,6 +20,7 @@ var store = require('js/store');
 var ListSelectorView = require('component/dropdown/list-select/dropdown.list-select.view');
 var DropdownModel = require('component/dropdown/dropdown');
 var ResultSelectorView = require('component/result-selector/result-selector.view');
+var $ = require('jquery');
 
 let selectedListId;
 
@@ -33,6 +34,10 @@ module.exports = Marionette.LayoutView.extend({
         listSelect: '> .list-select',
         listEmpty: '.list-empty',
         listResults: '.list-results'
+    },
+    events: {
+        'click > .list-empty .quick-search': 'triggerSearch',
+        'click > .list-empty .quick-delete': 'triggerDelete'
     },
     initialize: function(options){
         if (options.model === undefined){
@@ -70,7 +75,7 @@ module.exports = Marionette.LayoutView.extend({
         this.listenTo(this.model, 'change:bookmarks', this.handleEmptyList);
     },
     handleEmptyLists: function() {
-        this.$el.toggleClass('is-empty', this.model.isEmpty());
+        this.$el.toggleClass('is-empty-lists', this.model.isEmpty());
         if (this.model.length === 1){
             this.listSelect.currentView.model.set('value', this.model.first().id);
         }
@@ -96,5 +101,11 @@ module.exports = Marionette.LayoutView.extend({
             this.listResults.empty();
         }
         this.handleEmptyList();
+    },
+    triggerDelete: function() {
+        this.model.remove(this.model.get(selectedListId));
+    },
+    triggerSearch: function() {
+        $(CustomElements.getNamespace() + 'dropdown.is-query').mousedown().click();
     }
 });

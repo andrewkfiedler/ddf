@@ -36,7 +36,11 @@ define([
         initialize: function (options) {
             $('body').append(this.el);
             this.render();
+            this.handleChoices();
         },
+        handleChoices: function() {
+            this.$el.toggleClass('has-two-choices', this.model.get('no') !== undefined);
+        },  
         handleOutsideClick: function (event) {
             if (event.target === this.el) {
                 this.model.makeChoice(false);

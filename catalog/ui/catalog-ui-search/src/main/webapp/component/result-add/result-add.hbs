@@ -16,23 +16,43 @@
 </div>
 <div class="is-divider"></div>
 {{#each this}}
-    <button data-id="{{id}}" class="is-button is-neutral is-existing-list {{#if matchesFilter}}matches-filter{{else}}fails-filter is-disabled{{/if}} {{#if alreadyContains}}already-contains{{/if}}">
-        {{#if matchesFilter}} 
-            <span class="fa {{#if alreadyContains}}fa-check-square{{else}}fa-square{{/if}}">
+    {{#if alreadyContains}}
+        <button data-id="{{id}}" class="is-button is-neutral is-existing-list already-contains">
+            <span class="fa fa-check-square">
 
             </span>
-        {{else}}
+            <span class="{{icon}}">
+
+            </span>
+            <span>
+                {{title}}
+            </span>
+        </button>
+    {{else if matchesFilter}}
+        <button data-id="{{id}}" class="is-button is-neutral is-existing-list matches-filter">
+            <span class="fa fa-square">
+
+            </span>
+            <span class="{{icon}}">
+
+            </span>
+            <span>
+                {{title}}
+            </span>
+        </button>
+    {{else}}
+        <button data-id="{{id}}" class="is-button is-neutral is-existing-list fails-filter is-disabled">
             <span class="fa fa-ban">
 
             </span>
-        {{/if}}
-        <span class="{{icon}}">
+            <span class="{{icon}}">
 
-        </span>
-        <span>
-            {{title}}
-        </span>
-    </button>
+            </span>
+            <span>
+                {{title}}
+            </span>
+        </button>
+    {{/if}}
 {{/each}}
 <div class="is-divider"></div>
 <button class="is-primary">

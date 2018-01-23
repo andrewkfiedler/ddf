@@ -6,18 +6,31 @@
         padding: @minimumSpacing;
     }
 
+    .lists-empty,
     .list-empty {
+        display: none;
+        padding: @minimumSpacing;
+    }
+}
+
+@{customElementNamespace}workspace-lists.is-empty-lists {
+
+    .lists-empty {
+        display: block;
+    }
+
+    .list-select,
+    .list-results {
         display: none;
     }
 }
 
-@{customElementNamespace}workspace-lists.is-empty {
+@{customElementNamespace}workspace-lists.is-empty-list {
 
     .list-empty {
         display: block;
     }
 
-    .list-select,
     .list-results {
         display: none;
     }
