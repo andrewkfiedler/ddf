@@ -21,6 +21,8 @@ var ListSelectorView = require('component/dropdown/list-select/dropdown.list-sel
 var DropdownModel = require('component/dropdown/dropdown');
 var ResultSelectorView = require('component/result-selector/result-selector.view');
 var $ = require('jquery');
+var ListCreateView = require('component/list-create/list-create.view');
+var PopoutView = require('component/dropdown/popout/dropdown.popout.view');
 
 let selectedListId;
 
@@ -33,10 +35,13 @@ module.exports = Marionette.LayoutView.extend({
     regions: {
         listSelect: '> .list-select',
         listEmpty: '.list-empty',
-        listResults: '.list-results'
+        listResults: '.list-results',
+        listCreate: '> .list-create .create-new-list',
+        listQuickCreate: '> .lists-empty .quick-create'
     },
     events: {
         'click > .list-empty .quick-search': 'triggerSearch',
+        'click > .lists-empty .quick-search': 'triggerSearch',
         'click > .list-empty .quick-delete': 'triggerDelete'
     },
     initialize: function(options){
@@ -48,6 +53,29 @@ module.exports = Marionette.LayoutView.extend({
         if (store.getCurrentWorkspace()) {
             this.setupWorkspaceListSelect();
         }
+        this.setupCreateList();
+        this.setupQuickCreateList();
+    },
+    setupQuickCreateList: function() {
+        this.listQuickCreate.show(PopoutView.createSimpleDropdown({
+            componentToShow: ListCreateView,
+            modelForComponent: this.model,
+            label: 'new empty list',
+            options: {
+                withBookmarks: false
+            }
+        }));
+    },
+    setupCreateList: function() {
+        this.listCreate.show(PopoutView.createSimpleDropdown({
+            componentToShow: ListCreateView,
+            modelForComponent: this.model,
+            leftIcon: 'fa fa-plus',
+            label: 'Create New List',
+            options: {
+                withBookmarks: false
+            }
+        }));
     },
     getPreselectedList: function(){
         if (this.model.length === 1){
@@ -66,13 +94,15 @@ module.exports = Marionette.LayoutView.extend({
             workspaceLists: this.model
         }));
         this.listenTo(this.listSelect.currentView.model, 'change:value', this.updateResultsList);
-        //this.listEmpty.show(new WorkspaceExploreView());
+        this.listenTo(this.listSelect.currentView.model, 'change:value', this.handleSelection);
         this.updateResultsList();
         this.handleEmptyLists();
-        this.listenTo(this.model, 'add', this.handleEmptyLists);
-        this.listenTo(this.model, 'remove', this.handleEmptyLists);
-        this.listenTo(this.model, 'update', this.handleEmptyLists);
+        this.listenTo(this.model, 'add remove update', this.handleEmptyLists);
+        this.listenTo(this.model, 'add remove update', this.handleSelection);
         this.listenTo(this.model, 'change:bookmarks', this.handleEmptyList);
+    },
+    handleSelection: function() {
+        this.$el.toggleClass('has-selection', this.model.get(this.listSelect.currentView.model.get('value')) !== undefined);
     },
     handleEmptyLists: function() {
         this.$el.toggleClass('is-empty-lists', this.model.isEmpty());

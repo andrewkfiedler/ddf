@@ -62,6 +62,7 @@ module.exports = Marionette.LayoutView.extend({
       .getCurrentWorkspace()
       .get("lists")
       .add(this.listEditor.currentView.model);
+    this.onBeforeShow();
   },
   createListWithBookmarks: function() {
     this.listEditor.currentView.save();
@@ -78,6 +79,7 @@ module.exports = Marionette.LayoutView.extend({
               .getCurrentWorkspace()
               .get("lists")
               .add(this.listEditor.currentView.model);
+              this.onBeforeShow();
           }
       }.bind(this));
     } else {
@@ -86,6 +88,7 @@ module.exports = Marionette.LayoutView.extend({
         .getCurrentWorkspace()
         .get("lists")
         .add(this.listEditor.currentView.model);
+        this.onBeforeShow();
     }
   }
 });
