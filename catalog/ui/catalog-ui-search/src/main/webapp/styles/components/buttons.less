@@ -32,7 +32,7 @@ button.is-primary {
   }
 
   &.is-disabled, &:disabled {
-    //background: tint(@buttonColor, 50%);
+    .background-gradient(tint(@buttonColor, 10%), shade(@buttonColor, 10%));
     cursor: not-allowed;
   }
 }

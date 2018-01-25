@@ -13,13 +13,9 @@
  */
 package org.codice.ddf.catalog.ui.metacard.workspace;
 
-import ddf.catalog.data.Attribute;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.impl.MetacardImpl;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class ListMetacardImpl extends MetacardImpl {
   private static final ListMetacardTypeImpl TYPE = new ListMetacardTypeImpl();
@@ -41,49 +37,5 @@ public class ListMetacardImpl extends MetacardImpl {
 
   public static ListMetacardImpl from(Metacard metacard) {
     return new ListMetacardImpl(metacard);
-  }
-
-  /**
-   * Get a list of the types.
-   *
-   * @return list of type (always non-null)
-   */
-  public List<String> getTypes() {
-    Attribute attribute = getAttribute(ListMetacardTypeImpl.LIST_LIMITING_ATTRIBUTE_VALUES);
-    if (attribute == null) {
-      return Collections.emptyList();
-    }
-    return attribute
-        .getValues()
-        .stream()
-        .filter(String.class::isInstance)
-        .map(String.class::cast)
-        .collect(Collectors.toList());
-  }
-
-  public void setTypes(List<String> types) {
-    setAttribute(ListMetacardTypeImpl.LIST_LIMITING_ATTRIBUTE_VALUES, new ArrayList<>(types));
-  }
-
-  /**
-   * Get a list of the content.
-   *
-   * @return list of content (always non-null)
-   */
-  public List<String> getMetacards() {
-    Attribute attribute = getAttribute(ListMetacardTypeImpl.LIST_BOOKMARKS);
-    if (attribute == null) {
-      return Collections.emptyList();
-    }
-    return attribute
-        .getValues()
-        .stream()
-        .filter(String.class::isInstance)
-        .map(String.class::cast)
-        .collect(Collectors.toList());
-  }
-
-  public void setMetacards(List<String> metacards) {
-    setAttribute(ListMetacardTypeImpl.LIST_BOOKMARKS, new ArrayList<>(metacards));
   }
 }

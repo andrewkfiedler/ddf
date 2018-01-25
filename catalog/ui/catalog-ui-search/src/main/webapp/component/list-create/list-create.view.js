@@ -70,7 +70,7 @@ module.exports = Marionette.LayoutView.extend({
   createListWithBookmarks: function() {
     this.listEditor.currentView.save();
     if (this.model.every((result) => {
-      return result.matchesCql(this.listEditor.currentView.model.get('limitingAttribute'));
+      return result.matchesCql(this.listEditor.currentView.model.get('list.cql'));
     })) {
       this.listEditor.currentView.model.addBookmarks(this.model.map(function(result){
         return result.get('metacard').id;

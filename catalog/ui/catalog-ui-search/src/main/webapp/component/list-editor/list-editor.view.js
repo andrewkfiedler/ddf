@@ -35,15 +35,14 @@ module.exports = Marionette.LayoutView.extend({
   },
   regions: {
     listTitle: '.list-title',
-    listLimitingAttributeSwitch: '.list-limiting-attribute-switch',
-    listLimitingAttribute: '.list-limiting-attribute',
-    listLimitingAttributeValues: '.list-limiting-attribute-values',
+    listCQLSwitch: '.list-limiting-switch',
+    listCQL: '.list-limiting',
     listIcon: '.list-icon'
   },
   onBeforeShow: function() {
     this.showListTitle();
-    this.showLimitingAttributeSwitch();
-    this.showLimitingAttribute();
+    this.showCQLSwitch();
+    this.showCQL();
     this.showIcon();
     this.turnOnLimitedWidth();
     this.edit();
@@ -57,11 +56,11 @@ module.exports = Marionette.LayoutView.extend({
       })
     );
   },
-  showLimitingAttributeSwitch: function() {
-    this.listLimitingAttributeSwitch.show(
+  showCQLSwitch: function() {
+    this.listCQLSwitch.show(
       PropertyView.getPropertyView({
         label: 'Limit based on filter',
-        value: [this.model.get('limitingAttribute') !== ''],
+        value: [this.model.get('list.cql') !== ''],
         radio: [
           {
             label: 'Yes',
@@ -74,18 +73,18 @@ module.exports = Marionette.LayoutView.extend({
         ]
       })
     );
-    this.listenTo(this.listLimitingAttributeSwitch.currentView.model, 'change:value', this.handleLimitingAttributeSwitch);
-    this.handleLimitingAttributeSwitch();
+    this.listenTo(this.listCQLSwitch.currentView.model, 'change:value', this.handleCQLSwitch);
+    this.handleCQLSwitch();
   },
-  handleLimitingAttributeSwitch: function() {
-    var shouldLimitByAttribute = this.listLimitingAttributeSwitch.currentView.model.getValue()[0];
-    this.$el.toggleClass('is-limited-by-attribute', shouldLimitByAttribute);
+  handleCQLSwitch: function() {
+    var shouldLimit = this.listCQLSwitch.currentView.model.getValue()[0];
+    this.$el.toggleClass('is-limited', shouldLimit);
   },
-  showLimitingAttribute: function() {
-    this.listLimitingAttribute.show(
+  showCQL: function() {
+    this.listCQL.show(
       DropdownView.createSimpleDropdown({
         componentToShow: ListFilterView,
-        defaultSelection: this.model.get('limitingAttribute'),
+        defaultSelection: this.model.get('list.cql'),
         leftIcon: 'fa fa-pencil',
         label: 'Edit Filter'
       })
@@ -95,7 +94,7 @@ module.exports = Marionette.LayoutView.extend({
     this.listIcon.show(
       PropertyView.getPropertyView({
         label: 'Icon',
-        value: [this.model.get('icon')],
+        value: [this.model.get('list.icon')],
         enum: List.getIconMappingForSelect()
       })
     );
@@ -129,23 +128,23 @@ module.exports = Marionette.LayoutView.extend({
     this.$el.trigger('closeDropdown.' + CustomElements.getNamespace());
   },
   saveIcon: function() {
-    this.model.set('icon', this.listIcon.currentView.model.getValue()[0]);
+    this.model.set('list.icon', this.listIcon.currentView.model.getValue()[0]);
   },
   saveTitle: function() {
     this.model.set('title', this.listTitle.currentView.model.getValue()[0]);
   },
-  saveLimitingAttribute: function() {
-    var shouldLimitByAttribute = this.listLimitingAttributeSwitch.currentView.model.getValue()[0];
-    if (shouldLimitByAttribute) {
-      this.model.set('limitingAttribute', this.listLimitingAttribute.currentView.model.getValue());
+  saveCQL: function() {
+    var shouldLimit = this.listCQLSwitch.currentView.model.getValue()[0];
+    if (shouldLimit) {
+      this.model.set('list.cql', this.listCQL.currentView.model.getValue());
     } else {
-      this.model.set('limitingAttribute', '');
+      this.model.set('list.cql', '');
     }
   },
   save: function() {
     this.saveTitle();
     this.saveIcon();
-    this.saveLimitingAttribute();
+    this.saveCQL();
     this.cancel();
   },
   serializeData: function() {

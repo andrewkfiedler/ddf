@@ -64,9 +64,9 @@ module.exports = Backbone.AssociatedModel.extend({
         return {
             id: Common.generateUUID(),
             title: 'Untitled List',
-            limitingAttribute: '',
-            icon: 'folder',
-            bookmarks: [],
+            'list.cql': '',
+            'list.icon': 'folder',
+            'list.bookmarks': [],
             query: undefined
         };
     },
@@ -79,28 +79,28 @@ module.exports = Backbone.AssociatedModel.extend({
     initialize: function() {
         this.set('query', new Query.Model());
         this.updateQuery();
-        this.listenTo(this, 'add:bookmarks remove:bookmarks update:bookmarks change:bookmarks', this.updateQuery);
+        this.listenTo(this, 'add:list.bookmarks remove:list.bookmarks update:list.bookmarks change:list.bookmarks', this.updateQuery);
     },
     removeBookmarks: function(bookmarks) {
         if (!Array.isArray(bookmarks)) {
             bookmarks = [bookmarks];
         }
-        this.set('bookmarks', this.get('bookmarks').filter((id) => bookmarks.indexOf(id) === -1));
+        this.set('list.bookmarks', this.get('list.bookmarks').filter((id) => bookmarks.indexOf(id) === -1));
     },
     addBookmarks: function(bookmarks) {
         if (!Array.isArray(bookmarks)) {
             bookmarks = [bookmarks];
         }
-        this.set('bookmarks', this.get('bookmarks').concat(bookmarks));
+        this.set('list.bookmarks', this.get('list.bookmarks').concat(bookmarks));
     },
     updateQuery: function() {
-        this.get('query').set('cql', generateCql(this.get('bookmarks')));
+        this.get('query').set('cql', generateCql(this.get('list.bookmarks')));
     },
     getIcon: function() {
-        return getRelevantIcon(this.get('icon'));
+        return getRelevantIcon(this.get('list.icon'));
     },
     isEmpty: function() {
-        return this.get('bookmarks').length === 0;
+        return this.get('list.bookmarks').length === 0;
     }
 }, {
     getIconMapping: function() {

@@ -60,7 +60,7 @@ module.exports = Marionette.LayoutView.extend({
         this.listQuickCreate.show(PopoutView.createSimpleDropdown({
             componentToShow: ListCreateView,
             modelForComponent: this.model,
-            label: 'new empty list',
+            label: 'new list',
             options: {
                 withBookmarks: false
             }
@@ -98,7 +98,7 @@ module.exports = Marionette.LayoutView.extend({
         this.listenTo(this.listSelect.currentView.model, 'change:value', this.handleEmptyList);
         this.listenTo(this.model, 'add remove update', this.handleEmptyLists);
         this.listenTo(this.model, 'add remove update', this.handleSelection);
-        this.listenTo(this.model, 'change:bookmarks', this.handleEmptyList);
+        this.listenTo(this.model, 'change:list.bookmarks', this.handleEmptyList);
         this.listenTo(this.model, 'add', this.handleAdd);
         this.updateResultsList();
         this.handleEmptyLists();

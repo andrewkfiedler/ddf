@@ -27,13 +27,11 @@ public class ListMetacardTypeImpl extends MetacardTypeImpl {
 
   public static final String LIST_METACARD_TYPE_NAME = "metacard.list";
 
-  public static final String LIST_LIMITING_ATTRIBUTE = "limitingAttribute";
+  public static final String LIST_CQL = "list.cql";
 
-  public static final String LIST_LIMITING_ATTRIBUTE_VALUES = "limitingAttributeValues";
+  public static final String LIST_ICON = "list.icon";
 
-  public static final String LIST_ICON = "icon";
-
-  public static final String LIST_BOOKMARKS = "bookmarks";
+  public static final String LIST_BOOKMARKS = "list.bookmarks";
 
   private static final Set<AttributeDescriptor> DESCRIPTORS;
 
@@ -60,20 +58,11 @@ public class ListMetacardTypeImpl extends MetacardTypeImpl {
 
     DESCRIPTORS.add(
         new AttributeDescriptorImpl(
-            LIST_LIMITING_ATTRIBUTE,
+            LIST_CQL,
             false /* indexed */,
             true /* stored */,
             false /* tokenized */,
             false /* multivalued */,
-            BasicTypes.STRING_TYPE));
-
-    DESCRIPTORS.add(
-        new AttributeDescriptorImpl(
-            LIST_LIMITING_ATTRIBUTE_VALUES,
-            false /* indexed */,
-            true /* stored */,
-            false /* tokenized */,
-            true /* multivalued */,
             BasicTypes.STRING_TYPE));
 
     DESCRIPTORS.add(

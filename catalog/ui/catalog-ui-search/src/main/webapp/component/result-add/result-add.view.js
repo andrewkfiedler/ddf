@@ -74,18 +74,18 @@ module.exports = Marionette.LayoutView.extend({
     var listJSON = store.getCurrentWorkspace().get('lists').toJSON();
     listJSON = listJSON.map((list) => {
       list.matchesFilter = true;
-      if (list.limitingAttribute !== '') {
+      if (list['list.cql'] !== '') {
         list.matchesFilter =  this.model.every(function(result){
-          return result.matchesCql(list.limitingAttribute);
+          return result.matchesCql(list['list.cql']);
         });
       } 
       list.alreadyContains = false;
-      if (_.intersection(list.bookmarks, this.model.map(function(result){
+      if (_.intersection(list['list.bookmarks'], this.model.map(function(result){
         return result.get('metacard').id;
       })).length === this.model.length) {
         list.alreadyContains = true;
       }
-      list.icon = List.getIconMapping()[list.icon];
+      list.icon = List.getIconMapping()[list['list.icon']];
       return list;
     });
     return listJSON;

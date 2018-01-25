@@ -52,7 +52,7 @@ module.exports = Marionette.LayoutView.extend({
     } else {
       this.listenTo(this.model.get('query'), 'change:result', this.resultAdded);
     }
-    this.listenTo(this.model, 'change:bookmarks', this.handleEmptyList);
+    this.listenTo(this.model, 'change:list.bookmarks', this.handleEmptyList);
     this.handleEmptyList();
   },
   handleEmptyList: function() {
