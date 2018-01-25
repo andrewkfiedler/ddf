@@ -81,7 +81,7 @@ module.exports = Marionette.LayoutView.extend({
             store
               .getCurrentWorkspace()
               .get("lists")
-              .add(this.listEditor.currentView.model);
+              .add(this.listEditor.currentView.model, {preventSwitch: true});
               this.onBeforeShow();
           }
       }.bind(this));
@@ -90,7 +90,7 @@ module.exports = Marionette.LayoutView.extend({
       store
         .getCurrentWorkspace()
         .get("lists")
-        .add(this.listEditor.currentView.model);
+        .add(this.listEditor.currentView.model, {preventSwitch: true});
         this.onBeforeShow();
     }
   }

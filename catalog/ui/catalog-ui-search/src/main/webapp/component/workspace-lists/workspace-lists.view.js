@@ -102,9 +102,13 @@ module.exports = Marionette.LayoutView.extend({
         this.listenTo(this.model, 'add', this.handleAdd);
         this.updateResultsList();
         this.handleEmptyLists();
+        this.handleEmptyList();
+        this.handleSelection();
     },
-    handleAdd: function(newList) {
-        this.listSelect.currentView.model.set('value', newList.id);
+    handleAdd: function(newList, lists, options) {
+        if (options.preventSwitch !== true) {
+            this.listSelect.currentView.model.set('value', newList.id);
+        }
     },
     handleSelection: function() {
         this.$el.toggleClass('has-selection', this.model.get(this.listSelect.currentView.model.get('value')) !== undefined);
