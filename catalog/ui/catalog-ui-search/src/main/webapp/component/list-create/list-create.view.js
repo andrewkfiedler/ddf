@@ -48,7 +48,9 @@ module.exports = Marionette.LayoutView.extend({
     );
   },
   onBeforeShow: function() {
-    this.showListEditor();
+    if (!this.isDestroyed) {
+      this.showListEditor();
+    }
   },
   showListEditor: function() {
     this.listEditor.show(
@@ -58,6 +60,7 @@ module.exports = Marionette.LayoutView.extend({
     );
   },
   createList: function() {
+    this.listEditor.currentView.save();
     store
       .getCurrentWorkspace()
       .get("lists")

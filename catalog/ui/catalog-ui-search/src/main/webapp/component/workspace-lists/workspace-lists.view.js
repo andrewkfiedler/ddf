@@ -95,11 +95,16 @@ module.exports = Marionette.LayoutView.extend({
         }));
         this.listenTo(this.listSelect.currentView.model, 'change:value', this.updateResultsList);
         this.listenTo(this.listSelect.currentView.model, 'change:value', this.handleSelection);
-        this.updateResultsList();
-        this.handleEmptyLists();
+        this.listenTo(this.listSelect.currentView.model, 'change:value', this.handleEmptyList);
         this.listenTo(this.model, 'add remove update', this.handleEmptyLists);
         this.listenTo(this.model, 'add remove update', this.handleSelection);
         this.listenTo(this.model, 'change:bookmarks', this.handleEmptyList);
+        this.listenTo(this.model, 'add', this.handleAdd);
+        this.updateResultsList();
+        this.handleEmptyLists();
+    },
+    handleAdd: function(newList) {
+        this.listSelect.currentView.model.set('value', newList.id);
     },
     handleSelection: function() {
         this.$el.toggleClass('has-selection', this.model.get(this.listSelect.currentView.model.get('value')) !== undefined);

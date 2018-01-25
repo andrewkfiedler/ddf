@@ -84,3 +84,13 @@ button.in-text {
   line-height: inherit;
   font-size: inherit;
 }
+
+button.in-text:not(.is-composed)  {
+  padding: 0px @minimumSpacing;
+}
+
+button.in-text.is-composed {
+  > * {
+    padding: 0px @minimumSpacing;
+  }
+}

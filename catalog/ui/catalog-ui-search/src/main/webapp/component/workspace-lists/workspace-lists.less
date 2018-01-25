@@ -41,6 +41,7 @@
 
     .list-empty {
         display: block;
+        padding: @minimumSpacing 0px;
     }
 
     .list-results {
@@ -48,7 +49,7 @@
     }
 }
 
-@{customElementNamespace}workspace-lists.has-selection {
+@{customElementNamespace}workspace-lists.has-selection:not(.is-empty-list) {
     .list-results {
         display: block;
     }
