@@ -121,7 +121,6 @@ module.exports = Marionette.LayoutView.extend({
     },
     handleEmptyList: function() {
         if (this.model.get(selectedListId) && this.model.get(selectedListId).isEmpty()) {
-            this.listResults.empty();
             this.$el.addClass('is-empty-list');
         } else {
             this.$el.removeClass('is-empty-list');

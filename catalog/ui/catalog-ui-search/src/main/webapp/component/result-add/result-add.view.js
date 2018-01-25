@@ -38,14 +38,23 @@ module.exports = Marionette.LayoutView.extend({
   },
   removeFromList: function(e) {
     var listId = $(e.currentTarget).data('id');
-    store.getCurrentWorkspace().get('lists').get(listId).removeBookmarks(this.model.get('metacard').id);
+    store.getCurrentWorkspace().get('lists').get(listId).removeBookmarks(this.model.map(function(result){
+      return result.get('metacard').id;
+    }));
   },
   addToList: function(e){
     var listId = $(e.currentTarget).data('id');
-    store.getCurrentWorkspace().get('lists').get(listId).addBookmarks(this.model.get('metacard').id);
+    store.getCurrentWorkspace().get('lists').get(listId).addBookmarks(this.model.map(function(result){
+      return result.get('metacard').id;
+    }));
   },
   onRender: function() {
     this.setupCreateList();
+  },
+  safeRender: function() {
+    if (!this.isDestroyed) {
+      this.render();
+    }
   },
   setupCreateList: function() {
     this.newList.show(PopoutView.createSimpleDropdown({
@@ -59,17 +68,21 @@ module.exports = Marionette.LayoutView.extend({
     }));
   },
   initialize: function(){
-    this.listenTo(store.getCurrentWorkspace().get('lists'), 'add remove update change', this.render);
+    this.listenTo(store.getCurrentWorkspace().get('lists'), 'add remove update change', this.safeRender);
   },
   serializeData: function() {
     var listJSON = store.getCurrentWorkspace().get('lists').toJSON();
     listJSON = listJSON.map((list) => {
       list.matchesFilter = true;
       if (list.limitingAttribute !== '') {
-        list.matchesFilter = this.model.matchesCql(list.limitingAttribute);
+        list.matchesFilter =  this.model.every(function(result){
+          return result.matchesCql(list.limitingAttribute);
+        });
       } 
       list.alreadyContains = false;
-      if (list.bookmarks.indexOf(this.model.get('metacard').id) >= 0) {
+      if (_.intersection(list.bookmarks, this.model.map(function(result){
+        return result.get('metacard').id;
+      })).length === this.model.length) {
         list.alreadyContains = true;
       }
       list.icon = List.getIconMapping()[list.icon];

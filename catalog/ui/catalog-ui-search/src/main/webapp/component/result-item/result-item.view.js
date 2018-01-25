@@ -117,7 +117,7 @@ define([
             }));
             this.resultAdd.show(PopoutView.createSimpleDropdown({
                 componentToShow: ResultAddView,
-                modelForComponent: this.model,
+                modelForComponent: new Backbone.Collection([this.model]),
                 leftIcon: 'fa fa-plus'
             }));
             this.handleResultThumbnail();

@@ -69,7 +69,18 @@ module.exports = Marionette.LayoutView.extend({
   },
   createListWithBookmarks: function() {
     this.listEditor.currentView.save();
-    if (!this.model.matchesCql(this.listEditor.currentView.model.get('limitingAttribute'))) {
+    if (this.model.every((result) => {
+      return result.matchesCql(this.listEditor.currentView.model.get('limitingAttribute'));
+    })) {
+      this.listEditor.currentView.model.addBookmarks(this.model.map(function(result){
+        return result.get('metacard').id;
+      }));
+      store
+        .getCurrentWorkspace()
+        .get("lists")
+        .add(this.listEditor.currentView.model, {preventSwitch: true});
+        this.onBeforeShow();
+    } else {
       this.listenTo(ConfirmationView.generateConfirmation({
           prompt: 'This list\'s filter prevents the result from being in the list.  Create list without result?',
           no: 'Cancel',
@@ -85,13 +96,6 @@ module.exports = Marionette.LayoutView.extend({
               this.onBeforeShow();
           }
       }.bind(this));
-    } else {
-      this.listEditor.currentView.model.addBookmarks(this.model.get('metacard').id);
-      store
-        .getCurrentWorkspace()
-        .get("lists")
-        .add(this.listEditor.currentView.model, {preventSwitch: true});
-        this.onBeforeShow();
     }
   }
 });

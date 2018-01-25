@@ -23,6 +23,7 @@ require('behaviors/button.behavior');
 var DropdownView = require('component/dropdown/popout/dropdown.popout.view');
 var ListEditorView = require('component/list-editor/list-editor.view');
 var QueryFeedView = require('component/query-feed/query-feed.view');
+var ListInteractionsView = require('component/list-interactions/list-interactions.view');
 
 module.exports = Marionette.LayoutView.extend({
   tagName: CustomElements.register('list-item'),
@@ -34,7 +35,8 @@ module.exports = Marionette.LayoutView.extend({
   },
   regions: {
     listEdit: '.list-edit',
-    queryFeed: '.details-feed'
+    queryFeed: '.details-feed',
+    listActions: '.list-actions'
   },
   events: {
     'click .list-run': 'runList',
@@ -59,6 +61,14 @@ module.exports = Marionette.LayoutView.extend({
   onRender: function() {
     this.setupEdit();
     this.setupFeed();
+    this.setupListActions();
+  },
+  setupListActions: function() {
+    this.listActions.show(DropdownView.createSimpleDropdown({
+      componentToShow: ListInteractionsView,
+      modelForComponent: this.model,
+      leftIcon: 'fa fa-ellipsis-v'
+    }))
   },
   setupFeed: function() {
     this.queryFeed.show(new QueryFeedView({
