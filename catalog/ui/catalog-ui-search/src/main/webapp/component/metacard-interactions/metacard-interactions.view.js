@@ -32,11 +32,12 @@ define([
     'component/confirmation/query/confirmation.query.view',
     'component/loading/loading.view',
     'component/dropdown/popout/dropdown.popout.view',
-    'component/result-add/result-add.view'
+    'component/result-add/result-add.view',
+    'component/metacard-actions/metacard-actions.view'
 ], function (wreqr, Marionette, _, $, template, 
     CustomElements, store, router, user, sources, 
     MenuNavigationDecorator, Decorators, Query, wkx, 
-    CQLUtils, QueryConfirmationView, LoadingView, PopoutView, ResultAddView) {
+    CQLUtils, QueryConfirmationView, LoadingView, PopoutView, ResultAddView, MetacardActionsView) {
 
     return Marionette.LayoutView.extend(Decorators.decorate({
         template: template,
@@ -46,7 +47,8 @@ define([
             'change': 'render'
         },
         regions: {
-            resultAdd: '.interaction-add'
+            resultAdd: '.interaction-add',
+            resultActions: '.interaction-actions'
         },
         events: {
             'click .interaction-add': 'handleAdd',
@@ -75,6 +77,15 @@ define([
             this.checkIfBlacklisted();
             this.checkHasLocation();
             this.setupResultAdd();
+            this.setupResultActions();
+        },
+        setupResultActions() {
+            this.resultActions.show(PopoutView.createSimpleDropdown({
+                componentToShow: MetacardActionsView,
+                modelForComponent: this.model.first(),
+                leftIcon: 'fa fa-chevron-down',
+                label: 'Actions'
+            }));
         },
         setupResultAdd: function() {
             this.resultAdd.show(PopoutView.createSimpleDropdown({
