@@ -11,14 +11,8 @@
  *
  **/
  --}}
- <div class="is-header">
-    Export as:
- </div>
- <div class="export-actions">
-     {{#each this}}
-     <a href="{{this.url}}" target="_blank">
-         {{this.title}}
-     </a>
-    {{/each}}
- </div>
- <div class="map-actions"></div>
+{{#each this}}
+    <a href="{{this.url}}" target="_blank">
+        {{this.title}}
+    </a>
+{{/each}}

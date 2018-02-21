@@ -27,7 +27,6 @@ define([
         setDefaultModel: function(){
             this.model = this.selectionInterface.getSelectedResults().first();
         },
-        className: 'is-list',
         template: template,
         tagName: CustomElements.register('metacard-actions'),
         regions: {
@@ -43,6 +42,12 @@ define([
             if (!options.model){
                 this.setDefaultModel();
             }
+        },
+        serializeData: function() {
+            return this.model.toJSON().actions.map(action => ({
+                url: action.url,
+                title: action.title.substring('10')
+            }));
         },
         onRender: function () {
             this.mapActions.show(new MapActions({ model: this.model }), {replaceElement: true});

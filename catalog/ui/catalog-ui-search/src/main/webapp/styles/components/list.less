@@ -33,8 +33,10 @@
   }
 
   .is-action-list {
-    > *:hover,
-    > *.is-active {
+    > *:not(.composed-menu):hover,
+    > *.is-active:not(.composed-menu),
+    .composed-menu > *:hover,
+    .composed-menu > *.is-active {
       background: fade(@contrastColor, 10%);
     }
   }

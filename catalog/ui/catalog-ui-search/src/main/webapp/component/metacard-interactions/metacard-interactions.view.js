@@ -33,11 +33,12 @@ define([
     'component/loading/loading.view',
     'component/dropdown/popout/dropdown.popout.view',
     'component/result-add/result-add.view',
-    'component/metacard-actions/metacard-actions.view'
+    'component/export-actions/export-actions.view',
+    'behaviors/navigation.behavior'
 ], function (wreqr, Marionette, _, $, template, 
     CustomElements, store, router, user, sources, 
     MenuNavigationDecorator, Decorators, Query, wkx, 
-    CQLUtils, QueryConfirmationView, LoadingView, PopoutView, ResultAddView, MetacardActionsView) {
+    CQLUtils, QueryConfirmationView, LoadingView, PopoutView, ResultAddView, ExportActionsView) {
 
     return Marionette.LayoutView.extend(Decorators.decorate({
         template: template,
@@ -48,7 +49,7 @@ define([
         },
         regions: {
             resultAdd: '.interaction-add',
-            resultActions: '.interaction-actions'
+            resultActionsExport: '.interaction-actions-export'
         },
         events: {
             'click .interaction-add': 'handleAdd',
@@ -77,14 +78,15 @@ define([
             this.checkIfBlacklisted();
             this.checkHasLocation();
             this.setupResultAdd();
-            this.setupResultActions();
+            this.setupResultActionsExport();
         },
-        setupResultActions() {
-            this.resultActions.show(PopoutView.createSimpleDropdown({
-                componentToShow: MetacardActionsView,
+        setupResultActionsExport() {
+            this.resultActionsExport.show(PopoutView.createSimpleDropdown({
+                componentToShow: ExportActionsView,
+                navigationBehavior: true,
                 modelForComponent: this.model.first(),
                 leftIcon: 'fa fa-chevron-down',
-                label: 'Actions'
+                label: 'Export as'
             }));
         },
         setupResultAdd: function() {
