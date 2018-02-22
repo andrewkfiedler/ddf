@@ -189,8 +189,8 @@ define([
         initialize: function(){
             this.handleAlertPersistance();
             this.handleResultCount();
-            this.listenTo(wreqr.vent, 'alerts:add', this.addAlert);
-            this.listenTo(wreqr.vent, 'uploads:add', this.addUpload);
+            this.listenTo(wreqr.vent, 'alerts:add', this.addAlert);  // use the user directly
+            this.listenTo(wreqr.vent, 'uploads:add', this.addUpload); // use the user directly
             this.listenTo(wreqr.vent, 'preferences:save', this.savePreferences);
             this.listenTo(this.get('alerts'), 'remove', this.savePreferences);
             this.listenTo(this.get('uploads'), 'remove', this.savePreferences);

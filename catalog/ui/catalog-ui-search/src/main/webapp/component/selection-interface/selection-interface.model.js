@@ -44,14 +44,19 @@ module.exports = Backbone.AssociatedModel.extend({
             relatedModel: QueryResult
         }
     ],
+    /*
+        How does this change with mutiple buckets?  Subscriptions?  Will search need to be multivalued?
+    */
     defaults: {
-        currentQuery: undefined,
-        currentMetacard: undefined,
+        search: undefined,  
+        currentMetacard: undefined,  //deprecate
+        open: true, //
+        drawing: true, //
         selectedResults: [],
-        activeSearchResults: [],
-        activeSearchResultsAttributes: [],
-        completeActiveSearchResults: [],
-        completeActiveSearchResultsAttributes: [],
+        pageResults: [],
+        pageAttributes: [],  //deprecate
+        results: [],
+        attributes: [],
     },
     initialize: function () {
         this.set('currentResult', new QueryResponse());

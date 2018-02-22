@@ -163,6 +163,7 @@ module.exports = Marionette.LayoutView.extend({
         });
     },
     setupListeners: function() {
+        // can we move this over to be detected by maps and remove them from the actions.view
         this.listenTo(wreqr.vent, 'metacard:overlay', this.map.overlayImage.bind(this.map));
         this.listenTo(wreqr.vent, 'metacard:overlay:remove', this.map.removeOverlay.bind(this.map));
         this.listenTo(wreqr.vent, 'search:maprectanglefly', this.map.zoomToExtent.bind(this.map));
