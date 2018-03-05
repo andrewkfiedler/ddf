@@ -38,6 +38,8 @@ function updateDropzoneHeight(view) {
 
 module.exports = Marionette.LayoutView.extend({
     template: template,
+    handleUploadSuccess: undefined,
+    url: undefined,
     tagName: CustomElements.register('ingest-details'),
     events: {
         'click > .details-footer .footer-clear': 'newUpload',
@@ -53,7 +55,16 @@ module.exports = Marionette.LayoutView.extend({
     dropzone: undefined,
     uploadBatchModel: undefined,
     dropzoneAnimationRequestDetails: undefined,
-    initialize: function() {},
+    initialize: function(options) {
+        if(options) {
+            if (options.handleUploadSuccess) {
+                this.handleUploadSuccess = options.handleUploadSuccess;
+            }
+            if (options.url) {
+                this.url = options.url;
+            }
+        }
+    },
     onBeforeShow: function() {
         this.setupDropzone();
         this.setupBatchModel();
@@ -90,11 +101,15 @@ module.exports = Marionette.LayoutView.extend({
     },
     setupDropzone: function() {
         this.dropzone = new Dropzone(this.el.querySelector('.details-dropzone'), {
-            url: '/services/catalog/',
+            url: this.url,
             maxFilesize: 5000000, //MB
             method: 'post',
-            autoProcessQueue: false
+            autoProcessQueue: false,
+            headers: this.options.extraHeaders
         });
+        if (this.handleUploadSuccess) {
+            this.dropzone.on('success', this.handleUploadSuccess);
+        }
     },
     addFiles: function(){
         this.$el.find('.details-dropzone').click();

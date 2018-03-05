@@ -49,9 +49,9 @@ module.exports = Marionette.LayoutView.extend({
     },
     onBeforeShow: function() {
         this.ingestMenu.show(new NavigationView());
-        this.ingestDetails.show(new IngestDetails());
+        this.ingestDetails.show(new IngestDetails({url: '/services/catalog/'}));
     },
     showNewIngest: function(){
-        this.ingestDetails.show(new IngestDetails());
+        this.ingestDetails.show(new IngestDetails({url: '/services/catalog/'}));
     }
 });
