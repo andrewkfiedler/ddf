@@ -87,6 +87,18 @@ module.exports = Backbone.AssociatedModel.extend({
     getGeometries: function (attribute) {
         return this.get('metacard').getGeometries(attribute);
     },
+    hasExportActions() {
+        return this.getExportActions().length > 0;
+    },
+    getExportActions() {
+        return this.get('actions').filter((action) => action.id.indexOf('catalog.data.metacard.map.') !== 0);
+    },
+    hasMapActions() {
+        return this.getMapActions().length > 0;
+    },
+    getMapActions() {
+        return this.get('actions').filter((action) => action.id.indexOf('catalog.data.metacard.map.') === 0);
+    },
     refreshData: function () {
         //let solr flush
         setTimeout(function () {

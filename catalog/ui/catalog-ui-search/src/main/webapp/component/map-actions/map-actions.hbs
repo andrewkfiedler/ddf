@@ -12,15 +12,13 @@
  **/
  --}}
 {{#if mapActions}}
-    <h5 class="title" title="Map Actions">Map Actions</h5>
-    <hr/>
-    <table class="table table-striped metacard-table">
-        {{#each overlayActions}}
-            <tr>
-                <td>
-                    <a class="overlay-link" title="{{description}}" data-url="{{url}}">{{overlayText}}{{#is url ../currentOverlayUrl}} (remove){{/is}}</a>
-                </td>
-            </tr>
-        {{/each}}
-    </table>
+    <div class="is-header">Map Actions</h5>
+    <div/>
+    <div class="is-divider"></div>
+    {{#each overlayActions}}
+        <a data-url="{{this.url}}" class="overlay-link" title="{{description}}">
+         {{overlayText}}{{#is url ../currentOverlayUrl}} (remove){{/is}}
+        </a>
+    {{/each}}
+    <div class="is-divider"></div>
 {{/if}}

@@ -20,7 +20,8 @@ define([
     'js/CustomElements',
     './dropdown.companion.hbs',
     'js/Common',
-    'js/store'
+    'js/store',
+    'behaviors/navigation.behavior'
 ], function (Marionette, _, $, CustomElements, template, Common, store) {
 
     function drawing(event) {
@@ -309,9 +310,19 @@ define([
         }
     }, {
         getNewCompanionView: function (linkedView) {
-            return new this({
-                linkedView: linkedView
-            });
+            if (linkedView.options.navigationBehavior !== true) {
+                return new this({
+                    linkedView: linkedView
+                });
+            } else {
+                return new (this.extend({
+                    behaviors: {
+                        navigation: {}
+                    }
+                }))({
+                    linkedView: linkedView
+                });
+            }
         }
     });
 });

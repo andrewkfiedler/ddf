@@ -142,6 +142,7 @@ define([
                     label: options.label
                 }),
                 list: options.list,
+                navigationBehavior: options.navigationBehavior,
                 hasFiltering: options.hasFiltering,
                 componentToShow: options.componentToShow || SelectView,
                 isMultiSelect: options.isMultiSelect,

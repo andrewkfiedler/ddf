@@ -34,7 +34,12 @@ module.exports = Backbone.AssociatedModel.extend({
         {
             type: Backbone.Many,
             key: 'actions',
-            relatedModel: MetacardActionModel
+            collectionType: Backbone.Collection.extend({
+                model: MetacardActionModel,
+                comparator: function(c) {
+                    return c.get('title').toLowerCase();
+                }
+            })
         }
     ],
     defaults: {
