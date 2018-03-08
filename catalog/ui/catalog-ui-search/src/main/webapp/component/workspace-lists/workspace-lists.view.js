@@ -80,25 +80,22 @@ module.exports = Marionette.LayoutView.extend({
             }),
             workspaceLists: this.model
         }));
-        this.listenTo(this.listSelect.currentView.model, 'change:value', this.updateResultsList);
-        this.listenTo(this.listSelect.currentView.model, 'change:value', this.handleSelection);
-        this.listenTo(this.listSelect.currentView.model, 'change:value', this.handleEmptyList);
-        this.listenTo(this.model, 'remove update', this.handleEmptyLists);
-        this.listenTo(this.model, 'remove update', this.handleSelection);
-        this.listenTo(this.model, 'change:list.bookmarks', this.handleBookmarksChange);
+        this.listenTo(this.listSelect.currentView.model, 'change:value', this.handleUpdates);
+        this.listenTo(this.model, 'remove update change:list.bookmarks add', this.handleUpdates);
         this.listenTo(this.model, 'add', this.handleAdd);
-        this.updateResultsList();
-        this.handleEmptyLists();
-        this.handleEmptyList();
-        this.handleSelection();
+        this.handleUpdates();
     },
     handleAdd: function(newList, lists, options) {
         if (options.preventSwitch !== true) {
             this.listSelect.currentView.model.set('value', newList.id);
             this.listSelect.currentView.model.close();
-            this.handleEmptyLists();
-            this.handleSelection();
         }
+    },
+    handleUpdates: function(newList, lists, options) {
+        this.updateResultsList();
+        this.handleEmptyLists();
+        this.handleEmptyList();
+        this.handleSelection();
     },
     handleSelection: function() {
         this.$el.toggleClass('has-selection', this.model.get(this.listSelect.currentView.model.get('value')) !== undefined);
@@ -107,15 +104,6 @@ module.exports = Marionette.LayoutView.extend({
         this.$el.toggleClass('is-empty-lists', this.model.isEmpty());
         if (this.model.length === 1){
             this.listSelect.currentView.model.set('value', this.model.first().id);
-        }
-    },
-    handleBookmarksChange: function() {
-        if (this.model.get(selectedListId)
-            && !this.model.get(selectedListId).isEmpty()
-            && (this.listResults.currentView === undefined || this.listResults.currentView.model.id !== selectedListId)) {
-            this.updateResultsList();
-        } else {
-            this.handleEmptyList();
         }
     },
     handleEmptyList: function() {
@@ -129,7 +117,9 @@ module.exports = Marionette.LayoutView.extend({
         var listId = this.listSelect.currentView.model.get('value');
         if (listId){
             selectedListId = listId;
-            if (!this.model.get(selectedListId).isEmpty()) {
+            if (!this.model.get(selectedListId).isEmpty() && 
+                (this.listResults.currentView === undefined || 
+                    this.listResults.currentView.model.id !== selectedListId)) {
                 this.listResults.show(new ResultSelectorView({
                     model: this.model.get(selectedListId).get('query')
                 }));
