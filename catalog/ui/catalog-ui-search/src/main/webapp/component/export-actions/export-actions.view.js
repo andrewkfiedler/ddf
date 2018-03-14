@@ -13,22 +13,24 @@
  *
  **/
 /*global require*/
+const Marionette = require('marionette');
+const template = require('./export-actions.hbs');
+const CustomElements = require('js/CustomElements');
 
-var SaveView = require('../save.view');
-
-module.exports = SaveView.extend({
-    attributes: {
-        'data-help': 'Saves the workspace.',
-        title: 'Saves the workspace.'
+module.exports = Marionette.LayoutView.extend({
+    template: template,
+    tagName: CustomElements.register('export-actions'),
+    events: {
+        'click > div': 'triggerAction'
     },
-    initialize: function() {
-        this.listenTo(this.model, 'change', this.handleSaved);
+    triggerAction: function(e) {
+        window.open(e.target.getAttribute('data-url'));
     },
-    isSaved: function() {
-        return this.model.isSaved();
-    },
-    triggerSave: function(e) {
-        e.stopPropagation();
-        this.model.save();
+    serializeData: function() {
+        const exportActions = this.model.getExportActions();
+        return exportActions.map(action => ({
+            url: action.get('url'),
+            title: action.get('title').replace('Export as', '').replace('Export','')
+        }));
     }
 });

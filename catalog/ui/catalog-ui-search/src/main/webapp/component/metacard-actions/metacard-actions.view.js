@@ -27,7 +27,6 @@ define([
         setDefaultModel: function(){
             this.model = this.selectionInterface.getSelectedResults().first();
         },
-        className: 'is-list',
         template: template,
         tagName: CustomElements.register('metacard-actions'),
         regions: {
@@ -43,6 +42,13 @@ define([
             if (!options.model){
                 this.setDefaultModel();
             }
+        },
+        serializeData: function() {
+            const exportActions = this.model.getExportActions();
+            return exportActions.map(action => ({
+                url: action.get('url'),
+                title: action.get('title').replace('Export as', '').replace('Export','')
+            }));
         },
         onRender: function () {
             this.mapActions.show(new MapActions({ model: this.model }), {replaceElement: true});

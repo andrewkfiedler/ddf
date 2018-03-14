@@ -11,17 +11,8 @@
  *
  **/
  --}}
- <div class="is-divider"></div>
- <div class="is-header">
-    Export as:
- </div>
- <div class="is-divider"></div>
- <div class="actions">
-     {{#each this}}
-     <a href="{{this.url}}" target="_blank">
-         {{this.title}}
-     </a>
-    {{/each}}
- </div>
-<div class="is-divider"></div>
- <div class="map-actions"></div>
+{{#each this}}
+    <div data-url="{{this.url}}">
+        {{this.title}}
+    </div>
+{{/each}}
