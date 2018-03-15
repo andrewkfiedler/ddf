@@ -38,8 +38,6 @@ function updateDropzoneHeight(view) {
 
 module.exports = Marionette.LayoutView.extend({
     template: template,
-    handleUploadSuccess: undefined,
-    url: undefined,
     tagName: CustomElements.register('ingest-details'),
     events: {
         'click > .details-footer .footer-clear': 'newUpload',
@@ -55,21 +53,18 @@ module.exports = Marionette.LayoutView.extend({
     dropzone: undefined,
     uploadBatchModel: undefined,
     dropzoneAnimationRequestDetails: undefined,
-    initialize: function(options) {
-        if(options) {
-            if (options.handleUploadSuccess) {
-                this.handleUploadSuccess = options.handleUploadSuccess;
-            }
-            if (options.url) {
-                this.url = options.url;
-            }
-        }
+    triggerNewUpload: function() {
+        this.onBeforeDestroy();
+        this.render();
+        this.onBeforeShow();
     },
     onBeforeShow: function() {
         this.setupDropzone();
         this.setupBatchModel();
         this.showFiles();
         this.showSummary();
+        this.$el.removeClass();
+        this.handleUploadUpdate();
     },
     setupBatchModel: function() {
         this.uploadBatchModel = new UploadBatchModel({}, {
@@ -101,14 +96,14 @@ module.exports = Marionette.LayoutView.extend({
     },
     setupDropzone: function() {
         this.dropzone = new Dropzone(this.el.querySelector('.details-dropzone'), {
-            url: this.url,
+            url: this.options.url,
             maxFilesize: 5000000, //MB
             method: 'post',
             autoProcessQueue: false,
             headers: this.options.extraHeaders
         });
-        if (this.handleUploadSuccess) {
-            this.dropzone.on('success', this.handleUploadSuccess);
+        if (this.options.handleUploadSuccess) {
+            this.dropzone.on('success', this.options.handleUploadSuccess);
         }
     },
     addFiles: function(){
@@ -136,7 +131,7 @@ module.exports = Marionette.LayoutView.extend({
     newUpload: function() {
         this.$el.addClass('starting-new');
         setTimeout(function() {
-            this.triggerMethod('ingestDetails:new');
+            this.triggerNewUpload();
         }.bind(this), 250);
     },
     expandUpload: function() {
@@ -160,6 +155,7 @@ module.exports = Marionette.LayoutView.extend({
         $(window).off(namespacedEvent('resize', this));
     },
     onBeforeDestroy: function() {
-        $(window).off(namespacedEvent('resize', this));
+        this.stopListening(this.uploadBatchModel);
+        this.unlistenToResize();
     },
 });

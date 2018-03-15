@@ -142,6 +142,7 @@ module.exports = Marionette.LayoutView.extend({
     var addedIds = file.xhr.getResponseHeader('Added-IDs');
     if(addedIds) {
         this.model.addBookmarks(addedIds.split(','));
+        this.model.get('query').startSearchIfOutdated();
     }
   },
   serializeData: function() {
