@@ -17,6 +17,7 @@ define([
     'backbone',
     'marionette',
     'icanhaz',
+    'handlebars',
     'jquery',
     'poller',
     'js/wreqr',
@@ -29,7 +30,7 @@ define([
     'js/controllers/SystemUsage.controller',
     'text!templates/moduleTab.handlebars',
     'properties'
-], function (_, Backbone, Marionette, ich, $, poller, wreqr, Module, tabs, appHeader, header, footer, ModalController, SystemUsageController, moduleTab, Properties) {
+], function (_, Backbone, Marionette, ich, hbs, $, poller, wreqr, Module, tabs, appHeader, header, footer, ModalController, SystemUsageController, moduleTab, Properties) {
     'use strict';
 
     var Application = {};
@@ -40,7 +41,11 @@ define([
         if (!template) {
             return '';
         }
-        return ich[template](data);
+        if (typeof ich[template] === 'function') {
+            return ich[template](data);
+        } else {
+            return hbs.compile(template)(data);
+        }
     };
 
     // Setup initial templates that we know we'll need

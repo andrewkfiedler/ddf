@@ -16,7 +16,7 @@
 define([
         'marionette',
         'underscore',
-        'js/views/application/features/features.view',
+        'components/features/features.view',
         'js/views/EmptyView',
         'js/models/features/feature'
     ], function(Marionette, _, FeaturesView, EmptyView, FeatureModel){
@@ -28,46 +28,13 @@ define([
                 this.region = options.region;
             },
 
-            getFeatures: function(appName){
-                var self = this;
-                self.appName = appName;
-                var features = new FeatureModel.Collection({
-                    type: 'app',
-                    appName: appName
-                });
-                features.fetch({
-                    success: function(collection) {
-                        var featureView = self.getFeatureView({
-                            collection: collection
-                        });
-                        self.region.show(featureView);
-                        self.listenTo(featureView,"itemview:selected", self.onFeatureAction);
-                    }
-                });
-            },
-
-            show: function(appName){
-                var self = this;
-                self.appName = appName;
-                var features = new FeatureModel.Collection({
-                    type: 'app',
-                    appName: appName
-                });
-                features.fetch({
-                    success: function(collection) {
-                        var featureView = self.getFeatureView({
-                            collection: collection
-                        });
-                        self.region.show(featureView);
-                        self.listenTo(featureView,"itemview:selected", self.onFeatureAction);
-                    }
-                });
-            },
-
             showAll: function(){
+                if (this.region.currentView !== undefined) {
+                    this.region.currentView.collection.fetch();
+                    return;
+                }
                 var view = this;
                 var features = new FeatureModel.Collection({
-                    type: 'all'
                 });
                 features.fetch({
                     success: function(collection) {
@@ -76,19 +43,10 @@ define([
                             showWarnings: true
                         });
                         view.region.show(featureView);
-                        view.listenTo(featureView,"itemview:selected", view.onFeatureAction);
+                        view.listenTo(collection,"selected", view.onFeatureAction);
                     }
                 });
             },
-
-            showAppFeatures: function(){
-                if(this.appName){
-                    this.show(this.appName);
-                } else {
-                    this.showAll();
-                }
-            },
-
 
             getFeatureView: function(options) {
                 if (options.collection && options.collection.length) {
@@ -97,7 +55,7 @@ define([
                 return new EmptyView.view({message: 'No features are available for the "' + this.appName + '" application.'});
             },
 
-            onFeatureAction: function (view, model){
+            onFeatureAction: function (model){
                 var self = this;
                 var status = model.get("status");
                 var featureModel = new FeatureModel.Model({
@@ -108,7 +66,7 @@ define([
                     var install = featureModel.install();
                     if(install){
                         install.done(function() {
-                           self.showAppFeatures();
+                           self.showAll();
                         }).fail(function() {
                             if(console) {
                                 console.log("install failed for feature: " + featureModel.name + " app: " + self.appName);
@@ -119,7 +77,7 @@ define([
                     var uninstall = featureModel.uninstall();
                     if(uninstall){
                         uninstall.done(function() {
-                            self.showAppFeatures();
+                            self.showAll();
                         }).fail(function() {
                             if(console) {
                                 console.log("uninstall failed for feature: " + featureModel.name + " app: " + self.appName);

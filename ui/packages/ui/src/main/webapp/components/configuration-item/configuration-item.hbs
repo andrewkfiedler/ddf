@@ -11,32 +11,21 @@
  *
  **/
  --}}
-<div id="welcome" class="inner-content" style="display:none">
+<div>
+    <a href='#{{uuid}}' class='editLink' data-toggle="modal" data-backdrop="static" data-keyboard="false">
+        {{displayName}}
+    </a>
+    <div class="config-modal-container">
+        <div id="{{uuid}}" class="config-modal modal" tabindex="-1" role="dialog" aria-hidden="true">
 
-</div>
-<div id="configuration" class="inner-content" style="display:none">
-
-</div>
-<div id="guestClaims" class="inner-content" style="display:none">
-
-</div>
-<div id="applications" class="inner-content" style="display:none">
-
-</div>
-<div id="finish" class="inner-content" style="display:none">
-
-</div>
-<div id="profiles" class="inner-content" style="display:none">
-
-</div>
-<div id="navigation" class="bottom-navs">
-
-</div>
-<div class="loading" class="inner-content" style="display: none;">
-    <h4 align="center">
-        <span class="fa fa-refresh fa-spin fa-5x"></span>
-        <div>
-            Loading next step
         </div>
-    </h4>
+    </div>
+</div>
+<div>
+    {{bundle_name}}
+</div>
+<div>
+    {{#if hasFactory}}
+    <a href='#' class='removeLink glyphicon glyphicon-remove'></a>
+    {{/if}}
 </div>

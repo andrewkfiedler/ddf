@@ -56,8 +56,13 @@ define([
                 }));
             }
         },
-        handleTabShown: function(){
-            this.$('iframe').iFrameResize();
+        handleTabShown: function(id){
+            if (id === this.model.id) {
+                this.$('iframe').iFrameResize();
+                if (this.tabContentInner.currentView && this.tabContentInner.currentView.focus) {
+                    this.tabContentInner.currentView.focus();
+                }
+            }
         }
     });
 

@@ -22,13 +22,17 @@ define([
     'icanhaz',
     'underscore',
     'jquery',
-    './app-grid/AppCardCollection.view',
+    'components/application-item/application-item.collection.view',
     'js/wreqr.js',
+    'text!applicationGrid',
     'fileupload',
     'perfectscrollbar'
-], function(require, Backbone, Marionette, ich, _, $, AppCardCollectionView, wreqr) {
+], function(require, Backbone, Marionette, ich, _, $, AppCardCollectionView, wreqr, applicationGrid) {
     "use strict";
 
+    if(!ich.applicationGrid) {
+        ich.addTemplate('applicationGrid', applicationGrid);
+    }
 
     var Model = {};
 
@@ -74,8 +78,6 @@ define([
             'change input[name="options"]':'displayOptionChanged'
         },
         initialize: function (options) {
-            var self = this;
-
             this.modelClass = options.modelClass;
             this.showAddUpgradeBtn = options.showAddUpgradeBtn;
             if(this.modelClass) {
@@ -86,7 +88,9 @@ define([
 
                 this.response = new this.modelClass.Response();
                 this.model = Model.Collection;
-                this.response.fetch(self.model);
+                this.response.fetch().then(function(apps){
+                    this.model.reset(apps);
+                }.bind(this));
             }
             this.listenTo(wreqr.vent, 'app-grid:edit-mode-toggled', this.toggleEditMode);
         },

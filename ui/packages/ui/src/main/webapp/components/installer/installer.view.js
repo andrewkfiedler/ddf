@@ -12,26 +12,41 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-/*global define*/
+/*global define, setTimeout*/
 /** Main view page for add. */
 define([
     'marionette',
-    './Welcome.view',
-    './Navigation.view.js',
-    './Configuration.view.js',
-    './GuestClaims.view.js',
-    './Finish.view.js',
-    './Profile.view.js',
+    'js/views/installer/Welcome.view',
+    'components/installer-navigation/installer-navigation.view.js',
+    'js/views/installer/Configuration.view.js',
+    'js/views/installer/GuestClaims.view.js',
+    'js/views/installer/Finish.view.js',
+    'js/views/installer/Profile.view.js',
     'icanhaz',
-    'text!templates/installer/main.handlebars',
-    'js/application'
-    ], function (Marionette, WelcomeView, NavigationView, ConfigurationView, GuestClaimsView, FinishView,ProfileView, ich, mainTemplate, Application) {
+    'text!./installer.hbs',
+    'js/application',
+    'js/CustomElements',
+    'js/models/Service',
+    'js/models/installer/Configuration.js'
+    ], function (Marionette, WelcomeView, NavigationView, ConfigurationView, GuestClaimsView, FinishView,ProfileView, ich, mainTemplate, Application, CustomElements, Service, ConfigurationModel) {
 
     ich.addTemplate('mainTemplate', mainTemplate);
 
+    var serviceModelResponse = new Service.Response();
+    setTimeout(function() {
+        serviceModelResponse.fetch({
+            url: '/admin/jolokia/exec/org.codice.ddf.ui.admin.api.ConfigurationAdmin:service=ui,version=2.3.0/getClaimsConfiguration/(service.pid%3Dddf.security.sts.guestclaims)'
+        });
+    }, 5000);
+
+    var systemPropertiesWrapped = new ConfigurationModel.SystemPropertiesWrapped();
+    setTimeout(function() {
+        systemPropertiesWrapped.fetch();
+    }, 15000);
+
     var InstallerMainView = Marionette.Layout.extend({
         template: 'mainTemplate',
-        tagName: 'div',
+        tagName: CustomElements.register('installer'),
         className: 'container well well-main',
         regions: {
             welcome: '#welcome',
@@ -42,12 +57,13 @@ define([
             navigation: '#navigation'
         },
         onRender: function() {
-            this.changePage();
             this.navigation.show(new NavigationView({model: this.model}));
+            this.changePage();
             this.listenTo(this.model, 'change', this.changePage);
         },
         changePage: function() {
             //close whatever view is open
+            this.$el.toggleClass('is-loading', false);
             var welcomeStep = 0, guestClaimsStep = 1, profileStep = 2, configStep = 3,  finishStep = 4;
 
             if(this.welcome.currentView && this.model.get('stepNumber') !== welcomeStep) {
@@ -88,20 +104,33 @@ define([
             this.$(this.welcome.el).show();
         },
         showConfiguration: function() {
-            if(this.configuration.currentView) {
-                this.configuration.show();
+            if (systemPropertiesWrapped.get('fetched')) {
+                if(this.configuration.currentView) {
+                    this.configuration.show();
+                } else {
+                    this.configuration.show(new ConfigurationView({model: systemPropertiesWrapped.get('systemProperties'), navigationModel: this.model}));
+                }
+                this.$(this.configuration.el).show();
             } else {
-                this.configuration.show(new ConfigurationView({navigationModel: this.model}));
+                this.listenToOnce(systemPropertiesWrapped, 'change:fetched', this.changePage);
+                this.showLoading();
             }
-            this.$(this.configuration.el).show();
         },
         showGuestClaims: function() {
-            if(this.guestClaims.currentView) {
-                this.guestClaims.show();
+            if (serviceModelResponse.get('fetched')) {
+                if(this.guestClaims.currentView) {
+                    this.guestClaims.show();
+                } else {
+                    this.guestClaims.show(new GuestClaimsView({model: serviceModelResponse, navigationModel: this.model}));
+                }
+                this.$(this.guestClaims.el).show();
             } else {
-                this.guestClaims.show(new GuestClaimsView({navigationModel: this.model}));
+                this.listenToOnce(serviceModelResponse, 'change:fetched', this.changePage);
+                this.showLoading();
             }
-            this.$(this.guestClaims.el).show();
+        },
+        showLoading: function() {
+            this.$el.toggleClass('is-loading', true);
         },
         showFinish: function() {
             if(this.finish.currentView) {

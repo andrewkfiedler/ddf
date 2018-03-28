@@ -38,8 +38,8 @@ define([
         events: {
             'shown.bs.tab .nav-tabs>li>a': 'tabShown'
         },
-        tabShown: function(){
-            wreqr.vent.trigger('application:tabShown');
+        tabShown: function(e){
+            wreqr.vent.trigger('application:tabShown', e.target.getAttribute('href').substring(1));
         }
     });
 

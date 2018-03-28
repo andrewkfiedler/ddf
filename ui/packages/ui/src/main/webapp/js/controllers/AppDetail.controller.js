@@ -24,6 +24,8 @@ define([
     'q'
     ],function (Backbone, Marionette, wreqr, ApplicationDetailLayout, AppConfigPlugin,PluginTabContentView,PluginTabView,  Q) {
 
+    var appConfigPluginsCache = {};
+
     var AppDetailController = Marionette.Controller.extend({
 
         initialize: function(options){
@@ -34,7 +36,11 @@ define([
             var layoutView = new ApplicationDetailLayout({model: applicationModel});
             this.regions.applications.show(layoutView);
 
-            this.fetchAppConfigPlugins(applicationModel.get('name')).then(function(appConfigPlugins){
+            if (appConfigPluginsCache[applicationModel.get('name')] === undefined) {
+                appConfigPluginsCache[applicationModel.get('name')] = this.fetchAppConfigPlugins(applicationModel.get('name'));
+            }
+
+            appConfigPluginsCache[applicationModel.get('name')].then(function(appConfigPlugins){
                 //load the static ones
                 var staticApplicationPlugins = [
                     new Backbone.Model({

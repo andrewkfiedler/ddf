@@ -18,8 +18,9 @@ define([
     'icanhaz',
     'underscore',
     'js/wreqr.js',
-    'text!applicationInfo'
-    ],function (Marionette, ich, _, wreqr, applicationInfo) {
+    'text!./application-item.hbs',
+    'js/CustomElements'
+    ],function (Marionette, ich, _, wreqr, applicationInfo, CustomElements) {
     "use strict";
 
     if(!ich.applicationInfo) {
@@ -36,6 +37,7 @@ define([
     // Itemview for each individual application
     var AppInfoView = Marionette.Layout.extend({
         template: 'applicationInfo',
+        tagName: CustomElements.register('application-item'),
         className: 'grid-cell',
         regions: {
             modalRegion: '.modal-region'
