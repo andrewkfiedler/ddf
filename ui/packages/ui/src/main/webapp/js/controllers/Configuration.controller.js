@@ -19,7 +19,7 @@ define([
         'js/views/configuration/ConfigurationEdit.view',
         'js/models/Service',
         'js/wreqr.js',
-        'js/views/configuration/Service.view'
+        'components/application-services/application-services.view'
     ], function(Marionette, _, ConfigurationView, ConfigurationModel, wreqr, ServiceView){
         "use strict";
 
@@ -42,7 +42,7 @@ define([
                     configurations = new ConfigurationModel.Response({url: self.url});
                     configurations.fetch({
                         success: function () {
-                                self.servicePage = new ServiceView.ServicePage({model: configurations, url: self.url});
+                                self.servicePage = new ServiceView({model: configurations, url: self.url});
                                 self.region.show(self.servicePage);
                         }
                     });

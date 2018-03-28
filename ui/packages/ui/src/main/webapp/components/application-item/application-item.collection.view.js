@@ -20,18 +20,19 @@ define([
     'js/wreqr',
     'jquery',
     'underscore',
-    './AppCardItem.view',
-    'text!applicationGrid'
-    ],function (Backbone, Marionette, ich, wreqr, $, _, AppCardItemView, applicationGrid) {
+    './application-item.view',
+    'js/CustomElements',
+    'text!./application-item.collection.empty.hbs'
+    ],function (Backbone, Marionette, ich, wreqr, $, _, AppCardItemView, CustomElements, emptyTemplate) {
     "use strict";
-
-    if(!ich.applicationGrid) {
-        ich.addTemplate('applicationGrid', applicationGrid);
-    }
 
     // Collection of all the applications
     var AppCardCollectionView = Marionette.CollectionView.extend({
         itemView: AppCardItemView,
+        tagName: CustomElements.register('application-item-collection'),
+        emptyView: Marionette.ItemView.extend({
+            template: emptyTemplate
+        }),
         className: 'apps-grid list',
         itemViewOptions: {},
         modelEvents: {

@@ -12,5 +12,24 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-@import "init.less";
-@import "../components/components.less";
+@{customElementNamespace}installer {
+    display: block;
+
+    > .loading {
+        display: none;
+        height: 100%;
+    }
+
+    > .loading span {
+        margin-bottom: @mediumSpacing;
+    }
+}
+
+@{customElementNamespace}installer.is-loading {
+    > *:not(.loading) {
+        display: none;
+    }
+    > .loading {
+        display: block;
+    }
+}

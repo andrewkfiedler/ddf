@@ -35,6 +35,9 @@ define([
         },
         onRender: function(){
             this.controller.showAll();
+        },
+        focus: function() {
+            this.featureRegion.currentView.focus();
         }
     });
 

@@ -273,6 +273,15 @@ define(['backbone', 'jquery','backboneassociations'],function (Backbone, $) {
 
 
     Service.Response = Backbone.AssociatedModel.extend({
+        defaults: function() {
+            return {
+                request: undefined,
+                status: undefined,
+                timestamp: undefined,
+                value: undefined,
+                fetched: false
+            };
+        },
         relations: [
             {
                 type: Backbone.Many,
@@ -283,6 +292,9 @@ define(['backbone', 'jquery','backboneassociations'],function (Backbone, $) {
         ],
 
         initialize: function(options) {
+            this.listenTo(this, 'sync', function() {
+                this.set('fetched', true);
+            }.bind(this));
             if (options && options.url) {
                 this.url = options.url;
             } else {

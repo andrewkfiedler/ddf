@@ -12,5 +12,26 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-@import "init.less";
-@import "../components/components.less";
+/*global define, window*/
+define([
+    'marionette',
+    './feature-item.view',
+    'js/CustomElements'
+    ],function (Marionette, FeatureItemView, CustomElements) {
+
+    return Marionette.CollectionView.extend({
+        itemView: FeatureItemView,
+        itemViewOptions: function() {
+            return {
+                filter: this.options.filter
+            };
+        },
+        tagName: CustomElements.register('feature-item-collection'),
+        updateFilter: function(filter) {
+            this.children.forEach(function(childView) {
+                childView.updateFilter(filter);
+            });
+        }
+    });
+
+});

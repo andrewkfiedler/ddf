@@ -11,21 +11,16 @@
  *
  **/
  --}}
-<td class="column1 indent">
-    <a href='#{{uuid}}' class='editLink' data-toggle="modal" data-backdrop="static" data-keyboard="false">
-        {{displayName}}
-    </a>
-    <div class="config-modal-container">
-        <div id="{{uuid}}" class="config-modal modal" tabindex="-1" role="dialog" aria-hidden="true">
-
-        </div>
+<div class="features-header">
+    <div class="filter-title">
+        <input type="text" placeholder="Filter by name">
     </div>
-</td>
-<td class="column2">
-    {{bundle_name}}
-</td>
-<td class="column3">
-    {{#if hasFactory}}
-    <a href='#' class='removeLink glyphicon glyphicon-remove'></a>
-    {{/if}}
-</td>
+    <div class="filter-status">
+        <select>
+            <option value="All">All</option>
+            <option value="Installed">Installed</option>
+            <option value="Uninstalled">Uninstalled</option>
+        </select>
+    </div>
+</div>
+<div class="features"></div>

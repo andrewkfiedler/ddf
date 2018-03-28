@@ -1,4 +1,3 @@
-{{!--
 /**
  * Copyright (c) Codice Foundation
  *
@@ -10,11 +9,24 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
- --}}
-<div id="application-outline">
-    <div id="application-grid-layout" class="application-scroll scroll-area ps-container white">
-        <div class="apps-grids">
-            <div class="apps-grid-container installed"></div>
-        </div>
-    </div>
-</div>
+/*global define*/
+define([
+], function () {
+
+    var namespace = 'admin-';
+
+    var registry = {};
+
+    return {
+        register: function(name){
+            if (registry[name]){
+                throw Error('Multiple custom elements registered under the same name: ' + name);
+            }
+            registry[name] = true;
+            return namespace + name;
+        },
+        getNamespace: function() {
+            return namespace;
+        }
+    };
+});

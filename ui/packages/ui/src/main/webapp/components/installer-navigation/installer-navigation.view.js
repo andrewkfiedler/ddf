@@ -17,18 +17,19 @@
 define([
     'marionette',
     'icanhaz',
-    'text!templates/installer/navigation.handlebars',
-    'text!templates/installer/navigationButtons.handlebars',
+    'text!./installer-navigation.hbs',
+    'text!./installer-navigation-buttons.hbs',
     'backbone',
+    'js/CustomElements',
     'modelbinder'
-    ], function (Marionette, ich, navigationTemplate, navButtons, Backbone) {
+    ], function (Marionette, ich, navigationTemplate, navButtons, Backbone, CustomElements) {
 
     ich.addTemplate('navigationTemplate', navigationTemplate);
     ich.addTemplate('navButtons', navButtons);
 
     var WelcomeView = Marionette.ItemView.extend({
         template: 'navigationTemplate',
-        tagName: 'div',
+        tagName: CustomElements.register('installer-navigation'),
         events: {
             'click .previous': 'previous',
             'click .next': 'next',
@@ -50,11 +51,9 @@ define([
             this.modelBinder.unbind();
         },
         updateProgress: function() {
-            if(this.percentComplete !== this.model.get('percentComplete')) {
-                this.$(".progress-bar").animate({width: this.model.get('percentComplete')+'%'}, 0, 'swing');
-            }
+            var percentComplete = 100*(this.model.get('stepNumber') / this.model.get('totalSteps')) + '%';
+            this.$(".progress-bar").animate({width: percentComplete}, 0, 'swing');
             this.$(".pager").html(ich.navButtons(this.model.toJSON()));
-            this.percentComplete = this.model.get('percentComplete');
             this.$('.progress-text').show();
         },
         previous: function() {
