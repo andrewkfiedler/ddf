@@ -17,7 +17,7 @@ define([
     'backbone',
     'marionette',
     'js/wreqr.js',
-    'js/views/application/application-detail/ApplicationDetail.layout',
+    'components/application/application.view',
     'js/models/AppConfigPlugin',
     'js/views/application/application-detail/PluginTabContent.view',
     'js/views/application/application-detail/PluginTab.view',

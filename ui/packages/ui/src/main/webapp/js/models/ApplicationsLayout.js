@@ -103,14 +103,10 @@ define([
 
             if (this.has('description')) {
                 var desc = this.get('description');
-                var values = desc.match(/(.*)::(.*)/);
-                if (values !== null) {
-                    if (values.length >= 3) {   // 0=whole string, 1=description, 2=display name
-                        changeObj.description = values[1];
-                        if (values[2].length > 0) { // handle empty title - use default below
-                            changeObj.displayName = values[2];
-                        }
-                    }
+                var values = desc.split('::');
+                if (values.length > 1) {
+                    changeObj.description = values[0];
+                    changeObj.displayName = values[1];
                 }
             }
 

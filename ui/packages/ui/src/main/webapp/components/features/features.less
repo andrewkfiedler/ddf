@@ -1,15 +1,17 @@
 @{customElementNamespace}features {
     display: block;
-
+    padding: @minimumSpacing;
     > .features-header {
         white-space: nowrap;
-        padding: 0px @mediumSpacing;
+        padding: 0px @minimumSpacing;
 
         .filter-title {
             width: ~'calc(100% - 200px)';
             input {
                 max-width: 100%;
                 width: 250px; 
+                height: @minimumButtonSize;
+                padding: @minimumSpacing;
             }
         }
 

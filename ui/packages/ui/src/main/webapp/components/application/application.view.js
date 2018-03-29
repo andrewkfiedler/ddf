@@ -18,8 +18,9 @@ define([
     'marionette',
     'icanhaz',
     'js/wreqr',
-    'text!applicationDetailLayout'
-], function(Backbone, Marionette, ich, wreqr, applicationDetailLayout) {
+    'text!./application.hbs',
+    'js/CustomElements'
+], function(Backbone, Marionette, ich, wreqr, applicationDetailLayout, CustomElements) {
     "use strict";
 
     ich.addTemplate('applicationDetailLayout', applicationDetailLayout);
@@ -27,6 +28,8 @@ define([
 
     var DetailedApplicationLayout = Marionette.Layout.extend({
         template: 'applicationDetailLayout',
+        tagName: CustomElements.register('application'),
+        className: 'well',
         regions: {
             content: '.content',
             tabs: '.tab-container',

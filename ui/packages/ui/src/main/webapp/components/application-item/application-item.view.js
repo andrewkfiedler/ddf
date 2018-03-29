@@ -38,14 +38,28 @@ define([
     var AppInfoView = Marionette.Layout.extend({
         template: 'applicationInfo',
         tagName: CustomElements.register('application-item'),
-        className: 'grid-cell',
         regions: {
             modalRegion: '.modal-region'
         },
         events: {
             'click': 'selectApplication',
+            'keyup': 'emulateClick'
         },
-
+        emulateClick: function(e) {
+            if (e.target === this.el && (e.keyCode === 13 || e.keyCode === 32)) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.$el.mousedown().click();
+            } else if (e.keyCode === 27) {
+                this.$el.popover('hide');
+            }
+        },    
+        attributes: function() {
+            return {
+                id: this.model.get('appId')+ '-card',
+                tabindex: 0
+            };
+        },
         // Will disable functionality for certain applications
         serializeData: function () {
             var that = this;
@@ -61,6 +75,17 @@ define([
 
         selectApplication: function(){
             wreqr.vent.trigger('application:reqestSelection',this.model);
+        },
+        onRender: function() {
+            this.$el.popover({
+                content: this.model.get('description'),
+                trigger: 'hover focus',
+                placement: 'bottom',
+                container: 'body'
+            });
+        },
+        onBeforeClose: function() {
+            this.$el.popover('destroy');
         }
     });
 

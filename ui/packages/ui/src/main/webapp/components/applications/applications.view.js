@@ -24,10 +24,9 @@ define([
     'jquery',
     'components/application-item/application-item.collection.view',
     'js/wreqr.js',
-    'text!applicationGrid',
-    'fileupload',
-    'perfectscrollbar'
-], function(require, Backbone, Marionette, ich, _, $, AppCardCollectionView, wreqr, applicationGrid) {
+    'text!./applications.hbs',
+    'js/CustomElements'
+], function(require, Backbone, Marionette, ich, _, $, AppCardCollectionView, wreqr, applicationGrid, CustomElements) {
     "use strict";
 
     if(!ich.applicationGrid) {
@@ -64,7 +63,7 @@ define([
     // Main layout view for all the applications
     var ApplicationView = Marionette.Layout.extend({
         template: 'applicationGrid',
-        tagName: 'div',
+        tagName: CustomElements.register('applications'),
         className: 'full-height well',
         regions: {
             applicationGridButtons: '#application-grid-buttons',
@@ -100,7 +99,6 @@ define([
             _.defer(function() {
                 view.appsgridInstalled.show(new AppCardCollectionView({collection: view.model, AppShowState: ACTIVE_STATE}));
                 view.applicationGridButtons.show(new NewApplicationView({response: view.response}));
-                view.$('#application-grid-layout').perfectScrollbar();
             });
 
             this.listenTo(wreqr.vent, 'toggle:layout', this.toggleView);
