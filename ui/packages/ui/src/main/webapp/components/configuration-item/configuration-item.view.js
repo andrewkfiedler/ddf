@@ -17,7 +17,7 @@ define([
     'icanhaz',
     'underscore',
     'marionette',
-    'js/views/configuration/ConfigurationEdit.view',
+    'components/configuration-edit/configuration-edit.view',
     'js/wreqr.js',
     'text!./configuration-item.hbs',
     'js/CustomElements'

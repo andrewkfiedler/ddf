@@ -26,7 +26,7 @@ Type definitions
  int	BOOLEAN		= 11;
  int	PASSWORD	= 12;
  --}}
- <td>
+ <div>
      {{#if optionValues}}
          {{#is optionValues.length 0}}
              <input type="{{#is type 1}}text{{/is}}{{#is type 5}}text{{/is}}{{#is type 6}}text{{/is}}{{#is type 7}}text{{/is}}{{#is type 8}}text{{/is}}{{#is type 9}}text{{/is}}{{#is type 10}}text{{/is}}{{#is type 12}}password{{/is}}{{#is type 2}}number{{/is}}{{#is type 3}}number{{/is}}{{#is type 4}}number{{/is}}" class="metatype" name="value" value="{{value}}">
@@ -41,7 +41,7 @@ Type definitions
      {{else}}
          <input type="{{#is type 1}}text{{/is}}{{#is type 5}}text{{/is}}{{#is type 6}}text{{/is}}{{#is type 7}}text{{/is}}{{#is type 8}}text{{/is}}{{#is type 9}}text{{/is}}{{#is type 10}}text{{/is}}{{#is type 12}}password{{/is}}{{#is type 2}}number{{/is}}{{#is type 3}}number{{/is}}{{#is type 4}}number{{/is}}" class="metatype" name="value" value="{{value}}">
      {{/if}}
-</td>
-<td>
+</div>
+<div>
     <a href="#" class="fa fa-minus-square fa-lg minus-button"></a>
-</td>
+</div>

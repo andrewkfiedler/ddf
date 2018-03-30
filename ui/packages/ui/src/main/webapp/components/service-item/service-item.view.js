@@ -18,7 +18,7 @@ define([
     'underscore',
     'marionette',
     'js/models/Service',
-    'js/views/configuration/ConfigurationEdit.view',
+    'components/configuration-edit/configuration-edit.view',
     'js/wreqr.js',
     'text!./service-item.hbs',
     'js/CustomElements',
