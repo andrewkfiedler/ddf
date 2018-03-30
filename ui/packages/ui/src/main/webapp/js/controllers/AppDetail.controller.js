@@ -19,8 +19,8 @@ define([
     'js/wreqr.js',
     'components/application/application.view',
     'js/models/AppConfigPlugin',
-    'js/views/application/application-detail/PluginTabContent.view',
-    'js/views/application/application-detail/PluginTab.view',
+    'components/tab-content/tab-content.collection.view',
+    'components/tab-item/tab-item.collection.view',
     'q'
     ],function (Backbone, Marionette, wreqr, ApplicationDetailLayout, AppConfigPlugin,PluginTabContentView,PluginTabView,  Q) {
 
@@ -46,7 +46,7 @@ define([
                     new Backbone.Model({
                         'id': 'configurationApplicationTabID',
                         'displayName': 'Configuration',
-                        'javascriptLocation': 'js/views/application/plugins/config/Plugin.view.js'
+                        'javascriptLocation': 'components/application-services/application-services.view'
                     })
                 ];
 

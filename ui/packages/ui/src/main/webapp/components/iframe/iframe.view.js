@@ -12,25 +12,16 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-/*global define*/
+/* global define */
 define([
-    'backbone'
-],function (Backbone) {
+    'marionette',
+    'text!./iframe.hbs',
+    'js/CustomElements'
+    ],function (Marionette, template, CustomElements) {
 
-
-    var SystemInformation = {};
-
-    SystemInformation.Model = Backbone.Model.extend({
-        defaults: {
-            fetched: false
-        },
-        url: '/admin/jolokia/read/java.lang:type=Runtime/',
-        parse: function(resp){
-            resp.value.fetched = true;
-            return resp.value;
-        }
+    return Marionette.ItemView.extend({
+        template: template,
+        tagName: CustomElements.register('iframe'),
+        className: 'iframe-view'
     });
-
-    return SystemInformation;
-
 });

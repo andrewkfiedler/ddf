@@ -14,36 +14,47 @@
  **/
 /*global define*/
 define([
-        'marionette',
-        'underscore',
-        'jquery',
-        'moment',
-        'text!systemInformationTemplate',
-        'js/util/TimeUtil',
-        'js/util/UnitsUtil',
-        'icanhaz'
-    ],
-    function(Marionette, _, $, moment, SystemInformationTemplate, TimeUtil, UnitsUtil, ich){
-        'use strict';
+    'marionette',
+    'underscore',
+    'jquery',
+    'moment',
+    'text!./system-information.hbs',
+    'js/util/TimeUtil',
+    'js/util/UnitsUtil',
+    'js/CustomElements',
+    'q',
+    'js/models/module/SystemInformation',
+    'js/models/module/OperatingSystem'
+],
+function(Marionette, _, $, moment, template, TimeUtil, UnitsUtil, CustomElements, Q, SystemInformation, OperatingSystem){
+    'use strict';
 
-        if(!ich.systemInformationTemplate) {
-            ich.addTemplate('systemInformationTemplate', SystemInformationTemplate);
-        }
 
-
-        var FeaturesView = Marionette.ItemView.extend({
-            template: 'systemInformationTemplate',
-
-            serializeData: function() {
-                var systemData = this.options.systemInformation.toJSON();
-                var operatingSystemData = this.options.operatingSystem.toJSON();
+    var FeaturesView = Marionette.ItemView.extend({
+        template: template,
+        tagName: CustomElements.register('system-information'),
+        initialize: function() {
+            this.systemInformation = new SystemInformation.Model();
+            this.operatingSystem = new OperatingSystem.Model();
+            this.systemInformation.fetch();
+            this.operatingSystem.fetch();
+            this.listenTo(this.systemInformation, 'change:fetched', this.render);
+            this.listenTo(this.operatingSystem, 'change:fetched', this.render);
+        },
+        serializeData: function() {
+            var returnValue = {
+                fetched: false
+            };
+            if (this.systemInformation.get('fetched') && this.operatingSystem.get('fetched')) {
+                var systemData = this.systemInformation.toJSON();
+                var operatingSystemData = this.operatingSystem.toJSON();
                 var uptime = TimeUtil.convertUptimeToString(systemData.Uptime);
                 var usedMemory =  UnitsUtil.convertBytesToDisplay(operatingSystemData.TotalPhysicalMemorySize - operatingSystemData.FreePhysicalMemorySize);
                 var totalMemory = UnitsUtil.convertBytesToDisplay(operatingSystemData.TotalPhysicalMemorySize);
                 var freeMemory = UnitsUtil.convertBytesToDisplay(operatingSystemData.FreePhysicalMemorySize);
                 var startTime = moment(systemData.StartTime).toDate();
 
-                var returnValue = {
+                returnValue = {
                     systemInformation: systemData,
                     operatingSystem: operatingSystemData,
                     startTime: startTime,
@@ -52,13 +63,16 @@ define([
                     totalMemory: totalMemory,
                     freeMemory : freeMemory,
                     runtime: systemData.SystemProperties['java.runtime.name'],
-                    runtimeVersion: systemData.SystemProperties['java.runtime.version']
+                    runtimeVersion: systemData.SystemProperties['java.runtime.version'],
+                    fetched: true
                 };
 
-                return returnValue;
             }
-        });
 
-        return FeaturesView;
-    }
+            return returnValue;
+        }
+    });
+
+    return FeaturesView;
+}
 );

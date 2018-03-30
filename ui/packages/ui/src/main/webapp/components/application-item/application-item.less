@@ -21,17 +21,29 @@
 }
 
 @{customElementNamespace}application-item {
+    position: relative;
     display: inline-block;
     vertical-align: top;
     width: ~'calc(20% - @{mediumSpacing})';
-    min-width: 100px;
     height: 100px;
     cursor: pointer;
     padding: @largeSpacing;
     border: 1px solid rgba(0,0,0,.3);
     margin-right: @mediumSpacing;
     margin-top: @mediumSpacing;
-    text-align: left;
+    text-align: center;
+    font-size: 18px;
+
+
+    > div {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform:translateY(-50%) translateX(-50%);
+    }
 }
 
 @media (max-width: 1200px) {

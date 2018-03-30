@@ -17,8 +17,9 @@ define([
     'marionette',
     'text!./features.hbs',
     'js/CustomElements',
-    'components/feature-item/feature-item.collection.view'
-    ],function (Marionette, template, CustomElements, FeatureItemCollectionView) {
+    'components/feature-item/feature-item.collection.view',
+    'js/models/features/feature'
+    ],function (Marionette, template, CustomElements, FeatureItemCollectionView, FeatureModel) {
 
     return Marionette.Layout.extend({
         tagName: CustomElements.register('features'),
@@ -37,11 +38,14 @@ define([
             });
         },
         initialize: function(options) {
+            this.collection = new FeatureModel.Collection();
+            this.listenTo(this.collection,"selected", this.onFeatureAction);
+            this.collection.fetch();
         },
         onRender: function() {
             this.collectionRegion.show(new FeatureItemCollectionView({
-                collection: this.options.collection,
-                showWarnings: this.options.showWarnings,
+                collection: this.collection,
+                showWarnings: true,
                 filter: {
                     status: this.$el.find('> .features-header select').val(),
                     name: this.$el.find('> .features-header input').val()
@@ -50,6 +54,43 @@ define([
         },
         focus: function() {
             this.$el.find('> .features-header input').focus();
+        },
+        getFeatureView: function(options) {
+            if (options.collection && options.collection.length) {
+                return new FeaturesView(options);
+            }
+            return new EmptyView.view({message: 'No features are available for the "' + this.appName + '" application.'});
+        },
+        onFeatureAction: function (model){
+            var self = this;
+            var status = model.get("status");
+            var featureModel = new FeatureModel.Model({
+                name: model.get("name")
+            });
+            //TODO: add loading div...
+            if(status === "Uninstalled") {
+                var install = featureModel.install();
+                if(install){
+                    install.done(function() {
+                        self.collection.fetch();
+                    }).fail(function() {
+                        if(console) {
+                            console.log("install failed for feature: " + featureModel.name + " app: " + self.appName);
+                        }
+                    });
+                }
+            }else{
+                var uninstall = featureModel.uninstall();
+                if(uninstall){
+                    uninstall.done(function() {
+                        self.collection.fetch();
+                    }).fail(function() {
+                        if(console) {
+                            console.log("uninstall failed for feature: " + featureModel.name + " app: " + self.appName);
+                        }
+                    });
+                }
+            }
         }
     });
 

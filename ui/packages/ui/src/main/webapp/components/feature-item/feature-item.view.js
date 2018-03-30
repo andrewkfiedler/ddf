@@ -18,14 +18,9 @@ define([
     'marionette',
     'underscore',
     'text!./feature-item.hbs',
-    'icanhaz',
     'js/CustomElements'
-], function($,Marionette, _, FeatureRowTemplate, ich, CustomElements){
+], function($,Marionette, _, template, CustomElements){
     "use strict";
-
-    if(!ich.featureRowTemplate) {
-        ich.addTemplate('featureRowTemplate', FeatureRowTemplate);
-    }
 
     function testFilter(blob, filter) {
         var filtered = false;
@@ -45,7 +40,7 @@ define([
     }
 
     var FeatureRow = Marionette.ItemView.extend({
-        template: 'featureRowTemplate',
+        template: template,
         tagName: CustomElements.register('feature-item'),
         attributes: function() {
             return {

@@ -14,70 +14,31 @@
  **/
 /*global define, window*/
 define([
-    'icanhaz',
-    'underscore',
     'marionette',
     'js/models/Service',
-    'js/views/configuration/ConfigurationEdit.view',
-    'js/views/EmptyView',
-    'js/wreqr.js',
-    'js/views/Utils.js',
     'text!./application-services.hbs',
     'components/service-item/service-item.collection.view',
-    'js/CustomElements'
-    ],function (ich, _, Marionette, Service, ConfigurationEdit, EmptyView, wreqr, Utils, servicePage, ServiceItemCollectionView, CustomElements) {
-
-    ich.addTemplate('servicePage', servicePage);
+    'js/CustomElements',
+    'js/wreqr.js'
+    ],function (Marionette, Service, template, ServiceItemCollectionView, CustomElements, wreqr) {
 
     return Marionette.Layout.extend({
         tagName: CustomElements.register('application-services'),
-        template: 'servicePage',
+        template: template,
         regions: {
             collectionRegion: '.services'
         },
         initialize: function(options) {
-            _.bindAll.apply(_, [this].concat(_.functions(this)));
-            this.poller = options.poller;
-            this.listenTo(this.model, 'services:refresh', this.stopRefreshSpin);
-            if(this.poller){
-                this.listenTo(wreqr.vent, 'poller:stop', this.stopPoller);
-                this.listenTo(wreqr.vent, 'poller:start', this.startPoller);
-                this.listenTo(this.model, 'sync', this.triggerSync);
-            }
-            this.refreshButton = Utils.refreshButton('.refreshButton', this.refreshServices, this);
-            this.showWarnings = options.showWarnings;
-            this.url = options.url;
-        },
-        onShow: function() {
-            this.refreshButton.init();
-        },
-        onDestroy: function() {
-            this.refreshButton.cleanUp();
-        },
-        triggerSync: function() {
-            wreqr.vent.trigger('sync');
-        },
-        stopPoller: function() {
-            this.poller.stop();
-        },
-        startPoller: function() {
-            this.poller.start();
+            this.options.url = this.model ? 
+            "/admin/jolokia/exec/org.codice.ddf.admin.application.service.ApplicationService:service=application-service/getServices/" + this.model.get('appId') : undefined;
+            this.model = new Service.Response({url: this.options.url});
+            this.model.fetch();
+            this.listenTo(wreqr.vent, 'refreshConfigurations', function() {
+                this.model.fetch();
+            }.bind(this));
         },
         onRender: function() {
-            this.model.get("value").comparator = function( model ) {
-                return model.get('name');
-            };
-
-            var collection = this.model.get("value").sort();
-            this.collectionRegion.show(new ServiceItemCollectionView({ collection: collection, showWarnings: this.showWarnings }));
-        },
-        refreshServices: function() {
-            wreqr.vent.trigger('refreshConfigurations');
-        },
-        stopRefreshSpin: function(source) {
-            if (this.cid === source.view.cid) {
-                this.refreshButton.done();
-            }
+            this.collectionRegion.show(new ServiceItemCollectionView({ collection: this.model.get('value'), showWarnings: true }));
         }
     });
 

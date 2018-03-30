@@ -20,12 +20,8 @@ define([
     'js/wreqr.js',
     'text!./application-item.hbs',
     'js/CustomElements'
-    ],function (Marionette, ich, _, wreqr, applicationInfo, CustomElements) {
+    ],function (Marionette, ich, _, wreqr, template, CustomElements) {
     "use strict";
-
-    if(!ich.applicationInfo) {
-        ich.addTemplate('applicationInfo', applicationInfo);
-    }
 
     // List of apps that cannot have any actions performed on them through
     // the applications module
@@ -36,7 +32,7 @@ define([
 
     // Itemview for each individual application
     var AppInfoView = Marionette.Layout.extend({
-        template: 'applicationInfo',
+        template: template,
         tagName: CustomElements.register('application-item'),
         regions: {
             modalRegion: '.modal-region'
@@ -78,6 +74,7 @@ define([
         },
         onRender: function() {
             this.$el.popover({
+                title: this.model.get('displayName'),
                 content: this.model.get('description'),
                 trigger: 'hover focus',
                 placement: 'bottom',

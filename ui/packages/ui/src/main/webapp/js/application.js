@@ -35,6 +35,7 @@ define([
 
     var Application = {};
 
+    var cachedTemplates = {}; // as good as ich with less work
     // This was moved from the main.js file into here.
     // Since this modules has ui components, and it gets loaded before main.js, we need to init the renderer here for now until we sort this out.
     Marionette.Renderer.render = function (template, data) {
@@ -43,8 +44,11 @@ define([
         }
         if (typeof ich[template] === 'function') {
             return ich[template](data);
+        } else if (typeof cachedTemplates[template] === 'function') {
+            return cachedTemplates[template](data);
         } else {
-            return hbs.compile(template)(data);
+            cachedTemplates[template] = hbs.compile(template);
+            return cachedTemplates[template](data);
         }
     };
 

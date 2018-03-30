@@ -26,12 +26,8 @@ define([
     'js/wreqr.js',
     'text!./applications.hbs',
     'js/CustomElements'
-], function(require, Backbone, Marionette, ich, _, $, AppCardCollectionView, wreqr, applicationGrid, CustomElements) {
+], function(require, Backbone, Marionette, ich, _, $, AppCardCollectionView, wreqr, template, CustomElements) {
     "use strict";
-
-    if(!ich.applicationGrid) {
-        ich.addTemplate('applicationGrid', applicationGrid);
-    }
 
     var Model = {};
 
@@ -62,7 +58,7 @@ define([
 
     // Main layout view for all the applications
     var ApplicationView = Marionette.Layout.extend({
-        template: 'applicationGrid',
+        template: template,
         tagName: CustomElements.register('applications'),
         className: 'full-height well',
         regions: {

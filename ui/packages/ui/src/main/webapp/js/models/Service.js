@@ -278,7 +278,7 @@ define(['backbone', 'jquery','backboneassociations'],function (Backbone, $) {
                 request: undefined,
                 status: undefined,
                 timestamp: undefined,
-                value: undefined,
+                value: [],
                 fetched: false
             };
         },

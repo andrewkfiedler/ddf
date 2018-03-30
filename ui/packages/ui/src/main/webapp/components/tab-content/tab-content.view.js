@@ -17,19 +17,16 @@ define([
     'require',
     'marionette',
     'backbone',
-    'icanhaz',
-    'js/views/application/IFrameView.js',
-    'text!pluginTabContentItemView',
-    'text!pluginTabContentCollectionView',
+    'components/iframe/iframe.view.js',
+    'text!./tab-content.hbs',
     'js/wreqr.js',
+    'js/CustomElements',
     'iframeresizer'
-    ],function (require, Marionette, Backbone, ich, IFrameView, pluginTabContentItemView, pluginTabContentCollectionView, wreqr) {
+    ],function (require, Marionette, Backbone, IFrameView, template, wreqr, CustomElements) {
 
-    ich.addTemplate('pluginTabContentItemView', pluginTabContentItemView);
-    ich.addTemplate('pluginTabContentCollectionView', pluginTabContentCollectionView);
-
-    var ItemView = Marionette.Layout.extend({
-        template: 'pluginTabContentItemView',
+    return Marionette.Layout.extend({
+        template: template,
+        tagName: CustomElements.register('tab-content'),
         className: 'tab-pane fade',
         regions: {
             tabContentInner: '.tab-content-inner'
@@ -66,15 +63,4 @@ define([
         }
     });
 
-    var PluginTabContentsView = Marionette.CollectionView.extend({
-        className: 'tab-content',
-        itemView: ItemView,
-        itemViewOptions: function(){
-            return {
-                applicationModel: this.model
-            };
-        }
-    });
-
-    return PluginTabContentsView;
 });

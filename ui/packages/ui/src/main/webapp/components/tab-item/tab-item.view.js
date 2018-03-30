@@ -15,28 +15,21 @@
 /* global define */
 define([
     'marionette',
-    'icanhaz',
-    'js/controllers/Configuration.controller',
-    'text!templates/application/plugins/config/pluginView.handlebars'
-], function (Marionette, ich, ConfigurationController, configModulePluginViewTemplate) {
+    'text!./tab-item.hbs',
+    'js/CustomElements',
+    'js/wreqr.js'
+    ],function (Marionette, template, CustomElements, wreqr) {
 
-    ich.addTemplate('configModulePluginViewTemplate',configModulePluginViewTemplate);
-    var PluginView = Marionette.Layout.extend({
-        template: 'configModulePluginViewTemplate',
-
-        regions: {
-            configurationRegion: '.region'
+    return Marionette.ItemView.extend({
+        template: template,
+        tagName: CustomElements.register('tab-item'),
+        className: 'itemview',
+        triggerShown: function() {
+            wreqr.vent.trigger('application:tabShown', this.model.id);
+            this.$el.toggleClass('is-active', true);
         },
-        initialize: function(){
-            this.controller = new ConfigurationController({
-                region : this.configurationRegion
-            });
-        },
-        onRender: function(){
-            this.controller.show();
+        triggerHidden: function() {
+            this.$el.toggleClass('is-active', false);
         }
     });
-
-    return PluginView;
-
 });

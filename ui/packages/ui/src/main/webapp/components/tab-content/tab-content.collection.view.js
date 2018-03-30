@@ -15,15 +15,22 @@
 /* global define */
 define([
     'marionette',
-    'icanhaz',
-    'text!iframeView'
-    ],function (Marionette, ich, iframeView) {
+    './tab-content.view',
+    'js/wreqr.js',
+    'js/CustomElements',
+    'iframeresizer'
+    ],function (Marionette, TabContentView, wreqr, CustomElements) {
 
-    ich.addTemplate('iframeView',iframeView);
-
-    var IFrameView = Marionette.ItemView.extend({
-        template: 'iframeView',
-        className: 'iframe-view'
+    var PluginTabContentsView = Marionette.CollectionView.extend({
+        className: 'tab-content',
+        tagName: CustomElements.register('tab-content-collection'),
+        itemView: TabContentView,
+        itemViewOptions: function(){
+            return {
+                applicationModel: this.model
+            };
+        }
     });
-    return IFrameView;
+
+    return PluginTabContentsView;
 });

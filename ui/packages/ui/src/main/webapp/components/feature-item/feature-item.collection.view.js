@@ -16,10 +16,17 @@
 define([
     'marionette',
     './feature-item.view',
-    'js/CustomElements'
-    ],function (Marionette, FeatureItemView, CustomElements) {
+    'js/CustomElements',
+    'text!./feature-item.collection.empty.hbs'
+    ],function (Marionette, FeatureItemView, CustomElements, emptyTemplate) {
 
     return Marionette.CollectionView.extend({
+        initialize: function() {
+            this.listenTo(this.collection, 'sort', this.render);
+        },
+        emptyView: Marionette.ItemView.extend({
+            template: emptyTemplate
+        }),
         itemView: FeatureItemView,
         itemViewOptions: function() {
             return {
@@ -29,7 +36,7 @@ define([
         tagName: CustomElements.register('feature-item-collection'),
         updateFilter: function(filter) {
             this.children.forEach(function(childView) {
-                childView.updateFilter(filter);
+                childView.updateFilter && childView.updateFilter(filter);
             });
         }
     });

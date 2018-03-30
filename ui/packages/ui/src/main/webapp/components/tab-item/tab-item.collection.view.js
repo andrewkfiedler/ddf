@@ -15,28 +15,25 @@
 /* global define */
 define([
     'marionette',
-    'icanhaz',
-    'js/controllers/SystemInformation.controller',
-    'text!templates/application/plugins/config/pluginView.handlebars'
-], function (Marionette, ich, SystemInformationController, SystemInformationPluginViewTemplate) {
+    './tab-item.view',
+    'js/CustomElements'
+    ],function (Marionette, TabItemView, CustomElements) {
 
-    ich.addTemplate('systemInformationPluginViewTemplate',SystemInformationPluginViewTemplate);
-    var PluginView = Marionette.Layout.extend({
-        template: 'systemInformationPluginViewTemplate',
-
-        regions: {
-            configurationRegion: '.region'
+    return Marionette.CollectionView.extend({
+        tagName: CustomElements.register('tab-item-collection'),
+        itemView: TabItemView,
+        events: {
+            'shown.bs.tab': 'tabShown'
         },
-        initialize: function(){
-            this.controller = new SystemInformationController({
-                region : this.configurationRegion
+        tabShown: function(event){
+            var id = event.target.getAttribute('data-id');
+            this.children.each(function(childView) {
+                if (childView.model.id === id) {
+                    childView.triggerShown();
+                } else {
+                    childView.triggerHidden();
+                }
             });
-        },
-        onRender: function(){
-            this.controller.show();
         }
     });
-
-    return PluginView;
-
 });
