@@ -12,7 +12,7 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-/*global define, setTimeout*/
+/*global define*/
 /** Main view page for add. */
 define([
     'marionette',
@@ -33,16 +33,12 @@ define([
     ich.addTemplate('mainTemplate', mainTemplate);
 
     var serviceModelResponse = new Service.Response();
-    setTimeout(function() {
-        serviceModelResponse.fetch({
-            url: '/admin/jolokia/exec/org.codice.ddf.ui.admin.api.ConfigurationAdmin:service=ui,version=2.3.0/getClaimsConfiguration/(service.pid%3Dddf.security.sts.guestclaims)'
-        });
-    }, 0);
+    serviceModelResponse.fetch({
+        url: '/admin/jolokia/exec/org.codice.ddf.ui.admin.api.ConfigurationAdmin:service=ui,version=2.3.0/getClaimsConfiguration/(service.pid%3Dddf.security.sts.guestclaims)'
+    });
 
     var systemPropertiesWrapped = new ConfigurationModel.SystemPropertiesWrapped();
-    setTimeout(function() {
-        systemPropertiesWrapped.fetch();
-    }, 0);
+    systemPropertiesWrapped.fetch();
 
     var InstallerMainView = Marionette.Layout.extend({
         template: 'mainTemplate',

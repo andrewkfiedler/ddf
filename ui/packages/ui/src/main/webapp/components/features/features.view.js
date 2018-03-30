@@ -12,7 +12,7 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-/*global define, window, setTimeout*/
+/*global define, window*/
 define([
     'marionette',
     'text!./features.hbs',
