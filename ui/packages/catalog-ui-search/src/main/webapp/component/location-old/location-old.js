@@ -17,8 +17,9 @@ define([
     'usngs',
     'js/store',
     'js/Common',
-    'wreqr'
-], function (_, Backbone, wellknown, usngs, store, Common, wreqr) {
+    'wreqr',
+    'component/singletons/drawing.model-instance.js'
+], function (_, Backbone, wellknown, usngs, store, Common, wreqr, Drawing) {
 
     var converter = new usngs.Converter();
     var minimumDifference = 0.0001;
@@ -159,12 +160,12 @@ define([
         },
         notDrawing: function () {
             this.drawing = false;
-            store.get('content').turnOffDrawing();
+            Drawing.turnOffDrawing();
         },
 
         drawingOn: function () {
             this.drawing = true;
-            store.get('content').turnOnDrawing(this);
+            Drawing.turnOnDrawing(this);
         },
 
         repositionLatLonUtm: function(isDefined,parse,assign,clear) {
@@ -303,7 +304,7 @@ define([
             var lat = this.get('lat'),
                 lon = this.get('lon');
 
-            if (store.get('content').get('drawing') || this.get('locationType') === 'latlon') {
+            if (Drawing.isDrawing() || this.get('locationType') === 'latlon') {
 
             if (lat !== undefined && lon !== undefined) {
                 try {

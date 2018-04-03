@@ -17,6 +17,7 @@ var store = require('js/store');
 var ClusterView = require('./cluster.view');
 var Clustering = require('./Clustering');
 var metacardDefinitions = require('component/singletons/metacard-definitions');
+const Drawing = require('component/singletons/drawing.model-instance.js');
 
 var ClusterCollectionView = Marionette.CollectionView.extend({
     childView: ClusterView,
@@ -47,7 +48,7 @@ var ClusterCollectionView = Marionette.CollectionView.extend({
         });
     },
     onMapLeftClick: function(event, mapEvent) {
-        if (mapEvent.mapTarget && mapEvent.mapTarget !== 'userDrawing' && !store.get('content').get('drawing')) {
+        if (mapEvent.mapTarget && mapEvent.mapTarget !== 'userDrawing' && !Drawing.isDrawing()) {
             if (event.shiftKey) {
                 this.handleShiftClick(mapEvent.mapTarget);
             } else if (event.ctrlKey || event.metaKey) {

@@ -22,6 +22,7 @@ var store = require('js/store');
 var wreqr = require('wreqr');
 var sources = require('component/singletons/sources-instance');
 var properties = require('properties');
+const Drawing = require('component/singletons/drawing.model-instance.js');
 
 module.exports = Marionette.LayoutView.extend({
     template: template,
@@ -54,7 +55,7 @@ module.exports = Marionette.LayoutView.extend({
     },
     handleCancelDrawing: function(e){
         e.stopPropagation();
-        wreqr.vent.trigger('search:drawend', store.get('content').get('drawingModel'));
+        wreqr.vent.trigger('search:drawend', Drawing.getDrawingModel());
     },
     handleSaved: function(){
         var hasUnsaved = store.get('workspaces').some(function(workspace){

@@ -18,7 +18,7 @@ var template = require('./map.hbs');
 var Marionette = require('marionette');
 var CustomElements = require('js/CustomElements');
 var LoadingCompanionView = require('component/loading-companion/loading-companion.view');
-var store = require('js/store');
+var Drawing = require('component/singletons/drawing.model-instance.js');
 var GeometryCollectionView = require('./geometry.collection.view');
 var ClusterCollectionView = require('./cluster.collection.view');
 var ClusterCollection = require('./cluster.collection');
@@ -142,7 +142,7 @@ module.exports = Marionette.LayoutView.extend({
             throw 'Selection interface has not been provided';
         }
         this.mapModel = new MapModel();
-        this.listenTo(store.get('content'), 'change:drawing', this.handleDrawing);
+        this.listenTo(Drawing, 'change:drawing', this.handleDrawing);
         this.handleDrawing();
     },
     setupCollections: function() {
@@ -304,7 +304,7 @@ module.exports = Marionette.LayoutView.extend({
         this.clusterCollectionView.toggleActive();
     },
     handleDrawing: function() {
-        this.$el.toggleClass('is-drawing', store.get('content').get('drawing'));
+        this.$el.toggleClass('is-drawing', Drawing.isDrawing());
     },
     handleCurrentQuery: function() {
         this.removePreviousLocations();

@@ -16,6 +16,7 @@ var $ = require('jquery');
 var _ = require('underscore');
 var store = require('js/store');
 var GeometryView = require('./geometry.view');
+const Drawing = require('component/singletons/drawing.model-instance.js');
 
 var GeometryCollectionView = Marionette.CollectionView.extend({
     childView: GeometryView,
@@ -32,7 +33,7 @@ var GeometryCollectionView = Marionette.CollectionView.extend({
         this.render();
     },
     onMapLeftClick: function(event, mapEvent) {
-        if (mapEvent.mapTarget && mapEvent.mapTarget !== 'userDrawing' && !store.get('content').get('drawing')) {
+        if (mapEvent.mapTarget && mapEvent.mapTarget !== 'userDrawing' && !Drawing.isDrawing()) {
             if (event.shiftKey) {
                 this.handleShiftClick(mapEvent.mapTarget);
             } else if (event.ctrlKey || event.metaKey) {

@@ -20,7 +20,7 @@ define([
     'wreqr',
     './location-old.hbs',
     'maptype',
-    'js/store',
+    'component/singletons/drawing.model-instance.js',
     'js/CustomElements',
     './location-old',
     'js/CQLUtils',
@@ -29,7 +29,7 @@ define([
     'js/DistanceUtils',
     'js/ShapeUtils'
 ], function (require, $, Backbone, Marionette, _, properties, wreqr, template, maptype,
-             store, CustomElements, LocationOldModel, CQLUtils, Property, Announcement, 
+             Drawing, CustomElements, LocationOldModel, CQLUtils, Property, Announcement, 
              DistanceUtils, ShapeUtils) {
     var minimumDifference = 0.0001;
     var minimumBuffer = 0.000001;
@@ -82,7 +82,7 @@ define([
         updateMap: function() {
             if (!this.isDestroyed) {
                 var mode = this.model.get('mode');
-                if (mode !== undefined && store.get('content').get('drawing') !== true) {
+                if (mode !== undefined && !Drawing.isDrawing()) {
                     wreqr.vent.trigger('search:' + mode + 'display', this.model);
                 }
             }

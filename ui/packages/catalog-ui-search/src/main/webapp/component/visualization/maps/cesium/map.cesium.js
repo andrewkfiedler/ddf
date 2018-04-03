@@ -16,7 +16,7 @@ var _ = require('underscore');
 var Map = require('../map');
 var utility = require('./utility');
 var DrawingUtility = require('../DrawingUtility');
-var store = require('js/store');
+var Drawing = require('component/singletons/drawing.model-instance.js');
 
 var DrawBBox = require('js/widgets/cesium.bbox');
 var DrawCircle = require('js/widgets/cesium.circle');
@@ -72,13 +72,13 @@ function createMap(insertionElement) {
     viewer.scene.screenSpaceCameraController.zoomEventTypes = [Cesium.CameraEventType.WHEEL, Cesium.CameraEventType.PINCH];
 
     viewer.screenSpaceEventHandler.setInputAction(function() {
-        if (!store.get('content').get('drawing')){
+        if (!Drawing.isDrawing()){
              $('body').mousedown();
         }
     }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
 
     viewer.screenSpaceEventHandler.setInputAction(function() {
-        if (!store.get('content').get('drawing')){
+        if (!Drawing.isDrawing()){
              $('body').mousedown();
         }
     }, Cesium.ScreenSpaceEventType.RIGHT_DOWN);

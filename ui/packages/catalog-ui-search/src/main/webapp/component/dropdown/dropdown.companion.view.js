@@ -20,12 +20,12 @@ define([
     'js/CustomElements',
     './dropdown.companion.hbs',
     'js/Common',
-    'js/store',
+    'component/singletons/drawing.model-instance.js',
     'behaviors/navigation.behavior'
-], function (Marionette, _, $, CustomElements, template, Common, store) {
+], function (Marionette, _, $, CustomElements, template, Common, Drawing) {
 
     function drawing(event) {
-        return event.target.constructor === HTMLCanvasElement && store.get('content').get('drawing');
+        return event.target.constructor === HTMLCanvasElement && Drawing.isDrawing();
     }
 
     function hasRightRoom(left, element){

@@ -45,11 +45,6 @@ define([
             },
             {
                 type: Backbone.Many,
-                key: 'filteredQueries',
-                relatedModel: Query.Model
-            },
-            {
-                type: Backbone.Many,
                 key: 'activeSearchResults',
                 relatedModel: QueryResult
             },
@@ -65,29 +60,17 @@ define([
             queryId: undefined,
             savedItems: undefined,
             query: undefined,
-            state: undefined,
             results: [],  //list of metacards
-            filteredQueries: [],
-            editing: true,
             activeSearchResults: [],
             activeSearchResultsAttributes: [],
             completeActiveSearchResults: [],
-            completeActiveSearchResultsAttributes: [],
-            drawing: false,
-            drawingModel: undefined
+            completeActiveSearchResultsAttributes: []
         },
         initialize: function(){
-            this.listenTo(wreqr.vent, 'search:drawline', this.turnOnDrawing);
-            this.listenTo(wreqr.vent, 'search:drawcircle', this.turnOnDrawing);
-            this.listenTo(wreqr.vent, 'search:drawpoly', this.turnOnDrawing);
-            this.listenTo(wreqr.vent, 'search:drawbbox', this.turnOnDrawing);
-            this.listenTo(wreqr.vent, 'search:drawstop', this.turnOffDrawing);
-            this.listenTo(wreqr.vent, 'search:drawend', this.turnOffDrawing);
             this.listenTo(this.get('activeSearchResults'), 'update add remove reset', this.updateActiveSearchResultsAttributes);
             this.listenTo(this.get('completeActiveSearchResults'), 'update add remove reset', this.updateActiveSearchResultsFullAttributes);
         },
         updateActiveSearchResultsFullAttributes: function() {
-            this.clearSelectedResults();
             var availableAttributes = this.get('completeActiveSearchResults').reduce(function(currentAvailable, result) {
                 currentAvailable = _.union(currentAvailable, Object.keys(result.get('metacard').get('properties').toJSON()));
                 return currentAvailable;
@@ -112,24 +95,6 @@ define([
         }, 
         getActiveSearchResultsAttributes: function(){
             return this.get('activeSearchResultsAttributes');
-        },
-        turnOnDrawing: function(model){
-            this.set('drawing', true);
-            this.set('drawingModel', model);
-            $('html').toggleClass('is-drawing', true);
-        },
-        turnOffDrawing: function(){
-            this.set('drawing', false);
-            $('html').toggleClass('is-drawing', false);
-        },
-        isEditing: function(){
-            return this.get('editing');
-        },
-        turnOnEditing: function(){
-            this.set('editing', true);
-        },
-        turnOffEditing: function(){
-            this.set('editing', false);
         },
         getQuery: function(){
             return this.get('query');
@@ -157,15 +122,6 @@ define([
         },
         removeSelectedResult: function(metacard){
             this.getSelectedResults().remove(metacard);
-        },
-        filterQuery: function(queryRef) {
-            var filteredQueries = this.get('filteredQueries');
-            var filtered = Boolean(filteredQueries.get(queryRef));
-            if (filtered){
-                filteredQueries.remove(queryRef);
-            } else {
-                filteredQueries.add(queryRef);
-            }
         },
         setCurrentQuery: function(query){
             this.set('currentQuery', query);
