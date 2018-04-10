@@ -13,6 +13,7 @@
  */
 package ddf.catalog.source.solr;
 
+import static ddf.catalog.Constants.ADDITIONAL_SORTS_BYS;
 import static ddf.catalog.Constants.EXPERIMENTAL_FACET_RESULTS_KEY;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;
@@ -244,8 +245,6 @@ public class SolrProviderTest extends SolrProviderTestCase {
   protected static final double METERS_PER_KM = 1000.0;
 
   protected static final int ONE_HIT = 1;
-
-  private static final String EXT_SORT_BY = "additional.sort.bys";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SolrProviderTest.class);
 
@@ -4215,7 +4214,7 @@ public class SolrProviderTest extends SolrProviderTestCase {
     SortBy titleSort =
         new ddf.catalog.filter.impl.SortByImpl(Metacard.TITLE, SortOrder.ASCENDING.name());
     SortBy[] additionalSorts = new SortBy[] {relevanceSort, titleSort};
-    properties.put(EXT_SORT_BY, additionalSorts);
+    properties.put(ADDITIONAL_SORTS_BYS, additionalSorts);
     sourceResponse = provider.query(new QueryRequestImpl(query, properties));
 
     assertEquals(list.size(), sourceResponse.getResults().size());
@@ -4260,7 +4259,7 @@ public class SolrProviderTest extends SolrProviderTestCase {
     SortBy distanceSort =
         new ddf.catalog.filter.impl.SortByImpl(Result.DISTANCE, SortOrder.ASCENDING.name());
     SortBy[] additionalSorts = new SortBy[] {distanceSort};
-    properties.put(EXT_SORT_BY, additionalSorts);
+    properties.put(ADDITIONAL_SORTS_BYS, additionalSorts);
     sourceResponse = provider.query(new QueryRequestImpl(query, properties));
 
     assertEquals(list.size(), sourceResponse.getResults().size());
