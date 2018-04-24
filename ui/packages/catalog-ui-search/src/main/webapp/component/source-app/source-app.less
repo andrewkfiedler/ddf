@@ -1,8 +1,7 @@
 @{customElementNamespace}source-app {
     .customElement;
 
-    display: flex;
-    flex-direction: column;
+    display: block;
     height: 100%;
 
     .is-ack {
@@ -15,7 +14,8 @@
     }
 
     .is-iframe-div {
-        flex: 1;
+        overflow: hidden;
+        height: ~'calc(100% - @{minimumButtonSize})';
     }
 
 }

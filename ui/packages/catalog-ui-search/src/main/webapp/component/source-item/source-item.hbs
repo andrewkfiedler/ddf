@@ -19,9 +19,9 @@
 </div>
 <div class="source-actions">
     {{#each this.sourceActions}}
-    <div class="source-action" data-help="{{this.description}}">
-         <span class="fa fa-circle"></span>
-         <button class="action-button" data-title="{{this.title}}" data-url="{{this.url}}">
+    <div class="source-action">
+         <button class="action-button is-button" title="{{this.title}}: {{this.description}}" data-title="{{this.title}}" data-url="{{this.url}}" data-help="{{this.title}}: {{this.description}}">
+            <span class="fa fa-external-link"></span>
             <span>
                 {{this.title}}
             </span>
