@@ -120,7 +120,7 @@ define([
                     enum: this.sortAttributes,
 
                     value: [this.model.get('attribute')],
-                    id: 'Sort Attribute',
+                    id: 'Sort',
                     enumFiltering: true,
                     showLabel: !(this.index > 0)
                 })
@@ -183,7 +183,7 @@ define([
 
                     value: [this.model.get('direction')],
                     id: 'Sort Direction',
-                    showLabel: !(this.index > 0)
+                    showLabel: false
                 })
             }));
 
@@ -213,6 +213,7 @@ define([
             if (data.aliased === 'RELEVANCE') {
                 data.aliased = 'Best Text Match';
             }
+            data.top = this.index === 0;
             return data;
         }
     });
