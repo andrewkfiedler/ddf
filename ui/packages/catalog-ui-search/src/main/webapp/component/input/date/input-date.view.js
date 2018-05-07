@@ -19,7 +19,7 @@ define([
     'jquery',
     './input-date.hbs',
     'js/CustomElements',
-    'moment',
+    'moment-timezone',
     '../input.view',
     'js/Common',
     'component/singletons/user-instance',
@@ -28,6 +28,10 @@ define([
 
     function getDateFormat() {
         return user.get('user').get('preferences').get('timeFormat');
+    }
+
+    function getTimeZone() {
+        return user.get('user').get('preferences').get('timeZone');
     }
 
     return InputView.extend({
@@ -90,7 +94,7 @@ define([
         getCurrentValue: function(){
             var currentValue = this.$el.find('input').val();
             if (currentValue){
-                return (moment(currentValue, getDateFormat())).toISOString();
+                return (moment.tz(currentValue, getDateFormat(), getTimeZone())).toISOString();
             } else {
                 return null;
             }
