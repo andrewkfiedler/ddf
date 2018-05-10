@@ -211,11 +211,6 @@
                         </artifactItem>
                         <artifactItem>
                             <groupId>org.webjars.bower</groupId>
-                            <artifactId>moment-timezone</artifactId>
-                            <version>0.4.1</version>
-                        </artifactItem>
-                        <artifactItem>
-                            <groupId>org.webjars.bower</groupId>
                             <artifactId>perfect-scrollbar</artifactId>
                             <version>0.7.0</version>
                         </artifactItem>

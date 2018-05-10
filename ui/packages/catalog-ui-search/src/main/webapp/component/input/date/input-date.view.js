@@ -55,6 +55,7 @@ define([
         initializeDatepicker: function(){
             this.$el.find('.input-group.date').datetimepicker({
                 format: getDateFormat(),
+                timeZone: getTimeZone(),
                 widgetParent: 'body',
                 keyBinds: {
                     t: null
