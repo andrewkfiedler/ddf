@@ -20,7 +20,7 @@ var CustomElements = require('js/CustomElements');
 var Clipboard = require('clipboard');
 var announcement = require('component/announcement');
 var InspectorView = require('component/visualization/inspector/inspector.view');
-var HistogramView = require('component/visualization/histogram/histogram.view');
+const HistogramView = require('component/lazy-load/histogram/lazy-load.histogram.view');
 var SelectionInterfaceModel = require('component/selection-interface/selection-interface.model.js');
 var lightboxInstance = require('component/lightbox/lightbox.view.instance');
 

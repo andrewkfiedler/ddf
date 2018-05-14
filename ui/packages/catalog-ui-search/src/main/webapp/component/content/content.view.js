@@ -31,12 +31,11 @@ define([
     'js/Common',
     'component/metacard-title/metacard-title.view',
     'component/router/router',
-    'component/visualization/visualization.view',
     'component/query-title/query-title.view',
     'component/golden-layout/golden-layout.view'
 ], function (wreqr, Marionette, _, $, contentTemplate, CustomElements, MenuView, properties,
              WorkspaceContentTabs, WorkspaceContentTabsView, QueryTabsView, store,
-             MetacardTabsView, MetacardsTabsView, Common, MetacardTitleView, router, VisualizationView,
+             MetacardTabsView, MetacardsTabsView, Common, MetacardTitleView, router,
             QueryTitleView, GoldenLayoutView) {
 
     var debounceTime = 25;
