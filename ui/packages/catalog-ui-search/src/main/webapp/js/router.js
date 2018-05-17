@@ -12,288 +12,281 @@
 /*global define, window, setTimeout, location*/
 /* eslint-disable no-undefined */
 
-define([
-    'wreqr',
-    'jquery',
-    'backbone',
-    'marionette',
-    'js/store',
-    'component/confirmation/confirmation.view',
-    'application',
-    'component/content/content.view',
-    'component/workspaces/workspaces.view',
-    'component/metacard/metacard.view',
-    'component/metacard/metacard',
-    'js/model/Query',
-    'js/cql',
-    'component/alert/alert',
-    'component/alert/alert.view',
-    'component/ingest/ingest.view',
-    'component/router/router',
-    'component/singletons/user-instance',
-    'component/upload/upload',
-    'component/upload/upload.view',
-    'component/navigator/navigator.view',
-    'component/sources/sources.view',
-    'component/about/about.view',
-    'component/notfound/notfound.view',
-    'properties',
-    'component/announcement'
-], function (wreqr, $, Backbone, Marionette, store, ConfirmationView, Application, ContentView,
-             HomeView, MetacardView, metacardInstance, Query, cql, alertInstance, AlertView,
-            IngestView, router, user, uploadInstance, UploadView,
-            NavigatorView, SourcesView, AboutView, 
-            NotFoundView, properties, announcement) {
+const wreqr = require('wreqr')
+const $ = require('jquery')
+const Backbone = require('backbone')
+const Marionette = require('marionette')
+const store = require('js/store')
+const ConfirmationView = require('component/confirmation/confirmation.view')
+const Application = require('application')
+const ContentView = require('component/content/content.view')
+const HomeView = require('component/workspaces/workspaces.view')
+const MetacardView = require('component/metacard/metacard.view')
+const metacardInstance = require('component/metacard/metacard')
+const Query = require('js/model/Query')
+const cql = require('js/cql')
+const alertInstance = require('component/alert/alert')
+const AlertView = require('component/alert/alert.view')
+const IngestView = require('component/ingest/ingest.view')
+const router = require('component/router/router')
+const user = require('component/singletons/user-instance')
+const uploadInstance = require('component/upload/upload')
+const UploadView = require('component/upload/upload.view')
+const NavigatorView = require('component/navigator/navigator.view')
+const SourcesView = require('component/sources/sources.view')
+const AboutView = require('component/about/about.view')
+const NotFoundView = require('component/notfound/notfound.view')
+const properties = require('properties')
+const announcement = require('component/announcement')
 
-    function hideViews() {
-        Application.App.workspaceRegion.$el.addClass("is-hidden");
-        Application.App.workspacesRegion.$el.addClass("is-hidden");
-        Application.App.metacardRegion.$el.addClass("is-hidden");
-        Application.App.alertRegion.$el.addClass("is-hidden");
-        Application.App.ingestRegion.$el.addClass('is-hidden');
-        Application.App.uploadRegion.$el.addClass('is-hidden');
-        Application.App.sourcesRegion.$el.addClass('is-hidden');
-        Application.App.aboutRegion.$el.addClass('is-hidden');
-        Application.App.notFoundRegion.$el.addClass('is-hidden');
-    }
+function hideViews() {
+    Application.App.workspaceRegion.$el.addClass("is-hidden");
+    Application.App.workspacesRegion.$el.addClass("is-hidden");
+    Application.App.metacardRegion.$el.addClass("is-hidden");
+    Application.App.alertRegion.$el.addClass("is-hidden");
+    Application.App.ingestRegion.$el.addClass('is-hidden');
+    Application.App.uploadRegion.$el.addClass('is-hidden');
+    Application.App.sourcesRegion.$el.addClass('is-hidden');
+    Application.App.aboutRegion.$el.addClass('is-hidden');
+    Application.App.notFoundRegion.$el.addClass('is-hidden');
+}
 
-    var Router = Marionette.AppRouter.extend({
-        controller: {
-                openWorkspace() {},
-                home() {},
-                workspaces() {},
-                openMetacard() {},
-                openAlert() {},
-                openIngest() {},
-                openUpload() {},
-                openSources() {},
-                openAbout() {},
-                notFound() {}
-        },
-        appRoutes: {
-            'workspaces/:id': 'openWorkspace',
-            '(?*)': 'home',
-            'workspaces(/)': 'workspaces',
-            'metacards/:id': 'openMetacard',
-            'alerts/:id': 'openAlert',
-            'ingest(/)': 'openIngest',
-            'uploads/:id': 'openUpload',
-            'sources(/)': 'openSources',
-            'about(/)': 'openAbout',
-            '*path': 'notFound'
-        },
-        initialize: function(){
-            if (window.location.search.indexOf('lowBandwidth') !== -1) {
-                router.set({
-                    lowBandwidth: true
-                });
-            }
-            this.listenTo(wreqr.vent, 'router:navigate', this.handleNavigate);
-            /*
-               HACK:  listeners for the router aren't setup (such as the onRoute or controller)
-                    until after initialize is done.  SetTimeout (with timeout of 0) pushes this
-                    navigate onto the end of the current execution queue
-             */
-            setTimeout(function(){
-                var currentFragment = location.hash;
-                Backbone.history.fragment = undefined;
-                this.navigate(currentFragment, {trigger: true});
-            }.bind(this), 0);
-        },
-        handleNavigate: function(args){
-              this.navigate(args.fragment, args.options);
-        },
-        onRoute: function(name, path, args){
-            hideViews();
-            var self = this;
-            var queryForMetacards, queryForMetacard;
-            switch(name){
-                case 'openWorkspace':
-                    var workspaceId = args[0];
-                    if (store.get('workspaces').get(workspaceId)!==undefined) {
-                        if (Application.App.workspaceRegion.currentView===undefined) {
-                            Application.App.workspaceRegion.show(new ContentView());
-                        }
-                        store.setCurrentWorkspaceById(workspaceId);
-                        Application.App.workspaceRegion.$el.removeClass('is-hidden');
-                        this.updateRoute(name, path, args);
-                    } else {
-                        this.onRoute('notFound');
+var Router = Marionette.AppRouter.extend({
+    controller: {
+            openWorkspace() {},
+            home() {},
+            workspaces() {},
+            openMetacard() {},
+            openAlert() {},
+            openIngest() {},
+            openUpload() {},
+            openSources() {},
+            openAbout() {},
+            notFound() {}
+    },
+    appRoutes: {
+        'workspaces/:id': 'openWorkspace',
+        '(?*)': 'home',
+        'workspaces(/)': 'workspaces',
+        'metacards/:id': 'openMetacard',
+        'alerts/:id': 'openAlert',
+        'ingest(/)': 'openIngest',
+        'uploads/:id': 'openUpload',
+        'sources(/)': 'openSources',
+        'about(/)': 'openAbout',
+        '*path': 'notFound'
+    },
+    initialize: function(){
+        if (window.location.search.indexOf('lowBandwidth') !== -1) {
+            router.set({
+                lowBandwidth: true
+            });
+        }
+        this.listenTo(wreqr.vent, 'router:navigate', this.handleNavigate);
+        /*
+            HACK:  listeners for the router aren't setup (such as the onRoute or controller)
+                until after initialize is done.  SetTimeout (with timeout of 0) pushes this
+                navigate onto the end of the current execution queue
+            */
+        setTimeout(function(){
+            var currentFragment = location.hash;
+            Backbone.history.fragment = undefined;
+            this.navigate(currentFragment, {trigger: true});
+        }.bind(this), 0);
+    },
+    handleNavigate: function(args){
+            this.navigate(args.fragment, args.options);
+    },
+    onRoute: function(name, path, args){
+        hideViews();
+        var self = this;
+        var queryForMetacards, queryForMetacard;
+        switch(name){
+            case 'openWorkspace':
+                var workspaceId = args[0];
+                if (store.get('workspaces').get(workspaceId)!==undefined) {
+                    if (Application.App.workspaceRegion.currentView===undefined) {
+                        Application.App.workspaceRegion.show(new ContentView());
                     }
-                    break;
-                case 'openMetacard':
-                    var metacardId = args[0];
-                    queryForMetacard = new Query.Model({
+                    store.setCurrentWorkspaceById(workspaceId);
+                    Application.App.workspaceRegion.$el.removeClass('is-hidden');
+                    this.updateRoute(name, path, args);
+                } else {
+                    this.onRoute('notFound');
+                }
+                break;
+            case 'openMetacard':
+                var metacardId = args[0];
+                queryForMetacard = new Query.Model({
+                    cql: cql.write({
+                        type: 'AND',
+                        filters: [{
+                            type: '=',
+                            value: metacardId,
+                            property: '"id"'
+                        }, {
+                            type: 'ILIKE',
+                            value: '*',
+                            property: '"metacard-tags"'
+                        }]
+                    }),
+                    federation: 'enterprise'
+                });
+                if (metacardInstance.get('currentQuery')){
+                    metacardInstance.get('currentQuery').cancelCurrentSearches();
+                }
+                queryForMetacard.startSearch();
+                metacardInstance.set({
+                    'currentMetacard': undefined,
+                    'currentResult': queryForMetacard.get('result'),
+                    'currentQuery': queryForMetacard
+                });
+                if (Application.App.metacardRegion.currentView === undefined) {
+                    Application.App.metacardRegion.show(new MetacardView());
+                }
+                Application.App.metacardRegion.$el.removeClass('is-hidden');
+                self.updateRoute(name, path, args);
+                break;
+            case 'openAlert':
+                var alertId = args[0];
+                var alert = user.get('user').get('preferences').get('alerts').get(alertId);
+                if (!alert) {
+                    this.onRoute('notFound');
+                } else {
+                    queryForMetacards = new Query.Model({
                         cql: cql.write({
-                          type: 'AND',
-                          filters: [{
-                              type: '=',
-                              value: metacardId,
-                              property: '"id"'
-                          }, {
-                              type: 'ILIKE',
-                              value: '*',
-                              property: '"metacard-tags"'
-                          }]
+                            type: 'OR',
+                            filters: alert.get('metacardIds').map(function(metacardId){
+                                return {
+                                    type: '=',
+                                    value: metacardId,
+                                    property: '"id"'
+                                };
+                            })
                         }),
                         federation: 'enterprise'
                     });
-                    if (metacardInstance.get('currentQuery')){
-                        metacardInstance.get('currentQuery').cancelCurrentSearches();
+                    if (alertInstance.get('currentQuery')){
+                        alertInstance.get('currentQuery').cancelCurrentSearches();
                     }
-                    queryForMetacard.startSearch();
-                    metacardInstance.set({
-                        'currentMetacard': undefined,
-                        'currentResult': queryForMetacard.get('result'),
-                        'currentQuery': queryForMetacard
+                    queryForMetacards.startSearch();
+                    alertInstance.set({
+                        currentResult: queryForMetacards.get('result'),
+                        currentAlert: alert,
+                        currentQuery: queryForMetacards
                     });
-                    if (Application.App.metacardRegion.currentView === undefined) {
-                        Application.App.metacardRegion.show(new MetacardView());
+                    if (Application.App.alertRegion.currentView === undefined) {
+                        Application.App.alertRegion.show(new AlertView());
                     }
-                    Application.App.metacardRegion.$el.removeClass('is-hidden');
+                    Application.App.alertRegion.$el.removeClass('is-hidden');
+                    var workspace = store.get('workspaces').filter(function(workspace){
+                        return workspace.get('queries').get(alert.get('queryId'));
+                    })[0];
+                    if (workspace){
+                        store.setCurrentWorkspaceById(workspace.id);
+                    }
                     self.updateRoute(name, path, args);
-                    break;
-                case 'openAlert':
-                    var alertId = args[0];
-                    var alert = user.get('user').get('preferences').get('alerts').get(alertId);
-                    if (!alert) {
-                        this.onRoute('notFound');
-                    } else {
-                        queryForMetacards = new Query.Model({
-                            cql: cql.write({
-                                type: 'OR',
-                                filters: alert.get('metacardIds').map(function(metacardId){
-                                    return {
-                                        type: '=',
-                                        value: metacardId,
-                                        property: '"id"'
-                                    };
-                                })
-                            }),
-                            federation: 'enterprise'
-                        });
-                        if (alertInstance.get('currentQuery')){
-                            alertInstance.get('currentQuery').cancelCurrentSearches();
-                        }
-                        queryForMetacards.startSearch();
-                        alertInstance.set({
-                            currentResult: queryForMetacards.get('result'),
-                            currentAlert: alert,
-                            currentQuery: queryForMetacards
-                        });
-                        if (Application.App.alertRegion.currentView === undefined) {
-                            Application.App.alertRegion.show(new AlertView());
-                        }
-                        Application.App.alertRegion.$el.removeClass('is-hidden');
-                        var workspace = store.get('workspaces').filter(function(workspace){
-                            return workspace.get('queries').get(alert.get('queryId'));
-                        })[0];
-                        if (workspace){
-                            store.setCurrentWorkspaceById(workspace.id);
-                        }
-                        self.updateRoute(name, path, args);
-                    }
-                    break;
-                case 'openUpload':
-                    var uploadId = args[0];
-                    var upload = user.get('user').get('preferences').get('uploads').get(uploadId);
-                    if (!upload) {
-                        this.onRoute('notFound');
-                    } else {
-                        queryForMetacards = new Query.Model({
-                            cql: cql.write({
-                                type: 'OR',
-                                filters: upload.get('uploads').filter(function(file){
-                                    return file.id;
-                                }).map(function(file){
-                                    return {
-                                        type: '=',
-                                        value: file.id,
-                                        property: '"id"'
-                                    };
-                                }).concat({
+                }
+                break;
+            case 'openUpload':
+                var uploadId = args[0];
+                var upload = user.get('user').get('preferences').get('uploads').get(uploadId);
+                if (!upload) {
+                    this.onRoute('notFound');
+                } else {
+                    queryForMetacards = new Query.Model({
+                        cql: cql.write({
+                            type: 'OR',
+                            filters: upload.get('uploads').filter(function(file){
+                                return file.id;
+                            }).map(function(file){
+                                return {
                                     type: '=',
-                                    value: '-1',
+                                    value: file.id,
                                     property: '"id"'
-                                })
-                            }),
-                            federation: 'enterprise'
-                        });
-                        if (uploadInstance.get('currentQuery')){
-                            uploadInstance.get('currentQuery').cancelCurrentSearches();
-                        }
-                        queryForMetacards.startSearch();
-                        uploadInstance.set({
-                            currentResult: queryForMetacards.get('result'),
-                            currentUpload: upload,
-                            currentQuery: queryForMetacards
-                        });
-                        uploadInstance.trigger('change:currentUpload', upload);
-                        if (Application.App.uploadRegion.currentView === undefined) {
-                            Application.App.uploadRegion.show(new UploadView());
-                        }
-                        Application.App.uploadRegion.$el.removeClass('is-hidden');
-                        self.updateRoute(name, path, args);
+                                };
+                            }).concat({
+                                type: '=',
+                                value: '-1',
+                                property: '"id"'
+                            })
+                        }),
+                        federation: 'enterprise'
+                    });
+                    if (uploadInstance.get('currentQuery')){
+                        uploadInstance.get('currentQuery').cancelCurrentSearches();
                     }
-                    break;
-                case 'openIngest':
-                    if (!properties.isUploadEnabled()) {
-                        this.onRoute('notFound');
-                        return;
+                    queryForMetacards.startSearch();
+                    uploadInstance.set({
+                        currentResult: queryForMetacards.get('result'),
+                        currentUpload: upload,
+                        currentQuery: queryForMetacards
+                    });
+                    uploadInstance.trigger('change:currentUpload', upload);
+                    if (Application.App.uploadRegion.currentView === undefined) {
+                        Application.App.uploadRegion.show(new UploadView());
                     }
-                    if (Application.App.ingestRegion.currentView === undefined){
-                        Application.App.ingestRegion.show(new IngestView());
-                    }
-                    Application.App.ingestRegion.$el.removeClass('is-hidden');
-                    this.updateRoute(name, path, args);
-                    break;
-                case 'home':
-                    if (Application.App.workspacesRegion.currentView===undefined) {
-                        Application.App.workspacesRegion.show(new HomeView());
-                    }
-                    Application.App.workspacesRegion.$el.removeClass('is-hidden');
-                    this.updateRoute(name, path, args);
-                    break;
-                case 'workspaces':
-                    if (Application.App.workspacesRegion.currentView===undefined) {
-                        Application.App.workspacesRegion.show(new HomeView());
-                    }
-                    Application.App.workspacesRegion.$el.removeClass('is-hidden');
-                    this.updateRoute(name, path, args);
-                    break;
-                case 'openSources':
-                    if (Application.App.sourcesRegion.currentView === undefined) {
-                        Application.App.sourcesRegion.show(new SourcesView());
-                    }
-                    Application.App.sourcesRegion.$el.removeClass('is-hidden');
-                    this.updateRoute(name, path, args);
-                    break;
-                case 'openAbout':
-                    if (Application.App.aboutRegion.currentView === undefined) {
-                        Application.App.aboutRegion.show(new AboutView());
-                    }
-                    Application.App.aboutRegion.$el.removeClass('is-hidden');
-                    this.updateRoute(name, path, args);
-                    break;
-                case 'notFound':
-                    if (Application.App.notFoundRegion.currentview === undefined) {
-                        Application.App.notFoundRegion.show(new NotFoundView());
-                    } 
-                    Application.App.notFoundRegion.$el.removeClass('is-hidden');
-                    this.updateRoute(name, path, args);
-                    break;
-            }
-        },
-        updateRoute: function(name, path, args){
-            router.set({
-                name: name,
-                path: path,
-                args: args
-            });
-            $(window).trigger('resize');
-            wreqr.vent.trigger('resize');
+                    Application.App.uploadRegion.$el.removeClass('is-hidden');
+                    self.updateRoute(name, path, args);
+                }
+                break;
+            case 'openIngest':
+                if (!properties.isUploadEnabled()) {
+                    this.onRoute('notFound');
+                    return;
+                }
+                if (Application.App.ingestRegion.currentView === undefined){
+                    Application.App.ingestRegion.show(new IngestView());
+                }
+                Application.App.ingestRegion.$el.removeClass('is-hidden');
+                this.updateRoute(name, path, args);
+                break;
+            case 'home':
+                if (Application.App.workspacesRegion.currentView===undefined) {
+                    Application.App.workspacesRegion.show(new HomeView());
+                }
+                Application.App.workspacesRegion.$el.removeClass('is-hidden');
+                this.updateRoute(name, path, args);
+                break;
+            case 'workspaces':
+                if (Application.App.workspacesRegion.currentView===undefined) {
+                    Application.App.workspacesRegion.show(new HomeView());
+                }
+                Application.App.workspacesRegion.$el.removeClass('is-hidden');
+                this.updateRoute(name, path, args);
+                break;
+            case 'openSources':
+                if (Application.App.sourcesRegion.currentView === undefined) {
+                    Application.App.sourcesRegion.show(new SourcesView());
+                }
+                Application.App.sourcesRegion.$el.removeClass('is-hidden');
+                this.updateRoute(name, path, args);
+                break;
+            case 'openAbout':
+                if (Application.App.aboutRegion.currentView === undefined) {
+                    Application.App.aboutRegion.show(new AboutView());
+                }
+                Application.App.aboutRegion.$el.removeClass('is-hidden');
+                this.updateRoute(name, path, args);
+                break;
+            case 'notFound':
+                if (Application.App.notFoundRegion.currentview === undefined) {
+                    Application.App.notFoundRegion.show(new NotFoundView());
+                } 
+                Application.App.notFoundRegion.$el.removeClass('is-hidden');
+                this.updateRoute(name, path, args);
+                break;
         }
-    });
-
-    return new Router();
+    },
+    updateRoute: function(name, path, args){
+        router.set({
+            name: name,
+            path: path,
+            args: args
+        });
+        $(window).trigger('resize');
+        wreqr.vent.trigger('resize');
+    }
 });
+
+module.exports = new Router();
