@@ -42,11 +42,16 @@ define([
         onRender: function(){
             var view = this;
             var iframeLocation = view.model.get('iframeLocation');
-            var jsLocation = view.model.get('javascriptLocation');
+            var jsLocation = view.model.get('javascriptLocation') || view.model.get('jsLocation');
             if(jsLocation){
                 require([jsLocation], function(TabView){
-                    var newView = new TabView({model: view.applicationModel});
-                    view.tabContentInner.show(newView);
+                    if(TabView && TabView.start) {
+                        TabView.start();
+                        view.module = TabView;
+                    } else if (TabView) {
+                        var newView = new TabView({model: view.applicationModel});
+                        view.tabContentInner.show(newView);
+                    }
                 });
             } else if(iframeLocation){
                 view.tabContentInner.show(new IFrameView({

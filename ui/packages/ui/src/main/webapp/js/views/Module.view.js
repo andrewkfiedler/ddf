@@ -17,15 +17,6 @@ define([
         'iframeresizer'
     ],function(Marionette, $, Application) {
 
-//    $(window).resize(function() {
-//        var width = $('body').width();
-//        var containerWidth = $('.container').css('width');
-//        containerWidth.replace('px', '');
-//
-//
-//        $('#content').height(height);
-//    });
-
     var ModuleView = Marionette.Layout.extend({
         template: 'tabs',
         className: 'relative full-height',

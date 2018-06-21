@@ -31,6 +31,11 @@ define([
         triggerHidden: function() {
             wreqr.vent.trigger('application:tabHidden', this.model.id);
             this.$el.toggleClass('is-active', false);
+        },
+        serializeData: function() {
+            var modelJSON = this.model.toJSON();
+            modelJSON.displayName = modelJSON.displayName || modelJSON.name;
+            return modelJSON;
         }
     });
 });

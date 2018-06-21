@@ -131,7 +131,7 @@
         'backbone',
         'marionette',
         'js/application',
-        'js/views/Module.view',
+        'components/module/module.view',
         'js/models/Alerts.js',
         'js/views/Alerts.view',
         'properties',

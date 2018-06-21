@@ -22,7 +22,6 @@ define([
     'poller',
     'js/wreqr',
     'js/models/Module',
-    'text!templates/tabs.handlebars',
     'text!templates/appHeader.handlebars',
     'text!templates/header.handlebars',
     'text!templates/footer.handlebars',
@@ -30,7 +29,7 @@ define([
     'js/controllers/SystemUsage.controller',
     'text!templates/moduleTab.handlebars',
     'properties'
-], function (_, Backbone, Marionette, ich, hbs, $, poller, wreqr, Module, tabs, appHeader, header, footer, ModalController, SystemUsageController, moduleTab, Properties) {
+], function (_, Backbone, Marionette, ich, hbs, $, poller, wreqr, Module, appHeader, header, footer, ModalController, SystemUsageController, moduleTab, Properties) {
     'use strict';
 
     var Application = {};
@@ -53,7 +52,6 @@ define([
     };
 
     // Setup initial templates that we know we'll need
-    ich.addTemplate('tabs', tabs);
     ich.addTemplate('appHeader', appHeader);
     ich.addTemplate('headerLayout', header);
     ich.addTemplate('footerLayout', footer);
