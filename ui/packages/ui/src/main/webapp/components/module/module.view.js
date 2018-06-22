@@ -24,8 +24,8 @@ define([
         template: template,
         className: 'relative full-height',
         regions: {
-            tabs: '#tabs',
-            tabContent: '#tabContent'
+            tabs: '> div:first-of-type',
+            tabContent: '> div:last-of-type'
         },
         onRender: function () {
             this.tabs.show(new TabItemCollectionView({

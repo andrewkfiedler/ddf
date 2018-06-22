@@ -31,6 +31,13 @@ define([
         regions: {
             tabContentInner: '.tab-content-inner'
         },
+        attachIframeResizer: function () {
+            setTimeout(function(){
+                 this.$('iframe').ready(function() {
+                    this.$('iframe').iFrameResize();
+                }.bind(this));
+            }.bind(this), 0);
+        },
         initialize: function(options){
             this.applicationModel = options.applicationModel;
             this.listenTo(wreqr.vent, 'application:tabShown', this.handleTabShown);
@@ -57,6 +64,11 @@ define([
                 view.tabContentInner.show(new IFrameView({
                     model: new Backbone.Model({url : iframeLocation})
                 }));
+            }
+            if(this.model.get('cssLocation') && this.model.get('cssLocation') !== "") {
+                require(['text!' + this.model.get('cssLocation')], function(css) {
+                    $("<style type='text/css'> " + css + " </style>").appendTo("head");
+                });
             }
         },
         handleTabHidden: function(id) {

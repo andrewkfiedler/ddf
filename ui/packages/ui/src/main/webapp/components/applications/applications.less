@@ -1,3 +1,19 @@
 @{customElementNamespace}applications {
     display: block;
+
+    > .applications {
+        display: block;
+    }
+    > .application {
+        display: none;
+    }
+
+    &.show-app {
+        > .applications {
+            display: none;
+        }
+        > .application {
+            display: block;
+        }
+    }
 }

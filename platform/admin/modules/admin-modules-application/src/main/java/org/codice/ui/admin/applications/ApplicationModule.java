@@ -36,7 +36,7 @@ public class ApplicationModule implements AdminModule {
   @Override
   public URI getJSLocation() {
     try {
-      return new URI("js/modules/Application.module.js");
+      return new URI("components/applications/applications.view");
     } catch (URISyntaxException e) {
       LOGGER.debug("Must set the JS location to a valid URI.", e);
     }

@@ -70,7 +70,7 @@ define([
         },
 
         selectApplication: function(){
-            wreqr.vent.trigger('application:reqestSelection',this.model);
+            wreqr.vent.trigger('application:selected', this.model);
         },
         onRender: function() {
             this.$el.popover({
