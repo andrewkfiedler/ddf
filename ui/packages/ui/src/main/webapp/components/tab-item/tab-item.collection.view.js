@@ -25,6 +25,11 @@ define([
         events: {
             'shown.bs.tab': 'tabShown'
         },
+        onAfterItemAdded: function(itemView) {
+            if (this.children.length === 1) {
+                itemView.$el.addClass('is-active');
+            }
+        },
         tabShown: function(event){
             var id = event.target.getAttribute('data-id');
             this.children.each(function(childView) {

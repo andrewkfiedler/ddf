@@ -42,10 +42,6 @@ define([
         navToApplications: function(){
             wreqr.vent.trigger('navigateTo:applicationHome');
         },
-
-        selectFirstTab: function(){
-            this.$('.tab-container a:first').tab('show');
-        },
         onRender: function() {
             this.showDetailsPage();
         },
@@ -87,7 +83,6 @@ define([
 
                 layoutView.tabs.show(new PluginTabView({collection: completeList, model: applicationModel}));
                 layoutView.tabContent.show(new PluginTabContentView({collection: completeList, model: applicationModel}));
-                layoutView.selectFirstTab();
             }).fail(function(error){
                 throw error;
             });

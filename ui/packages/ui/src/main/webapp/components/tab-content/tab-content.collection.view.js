@@ -29,6 +29,11 @@ define([
             return {
                 applicationModel: this.model
             };
+        },
+        onAfterItemAdded: function(itemView) {
+            if (this.children.length === 1) {
+                itemView.$el.addClass('active in');
+            }
         }
     });
 
