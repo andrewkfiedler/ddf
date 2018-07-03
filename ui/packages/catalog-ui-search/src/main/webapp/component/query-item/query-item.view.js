@@ -19,7 +19,6 @@ define([
     'jquery',
     './query-item.hbs',
     'js/CustomElements',
-    'js/store',
     'moment',
     'component/dropdown/dropdown',
     'component/dropdown/query-interactions/dropdown.query-interactions.view',
@@ -30,7 +29,7 @@ define([
     'component/dropdown/query-settings/dropdown.query-settings.view',
     'component/dropdown/query-editor/dropdown.query-editor.view',
     'behaviors/button.behavior'
-], function (Marionette, _, $, template, CustomElements, store, moment,
+], function (Marionette, _, $, template, CustomElements, moment,
              DropdownModel, DropdownQueryInteractionsView, DropdownView, QueryFeedView,
             QueryScheduleView, QueryStatusView, QuerySettingsView, QueryEditorView) {
 
@@ -49,8 +48,7 @@ define([
         },
         events: {
             'click .query-run': 'runQuery',
-            'click .query-stop': 'stopQuery',
-            //'click .query-edit': 'editQuery'
+            'click .query-stop': 'stopQuery'
         },
         ui: {
         },
@@ -63,23 +61,15 @@ define([
             querySchedule: '.query-schedule'
         },
         initialize: function(options){
-            var query = store.getQueryById(this.model.id);
-            if (query.has('result')) {
+            if (this.model.has('result')) {
                 this.startListeningToStatus();
             } else {
-                this.listenTo(query, 'change:result', this.resultAdded);
+                this.listenTo(this.model, 'change:result', this.resultAdded);
             }
         },
         updateQuery: function() {
             if (!this.isDestroyed){
                 this.render();
-            }
-        },
-        highlight: function(){
-            var queryRef = store.getQuery();
-            this.$el.removeClass('is-selected');
-            if (queryRef !== undefined && queryRef.id === this.model.id){
-                this.$el.addClass('is-selected');
             }
         },
         serializeData: function(){
@@ -137,10 +127,6 @@ define([
         },
         stopQuery: function(e){
             this.model.cancelCurrentSearches();
-            e.stopPropagation();
-        },
-        editQuery: function(e){
-            store.setQueryById(this.model.id);
             e.stopPropagation();
         },
         editSchedule: function(e){
