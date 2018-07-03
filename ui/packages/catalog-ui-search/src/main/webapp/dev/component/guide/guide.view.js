@@ -6,6 +6,7 @@ const Property = require('component/property/property');
 const CardGuideView = require('dev/component/card-guide/card-guide.view');
 const ButtonGuideView = require('dev/component/button-guide/button-guide.view');
 const DropdownGuideView = require('dev/component/dropdown-guide/dropdown-guide.view');
+const AdvancedDropdownGuideView = require('dev/component/advanced-dropdown-guide/advanced-dropdown-guide.view');
 
 module.exports = Marionette.LayoutView.extend({
     template: template,
@@ -31,8 +32,12 @@ module.exports = Marionette.LayoutView.extend({
                         value: 'Button'
                     },
                     {
-                        label: 'Dropdown',
-                        value: 'Dropdown'
+                        label: 'Static Dropdowns',
+                        value: 'Static Dropdowns'
+                    },
+                    {
+                        label: 'Dynamic Dropdowns',
+                        value: 'Dynamic Dropdowns'
                     },
                     {
                         label: 'Menus',
@@ -63,8 +68,11 @@ module.exports = Marionette.LayoutView.extend({
             case 'Button':
             componentToShow = ButtonGuideView;
             break;
-            case 'Dropdown':
+            case 'Static Dropdowns':
             componentToShow = DropdownGuideView;
+            break;
+            case 'Dynamic Dropdowns':
+            componentToShow = AdvancedDropdownGuideView;
             break;
             default: 
             componentToShow = CardGuideView;

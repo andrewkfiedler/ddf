@@ -10,7 +10,7 @@
     }
     .example,
     .instance {
-        padding: @minimumSpacing;
+        margin: @minimumSpacing;
     }
     .example .title {
         .is-medium-font();
@@ -23,5 +23,27 @@
     }
     .pad-bottom {
         padding-bottom: 30%;
+    }
+    .editor + .editor {
+        margin-top: @minimumSpacing;
+    }
+
+    .editor[data-html]::before,
+    .editor[data-js]::before,
+    .editor[data-css]::before {
+        padding: 0px @minimumSpacing;
+        opacity: @minimumOpacity;
+    }
+
+    .editor[data-html]::before {
+        content: 'HTML';
+    }
+
+    .editor[data-js]::before {
+        content: 'Javascript';
+    }
+
+    .editor[data-css]::before {
+        content: 'CSS';
     }
 }

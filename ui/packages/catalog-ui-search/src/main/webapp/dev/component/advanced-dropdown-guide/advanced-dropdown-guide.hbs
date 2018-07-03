@@ -13,76 +13,45 @@
  --}}
  <div class="section">
     <div class="is-header">
-        Why is it called static dropdowns?
+        Why dynamic?
     </div>
     <div class="is-medium-font">
-        Because the html for opening the dropdown is static.  If you need it to be dynamic, check out dynamic dropdowns.
+        It's dynamic because the component that reveals the dropdown is entirely within your control.  You need to extend 
+        the base dropdown.view.
     </div>
 </div>
 <div class="section">
+    <div class="examples is-list has-list-highlighting">
+        <div class="example">
+            <div class="title">
+                Simple Dropdown
+            </div>
+            <div class="instance">
+            
+            </div>
+        </div>
+    </div>
     <div class="is-header">
         Examples
     </div>
     <div class="examples is-list has-list-highlighting">
         <div class="example">
             <div class="title">
-                Dropdown
+                Simple Dropdown
             </div>
             <div class="instance">
             
             </div>
-            <div class="editor" data-js="showExampleOne"></div>
-        </div>
-        <div class="example">
-            <div class="title">
-                Dropdown Using Default Model
-            </div>
-            <div class="instance">
-            
-            </div>
-            <div class="editor" data-js="showExampleTwo"></div>
-        </div>
-        <div class="example">
-            <div class="title">
-                Dropdown with Icon Only
-            </div>
-            <div class="instance">
-            
-            </div>
-            <div class="editor" data-js="showExampleThree"></div>
-        </div>
-        <div class="example">
-            <div class="title">
-                 {{bind selector=".example:nth-of-type(4) .title" event="change:title" key=(path "title")}}
-            </div>
-            <div class="instance is-primary composed-button is-button">
-                <!-- this shows how to make a dropdown look like a button!  basically add the composed-button class and one of the other button classes
-                    listed on the button guide (is-primary, is-negative, is-neutral, etc.)
-                 -->
-            </div>
-            <div class="editor" data-html="outer"></div>
-            <div class="editor" data-js="showExampleFour"></div>
-        </div>
-        <div class="example">
-            <div class="title">
-                 Using the Menu Navigation Behavior
-            </div>
-            <div class="instance">
-            </div>
-            <div class="editor" data-html="exampleFiveTemplate"></div>
-            <div class="editor" data-js="showExampleFive"></div>
         </div>
     </div>
 </div>
 <div class="section">
     <div class="is-header">
-        When to Use Simple
+        When to Use Dynamic
     </div>
     <div class="is-medium-font">
-        Utilize the simple dropdown when you need something to show something in a dropdown and the dropdown itself doesn't need to be fancy. 
-        What I mean by fancy is probably best explained looking at the complex dropdowns, but I'll give text a try.  Basically, if you just need to show
-        some static text / icons that when clicked reveal a dropdown with another component, this is the way to go.  80% of the time this will be enough, but don't
-        be afraid to use a complex dropdown (it's not that much more complex!).
+        Utilize the dynamic dropdown when you need something to show something in a dropdown and the html that displays the dropdown needs to be dynamic. 
+        Usually you don't need this, so see if static dropdowns are enough for what you want. 
     </div>
 </div>
 <div class="section">

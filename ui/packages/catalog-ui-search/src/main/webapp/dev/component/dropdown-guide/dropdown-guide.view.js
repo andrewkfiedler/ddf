@@ -6,19 +6,24 @@ const PopoutView = require('component/dropdown/popout/dropdown.popout.view');
 const Backbone = require('backbone');
 const exampleTwoTemplate = require('./exampleTwo.hbs');
 const exampleFourTemplate = require('./exampleFour.hbs');
+const exampleFiveTemplate = require('./exampleFive.hbs');
 
 const exampleBackboneModel = new Backbone.Model({
-    title: 'Simple Dropdown with View Listening'
+    title: 'Dropdown with View Listening'
 });
 
 module.exports = BaseGuideView.extend({
+    templates: {
+        exampleFiveTemplate
+    },
     template: template,
     tagName: CustomElements.register('dev-dropdown-guide'),
     regions: {
         exampleOne: '.example:nth-of-type(1) .instance',
         exampleTwo: '.example:nth-of-type(2) .instance',
         exampleThree: '.example:nth-of-type(3) .instance',
-        exampleFour: '.example:nth-of-type(4) .instance'
+        exampleFour: '.example:nth-of-type(4) .instance',
+        exampleFive: '.example:nth-of-type(5) .instance'
     },
     model: exampleBackboneModel,
     showComponents() {
@@ -26,7 +31,44 @@ module.exports = BaseGuideView.extend({
         this.showExampleTwo();
         this.showExampleThree();
         this.showExampleFour();
+        this.showExampleFive();
     },  
+    showExampleFive() {
+        this.exampleFive.show(PopoutView.createSimpleDropdown({
+            // typically componentToShow wouldn't be an inline definition of a Marionette View like this, you'd be importing it from another file
+            componentToShow: Marionette.LayoutView.extend({
+                className: 'composed-menu', // necessary for navigation behavior
+                regions: {
+                    composedMenu: '.composed-menu.region'
+                },
+                events: {
+                    'click *:not(.composed-menu)': 'takeMenuAction'
+                },
+                takeMenuAction() {
+                    this.$el.trigger('closeDropdown.' + CustomElements.getNamespace());
+                },
+                template: exampleFiveTemplate,
+                onBeforeShow() {
+                    if (this.options.nestedDepth >= 2) {
+                        return;
+                    }
+                    this.composedMenu.show(new this.constructor({
+                        nestedDepth: this.options.nestedDepth + 1
+                    }));
+                }
+            }),
+            modelForComponent: this.model,
+            leftIcon: 'fa fa-bars',
+            label: 'Menu',
+            dropdownCompanionBehaviors: {
+                navigation: {
+                }
+            },
+            options: {
+                nestedDepth: 1 // you can also pass options to your componentToShow
+            }
+        }));
+    },
     showExampleFour() {
         this.exampleFour.show(PopoutView.createSimpleDropdown({
             // typically componentToShow wouldn't be an inline definition of a Marionette View like this, you'd be importing it from another file
@@ -47,7 +89,7 @@ module.exports = BaseGuideView.extend({
                 }
             }),
             modelForComponent: this.model,
-            leftIcon: 'fa fa-ear',
+            leftIcon: 'fa fa-headphones',
             label: 'The View is Listening'
         }));
         const onTitleChange = () => {
