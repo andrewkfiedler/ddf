@@ -20,6 +20,8 @@ const $ = require('jquery');
 const CustomElements = require('js/CustomElements');
 const DropdownBehaviorUtility = require('./dropdown.behavior.utility');
 
+const Common = require('js/Common');
+const tagName = CustomElements.register('behavior-dropdown');
 Behaviors.addBehavior('dropdown', Marionette.Behavior.extend({
     events() {
         return this.options.dropdowns.reduce((eventMap, dropdown) => {
@@ -60,38 +62,36 @@ Behaviors.addBehavior('dropdown', Marionette.Behavior.extend({
     },
     handleDropdownClick(dropdown) {
         this.initializeDropdown(dropdown);
-        dropdown.instance.$el.toggleClass('is-open');
+        dropdown._instance.$el.toggleClass('is-open');
         this.focusOnDropdown(dropdown);
     },
     isOpen(dropdown) {
-        return dropdown.instance && dropdown.instance.$el.hasClass('is-open');
+        return dropdown._instance && dropdown._instance.$el.hasClass('is-open');
     },
     focusOnDropdown(dropdown) {
         if (this.isOpen(dropdown)) {
-            dropdown.instance.$el.focus();
-            if (dropdown.instance.focus) {
-                dropdown.instance.focus();
+            dropdown._instance.$el.focus();
+            if (dropdown._instance.focus) {
+                dropdown._instance.focus();
             }
         }
     },
+    createDropdownRegion(dropdown) {
+        const $wrapper = $(`<${tagName}/>`);
+        $('body').append($wrapper);
+        dropdown._region = new Marionette.Region({
+            el: $wrapper[0]
+        });
+    },
     showDropdown(dropdown) {
-        dropdown.instance = new dropdown.view(dropdown.viewOptions);
-        dropdown.instance.render();
-        Marionette.triggerMethodOn(dropdown.instance, 'before:show');
-        Marionette.Region.prototype._triggerAttach(Marionette.Region.prototype._displayedViews(dropdown.instance), 'before:');
-        dropdown.instance.$el.attr('data-behavior-dropdown', true);
-        dropdown.instance.$el.attr('tabindex', 0);
-        $('body').append(dropdown.instance.el);
-        Marionette.Region.prototype._triggerAttach(Marionette.Region.prototype._displayedViews(dropdown.instance));
-        Marionette.triggerMethodOn(dropdown.instance, 'show');
-        // dropdown.instance.render();
-        // dropdown.instance.onBeforeShow ? dropdown.instance.onBeforeShow() : {};
-        // dropdown.instance.$el.attr('data-behavior-dropdown', true);
-        // dropdown.instance.$el.attr('tabindex', 0);
-        // $('body').append(dropdown.instance.el);
+        dropdown._instance = new dropdown.view(dropdown.viewOptions);
+        dropdown._instance.$el.attr('data-behavior-dropdown', true);
+        dropdown._instance.$el.attr('tabindex', 0);
+        dropdown._region.show(dropdown._instance, {replaceElement: true});
     },
     initializeDropdown(dropdown){
-        if (!dropdown.instance) {
+        if (!dropdown._instance) {
+            this.createDropdownRegion(dropdown);
             this.showDropdown(dropdown);
             this.listenForClose(dropdown);
             this.listenForKeydown(dropdown);
@@ -101,11 +101,11 @@ Behaviors.addBehavior('dropdown', Marionette.Behavior.extend({
     },
     updateWidth(dropdown){
         var clientRect = this.getDropdownElement(dropdown)[0].getBoundingClientRect();
-        dropdown.instance.$el.css('min-width', Math.min(clientRect.width, window.innerWidth - 20));
+        dropdown._instance.$el.css('min-width', Math.min(clientRect.width, window.innerWidth - 20));
     },
     updatePosition (dropdown) {
         DropdownBehaviorUtility.updatePosition(
-            dropdown.instance.$el,
+            dropdown._instance.$el,
             this.getDropdownElement(dropdown)[0]
         );
     },
@@ -135,11 +135,11 @@ Behaviors.addBehavior('dropdown', Marionette.Behavior.extend({
         }
     },
     listenForKeydown(dropdown) {
-        dropdown.instance.$el
+        dropdown._instance.$el
             .on('keydown.' + CustomElements.getNamespace(), this.generateHandleKeydown(dropdown));
     },
     listenForClose(dropdown){
-        dropdown.instance.$el
+        dropdown._instance.$el
             .on('closeDropdown.'+CustomElements.getNamespace(), this.generateHandleCloseDropdown(dropdown));
     },
     refocusOnDropdownElement(dropdown) {
@@ -152,7 +152,7 @@ Behaviors.addBehavior('dropdown', Marionette.Behavior.extend({
                 this.options.dropdowns.filter((dropdown) => { 
                     return this.isOpen(dropdown);
                 }).forEach((dropdown) => {
-                    if (dropdown.instance) {
+                    if (dropdown._instance) {
                         this.checkOutsideClick(dropdown, event.target);
                     }
                 });
@@ -167,12 +167,12 @@ Behaviors.addBehavior('dropdown', Marionette.Behavior.extend({
         if (DropdownBehaviorUtility.withinDOM(clickedElement) && !DropdownBehaviorUtility.withinAnyDropdown(clickedElement)) {
             this.close(dropdown);
         }
-        if (DropdownBehaviorUtility.withinParentDropdown(dropdown.instance.$el, clickedElement)){
+        if (DropdownBehaviorUtility.withinParentDropdown(dropdown._instance.$el, clickedElement)){
             this.close(dropdown);
         }
     },
     close(dropdown) {
-        dropdown.instance.$el.removeClass('is-open');
+        dropdown._instance.$el.removeClass('is-open');
     },
     stopListeningForOutsideClick () {
         $('body').off(`click.${this.view.cid} dropdownClick.${this.view.cid}`);
@@ -186,21 +186,24 @@ Behaviors.addBehavior('dropdown', Marionette.Behavior.extend({
             this.options.dropdowns.filter((dropdown) => { 
                 return this.isOpen(dropdown);
             }).forEach((dropdown) => {
-                if (dropdown.instance) {
+                if (dropdown._instance) {
                     this.updatePosition(dropdown);
                     this.updateWidth(dropdown);
                 }
             })
         }.bind(this), 16));
     },
+    destroyDropdown(dropdown) {
+        if (dropdown._region) {
+            dropdown._region.empty();
+            dropdown._region.destroy();
+            dropdown._region.$el.remove();
+        }
+    },  
     onDestroy(){
         this.stopListeningForOutsideClick();
         this.stopListeningForResize();
         //ensure that if a dropdown goes away, it's companions do too
-        this.options.dropdowns.forEach((dropdown) => {
-            if (dropdown.instance && !dropdown.instance.isDestroyed) {
-                dropdown.instance.destroy();
-            }
-        })
+        this.options.dropdowns.forEach((dropdown) => this.destroyDropdown(dropdown));
     }
 }));
