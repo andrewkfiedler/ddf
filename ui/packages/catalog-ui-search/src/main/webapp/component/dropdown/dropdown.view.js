@@ -43,13 +43,9 @@ define([
         handleClick: function(e){
             e.preventDefault();
             e.stopPropagation();
-            this.triggerDropdownClick();
             if (this.model.get('isEditing') && !this.wasOpen){
                 this.model.toggleOpen();
             }
-        },
-        triggerDropdownClick() {
-            this.$el.trigger(`dropdownClick`);
         },
         handleEditing: function(){
             this.$el.toggleClass('is-editing', this.model.get('isEditing'));

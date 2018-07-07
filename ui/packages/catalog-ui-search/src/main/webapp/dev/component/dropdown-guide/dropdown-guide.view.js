@@ -4,10 +4,17 @@ const template = require('./dropdown-guide.hbs');
 const CustomElements = require('js/CustomElements');
 const Backbone = require('backbone');
 const exampleOne = require('./exampleOne.hbs');
+const exampleOneDropdown = require('./exampleOneDropdown.hbs');
+const exampleTwoDropdown = require('./exampleTwoDropdown.hbs');
+const exampleThreeDropdown = require('./exampleThreeDropdown.hbs');
+const DropdownBehavior = require('behaviors/dropdown.behavior');
 
 module.exports = BaseGuideView.extend({
     templates: {
-        exampleOne
+        exampleOne,
+        exampleOneDropdown,
+        exampleTwoDropdown,
+        exampleThreeDropdown
     },
     styles: {
 
@@ -23,19 +30,39 @@ module.exports = BaseGuideView.extend({
     },
     showComponents() {
         this.showExampleOne();
-        // this.showExampleTwo();
+        this.showExampleTwo();
+        this.showExampleThree();
         // this.showExampleThree();
         // this.showExampleFour();
         // this.showExampleFive();
     },
+    exampleOneDropdown() {
+        return Marionette.ItemView.extend({
+            template: exampleOneDropdown
+        });
+    },
     exampleOneView() {
+        const OtherView = this.exampleOneDropdown();
         return Marionette.ItemView.extend({
             template: exampleOne,
-            onRender() {
-                setTimeout(() => {
-                    this.render();
-                }, 4000);
-            },
+            behaviors() {
+                return {
+                    dropdown: {
+                        dropdowns: [{
+                            selector: '> div > button:first-of-type',
+                            view: OtherView,
+                            viewOptions: {
+                                model: undefined
+                            }
+                        }]
+                    }
+                };
+            }
+        });
+    },
+    exampleTwoDropdown() {
+        return Marionette.ItemView.extend({
+            template: exampleTwoDropdown,
             behaviors() {
                 return {
                     dropdown: {
@@ -51,7 +78,67 @@ module.exports = BaseGuideView.extend({
             }
         });
     },
+    exampleTwoView() {
+        const OtherView = this.exampleTwoDropdown();
+        return Marionette.ItemView.extend({
+            template: exampleOne,
+            behaviors() {
+                return {
+                    dropdown: {
+                        dropdowns: [{
+                            selector: '> div > button:first-of-type',
+                            view: OtherView,
+                            viewOptions: {
+                                model: undefined
+                            }
+                        }]
+                    }
+                };
+            }
+        });
+    },
+    exampleThreeDropdown() {
+        return Marionette.ItemView.extend({
+            template: exampleThreeDropdown,
+            events: {
+                'click button': 'takeAction'
+            },
+            takeAction(e) {
+                e.currentTarget.innerHTML = 'I got clicked!';
+                DropdownBehavior.closeParentDropdown(this);  //harmless if not in a dropdown
+            }
+        })
+    },
+    exampleThreeView() {
+        const OtherView = this.exampleThreeDropdown();
+        return Marionette.ItemView.extend({
+            template: exampleOne,
+            behaviors() {
+                return {
+                    dropdown: {
+                        dropdowns: [{
+                            selector: '> div > button:first-of-type',
+                            view: OtherView.extend({
+                                behaviors: { 
+                                    navigation: {}
+                                }
+                            }),
+                            viewOptions: {
+                                model: undefined
+                            }
+                        }]
+                    }
+                };
+            }
+        });
+    },
     showExampleOne() {
         this.exampleOne.show(new(this.exampleOneView())());
+    },
+    showExampleTwo() {
+        this.exampleTwo.show(new(this.exampleTwoView())());
+    },
+    showExampleThree() {
+        this.exampleThree.show(new(this.exampleThreeView())());
     }
 });

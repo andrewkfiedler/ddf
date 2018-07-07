@@ -20,7 +20,6 @@ const $ = require('jquery');
 const CustomElements = require('js/CustomElements');
 const DropdownBehaviorUtility = require('./dropdown.behavior.utility');
 
-const Common = require('js/Common');
 const tagName = CustomElements.register('behavior-dropdown');
 Behaviors.addBehavior('dropdown', Marionette.Behavior.extend({
     events() {
@@ -31,7 +30,7 @@ Behaviors.addBehavior('dropdown', Marionette.Behavior.extend({
     },
     // We can't do this on initialize because view.cid isn't set yet.  OnFirstRender is closest to what we want.
     onFirstRender() {
-        this.listenForOutsideClick();
+        this.listenForOutsideInteraction();
         this.listenForResize();
     },
     generateHandleClick(dropdown){
@@ -41,7 +40,6 @@ Behaviors.addBehavior('dropdown', Marionette.Behavior.extend({
             }
             e.preventDefault();
             e.stopPropagation();
-            this.triggerDropdownClick(dropdown);
             this.handleDropdownClick(dropdown);
         };
     },
@@ -57,16 +55,16 @@ Behaviors.addBehavior('dropdown', Marionette.Behavior.extend({
     getDropdownElement(dropdown) {
         return this.getPossibleDropdownElements(dropdown).first();
     },
-    triggerDropdownClick(dropdown) {
-        this.getDropdownElement(dropdown).trigger(`dropdownClick`);
-    },
     handleDropdownClick(dropdown) {
         this.initializeDropdown(dropdown);
         dropdown._instance.$el.toggleClass('is-open');
         this.focusOnDropdown(dropdown);
     },
     isOpen(dropdown) {
-        return dropdown._instance && dropdown._instance.$el.hasClass('is-open');
+        return this.hasBeenInitialized(dropdown) && dropdown._instance.$el.hasClass('is-open');
+    },
+    hasBeenInitialized(dropdown) {
+        return dropdown._instance !== undefined;
     },
     focusOnDropdown(dropdown) {
         if (this.isOpen(dropdown)) {
@@ -95,7 +93,11 @@ Behaviors.addBehavior('dropdown', Marionette.Behavior.extend({
             this.showDropdown(dropdown);
             this.listenForClose(dropdown);
             this.listenForKeydown(dropdown);
+            this.listenForReposition(dropdown);
         }
+        this.updateRendering(dropdown);
+    },
+    updateRendering(dropdown) {
         this.updatePosition(dropdown);
         this.updateWidth(dropdown);
     },
@@ -108,6 +110,11 @@ Behaviors.addBehavior('dropdown', Marionette.Behavior.extend({
             dropdown._instance.$el,
             this.getDropdownElement(dropdown)[0]
         );
+    },
+    generateHandleReposition(dropdown) {
+        return () => {
+            this.updatePosition(dropdown);
+        }
     },
     generateHandleKeydown(dropdown) {
         return (event) => {
@@ -140,28 +147,26 @@ Behaviors.addBehavior('dropdown', Marionette.Behavior.extend({
     },
     listenForClose(dropdown){
         dropdown._instance.$el
-            .on('closeDropdown.'+CustomElements.getNamespace(), this.generateHandleCloseDropdown(dropdown));
+            .on(`closeDropdown.${CustomElements.getNamespace()}`, this.generateHandleCloseDropdown(dropdown));
     },
     refocusOnDropdownElement(dropdown) {
         this.getDropdownElement(dropdown).focus();
     },
-    listenForOutsideClick () {
-        $('body').off(`click.${this.view.cid} dropdownClick.${this.view.cid}`)
-            .on(`click.${this.view.cid} dropdownClick.${this.view.cid}`, function (event) {
+    listenForOutsideInteraction () {
+        $('body').off(`mousedown.${this.view.cid}`)
+            .on(`mousedown.${this.view.cid}`, function (event) {
             if (!DropdownBehaviorUtility.drawing(event)){
-                this.options.dropdowns.filter((dropdown) => { 
-                    return this.isOpen(dropdown);
-                }).forEach((dropdown) => {
-                    if (dropdown._instance) {
-                        this.checkOutsideClick(dropdown, event.target);
-                    }
-                });
+                this.options.dropdowns
+                    .filter((dropdown) => this.isOpen(dropdown))
+                    .forEach((dropdown) => this.checkOutsideClick(dropdown, event.target));
             }
         }.bind(this));
     },
+    withinDropdown(dropdown, element) {
+        return this.getDropdownElement(dropdown).find(element).addBack(element).length > 0;
+    },
     checkOutsideClick(dropdown, clickedElement) {
-        if (this.view.$el.find(this.getDropdownElement(dropdown))[0] === clickedElement) {
-            // must have been a dropdownClick event, ignore these if from original triggering element 
+        if (this.withinDropdown(dropdown, clickedElement)) {
             return;
         }
         if (DropdownBehaviorUtility.withinDOM(clickedElement) && !DropdownBehaviorUtility.withinAnyDropdown(clickedElement)) {
@@ -174,8 +179,8 @@ Behaviors.addBehavior('dropdown', Marionette.Behavior.extend({
     close(dropdown) {
         dropdown._instance.$el.removeClass('is-open');
     },
-    stopListeningForOutsideClick () {
-        $('body').off(`click.${this.view.cid} dropdownClick.${this.view.cid}`);
+    stopListeningForOutsideInteraction () {
+        $('body').off(`mousedown.${this.view.cid}`);
     },
     stopListeningForResize(){
         $(window).off(`resize.${this.view.cid}`);
@@ -183,15 +188,13 @@ Behaviors.addBehavior('dropdown', Marionette.Behavior.extend({
     listenForResize(){
         $(window).off(`resize.${this.view.cid}`)
             .on(`resize.${this.view.cid}`, _.throttle(function(){
-            this.options.dropdowns.filter((dropdown) => { 
-                return this.isOpen(dropdown);
-            }).forEach((dropdown) => {
-                if (dropdown._instance) {
-                    this.updatePosition(dropdown);
-                    this.updateWidth(dropdown);
-                }
-            })
+            this.options.dropdowns
+                .filter((dropdown) => this.isOpen(dropdown))
+                .forEach((dropdown) => this.updateRendering(dropdown));
         }.bind(this), 16));
+    },
+    listenForReposition(dropdown){
+        this.$el.on(`repositionDropdown.${CustomElements.getNamespace()}`, this.generateHandleReposition(dropdown));
     },
     destroyDropdown(dropdown) {
         if (dropdown._region) {
@@ -201,9 +204,16 @@ Behaviors.addBehavior('dropdown', Marionette.Behavior.extend({
         }
     },  
     onDestroy(){
-        this.stopListeningForOutsideClick();
+        this.stopListeningForOutsideInteraction();
         this.stopListeningForResize();
         //ensure that if a dropdown goes away, it's companions do too
         this.options.dropdowns.forEach((dropdown) => this.destroyDropdown(dropdown));
     }
 }));
+
+module.exports = {
+    closeParentDropdown(view) {
+        const $element = view.$el ? view.$el : view.trigger ? view : $(view);
+        $element.trigger(`closeDropdown.${CustomElements.getNamespace()}`);
+    }
+}
