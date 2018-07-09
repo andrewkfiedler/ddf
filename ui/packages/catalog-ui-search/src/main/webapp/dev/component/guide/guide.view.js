@@ -8,6 +8,7 @@ const ButtonGuideView = require('dev/component/button-guide/button-guide.view');
 const StaticDropdownGuideView = require('dev/component/static-dropdown-guide/static-dropdown-guide.view');
 const DynamicDropdownGuideView = require('dev/component/dynamic-dropdown-guide/dynamic-dropdown-guide.view');
 const DropdownGuideView = require('dev/component/dropdown-guide/dropdown-guide.view');
+const InputGuideView = require('dev/component/input-guide/input-guide.view');
 
 module.exports = Marionette.LayoutView.extend({
     template: template,
@@ -45,16 +46,8 @@ module.exports = Marionette.LayoutView.extend({
                         value: 'Dropdowns',
                     },
                     {
-                        label: 'Menus',
-                        value: 'Menus'
-                    },
-                    {
-                        label: 'Nested Menus',
-                        value: 'Nested Menus'
-                    },
-                    {
-                        label: 'Everything',
-                        value: 'Everything'
+                        label: 'Inputs',
+                        value: 'Inputs'
                     }
                 ],
                 id: 'component'
@@ -75,6 +68,9 @@ module.exports = Marionette.LayoutView.extend({
             break;
             case 'Dropdowns':
             componentToShow = DropdownGuideView;
+            break;
+            case 'Inputs':
+            componentToShow = InputGuideView;
             break;
             case 'Static Dropdowns':
             componentToShow = StaticDropdownGuideView;
