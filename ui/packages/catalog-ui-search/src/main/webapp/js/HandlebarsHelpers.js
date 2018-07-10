@@ -300,6 +300,37 @@ define([
                 };
                 return bind(options, callback);
             },
+            button(options) {
+                let typeClass;
+                switch(options.hash.type) {
+                    case 'primary':
+                        typeClass = "is-primary";
+                    break;
+                    case 'negative':
+                        typeClass = "is-negative";
+                        break;
+                    case 'positive':
+                        typeClass = "is-positive";
+                        break;
+                    default:
+                        typeClass = "is-primary"
+                    break;
+                }
+                if (options.hash.subdued === true) {
+                    typeClass+=` is-button`;
+                }
+                const disabled = options.hash.disabled && options.hash.disabled === true;
+                return new Handlebars.SafeString(
+                    `<button class="${options.hash.class} ${typeClass}" ${disabled ? 'disabled' : ''}>
+                        <span class="${options.hash.icon}">
+                        
+                        </span>
+                        <span>
+                            ${options.hash.label}
+                        </span>
+                    </button>`
+                );
+            },
             path: function() {
                 var outArray = [];
                 for (var arg = 0; arg < arguments.length; arg++) {
