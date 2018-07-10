@@ -19,14 +19,13 @@
 
 <div class="buttons-left">
 {{#if showPreviousServerPage}}
-    <button class="server-previous is-primary">
-        <span class="fa fa-angle-double-left"/>
-        <span>Back</span>
-    </button>
+    {{{button class="server-previous" type="primary" icon="fa fa-angle-double-left" label="Back"}}}
 {{else}}
-    <button class="first is-primary" {{#unless hasPreviousPage}}disabled{{/unless}}>
-        <i class="fa fa-angle-double-left" aria-hidden="true"></i>
-    </button>
+    {{#if hasPreviousPage}}
+        {{{button class="first" type="primary" icon="fa fa-angle-double-left"}}}
+    {{else}}
+        {{{button class="first" type="primary" icon="fa fa-angle-double-left" disabled=true}}}
+    {{/if}}
     <button class="previous is-primary" {{#unless hasPreviousPage}}disabled{{/unless}}>
         <i class="fa fa-angle-left" aria-hidden="true"></i>
     </button>
