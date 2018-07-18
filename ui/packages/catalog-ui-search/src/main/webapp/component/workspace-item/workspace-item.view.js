@@ -24,7 +24,8 @@ define([
     'component/dropdown/workspace-interactions/dropdown.workspace-interactions.view',
     'component/workspace-details/workspace-details.view',
     'component/save/workspace/workspace-save.view',
-    'behaviors/button.behavior'
+    'behaviors/button.behavior',
+    'behaviors/region.behavior'
 ], function (wreqr, Marionette, _, $, template, CustomElements, DropdownModel, 
     WorkspaceInteractionsDropdownView, WorkspaceDetailsView, SaveView) {
 
@@ -36,8 +37,21 @@ define([
             workspaceSave: '.choice-save',
             workspaceActions: '.choice-actions'
         },
-        behaviors: {
-            button: {}
+        behaviors() {
+            return {
+                button: {},
+                region: {
+                    regions: [
+                        {
+                            selector: '.choice-details',
+                            view: WorkspaceDetailsView,
+                            viewOptions: {
+                                model: this.options.model
+                            }
+                        }
+                    ]
+                }
+            };   
         },
         events: {
             'click': 'handleChoice',
@@ -52,9 +66,6 @@ define([
             this.listenTo(this.model, 'change:saved', this.handleSaved);
         },
         onBeforeShow: function(){
-            this.workspaceDetails.show(new WorkspaceDetailsView({
-                model: this.model
-            }));    
             this.workspaceSave.show(new SaveView({
                 model: this.model
             }));
