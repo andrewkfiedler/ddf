@@ -48,6 +48,24 @@ define([
                             viewOptions: {
                                 model: this.options.model
                             }
+                        },
+                        {
+                            selector: '.choice-save',
+                            view: SaveView,
+                            viewOptions: {
+                                model: this.options.model
+                            }
+                        },
+                        {
+                            selector: '.choice-actions',
+                            view: WorkspaceInteractionsDropdownView,
+                            viewOptions: {
+                                model: new DropdownModel(),
+                                modelForComponent: this.options.model,
+                                dropdownCompanionBehaviors: {
+                                    navigation: {}
+                                }
+                            }
                         }
                     ]
                 }
@@ -56,6 +74,13 @@ define([
         events: {
             'click': 'handleChoice',
             'mouseenter': 'preload'
+        },
+        onRender() {
+            setTimeout(() => {
+                if (!this.isDestroyed) {
+                    this.render();
+                }
+            }, 4000);
         },
         preload: function() {
             wreqr.vent.trigger('router:preload', {
@@ -66,16 +91,6 @@ define([
             this.listenTo(this.model, 'change:saved', this.handleSaved);
         },
         onBeforeShow: function(){
-            this.workspaceSave.show(new SaveView({
-                model: this.model
-            }));
-            this.workspaceActions.show(new WorkspaceInteractionsDropdownView({
-                model: new DropdownModel(),
-                modelForComponent: this.model,
-                dropdownCompanionBehaviors: {
-                    navigation: {}
-                }
-            }));
             this.handleSaved();
         },
         handleChoice: function(event){

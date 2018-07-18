@@ -22,24 +22,48 @@ const Common = require('js/Common');
 
 const tagName = CustomElements.register('behavior-region');
 Behaviors.addBehavior('region', Marionette.Behavior.extend({
+    isInitialized(region) {
+        return region._region !== undefined;
+    },
     onBeforeRender() {
-        console.log('before render');
+        this.options.regions
+            .filter((region) => this.isInitialized(region))
+            .forEach((region) => {
+                if (region._region.$el.find(document.activeElement).length > 0) {
+                    region._focus = document.activeElement;
+                }
+                region._$el = region._region.$el.detach();
+        });
     },
     onFirstRender() {
         this.options.regions.forEach((region) => {
             const id = Common.generateUUID();
-            region._regionId = id;
-            this.view.addRegions({
-                [id]: region.selector
+            region._region = new Marionette.Region({
+                el: this.view.$el.find(region.selector)
             });
-            this.view[id].show(new region.view(region.viewOptions))
+            region._region.show(new region.view(region.viewOptions))
+        });
+    },
+    onRender() {
+        this.options.regions
+        .filter((region) => this.isInitialized(region))
+        .forEach((region) => {
+            this.view.$el.find(region.selector).replaceWith(region._$el);
+            if (region._focus) {
+                $(region._focus).focus();
+                delete region._focus;
+            }
         });
     },
     destroyRegion(region) {
-        
+        if (region._region) {
+            region._region.empty();
+            region._region.destroy();
+            region._region.$el.remove();
+            console.log('destroyed');
+        }
     },  
     onDestroy(){
-        console.log('before render');
         this.options.regions.forEach((region) => this.destroyRegion(region));
     }
 }));
