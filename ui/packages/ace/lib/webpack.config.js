@@ -210,7 +210,7 @@ const dev = (base, { main, auth, publicPath }) => merge.smart(base, {
     publicPath,
     proxy: {
       '/admin/**': proxyConfig({auth}),
-      '/**': proxyConfig({auth}),
+      '/search/**': proxyConfig({auth}),
       '/services/**': proxyConfig({auth}),
       '/webjars/**': proxyConfig({auth})
     }
