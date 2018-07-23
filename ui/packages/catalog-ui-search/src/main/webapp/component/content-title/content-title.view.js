@@ -16,12 +16,11 @@
 define([
     'marionette',
     'underscore',
-    'jquery',
-    './content-title.hbs',
     'js/CustomElements',
     'js/store',
-    'component/unsaved-indicator/workspace/workspace-unsaved-indicator.view'
-], function (Marionette, _, $, template, CustomElements, store, UnsavedIndicatorView) {
+    'component/unsaved-indicator/workspace/workspace-unsaved-indicator.view',
+    'react'
+], function (Marionette, _, CustomElements, store, UnsavedIndicatorView, React) {
 
     return Marionette.LayoutView.extend({
         setDefaultModel: function(){
@@ -35,24 +34,34 @@ define([
             'keyup input': 'updateWorkspaceName',
             'keydown input': 'updateWorkspaceName'
         },
-        template: template,
+        template(data) {
+            return (
+                <React.Fragment key={data.currentWorkspace.id}>
+                    <input placeholder="Workspace Title" defaultValue={data.currentWorkspace.title}
+                     data-help="This is the title of the workspace you are currently in.
+                    If you have permission, you can click here to start editing the title."/>
+                    <pre className="title-display">{data.currentWorkspace.title}</pre>
+                    <div className="title-saved"></div>
+                </React.Fragment>
+            )
+        },
         tagName: CustomElements.register('content-title'),
         initialize: function (options) {
             if (options.model === undefined){
                 this.setDefaultModel();
             }
-            this.listenTo(this.model, 'change:currentWorkspace', this.updateIndicator);
-            this.listenTo(this.model, 'change:currentWorkspace', this.handleSaved);
+            this.listenTo(this.model, 'change:currentWorkspace', this.render);
         },
-        onBeforeShow: function(){
+        onRender: function(){
+            this.handleSaved();
             this.updateIndicator();
         },
         handleSaved: function(){
             var currentWorkspace = this.model.get('currentWorkspace');
             this.$el.toggleClass('is-saved', currentWorkspace ? currentWorkspace.isSaved() : false);
         },
-        updateIndicator: function(workspace){
-            if (workspace && workspace.changed.currentWorkspace){
+        updateIndicator: function(){
+            if (this.model.get('currentWorkspace')){
                  this.unsavedIndicator.show(new UnsavedIndicatorView({
                     model: this.model.get('currentWorkspace')
                 }));

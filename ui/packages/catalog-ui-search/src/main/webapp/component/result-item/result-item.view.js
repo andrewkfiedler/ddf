@@ -17,7 +17,6 @@ import React from 'react';
 const Backbone = require('backbone');
 const Marionette = require('marionette');
 const _ = require('underscore');
-const $ = require('jquery');
 const CustomElements = require('js/CustomElements');
 const IconHelper = require('js/IconHelper');
 const store = require('js/store');

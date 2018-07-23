@@ -1,4 +1,3 @@
-{{!--
 /**
  * Copyright (c) Codice Foundation
  *
@@ -10,11 +9,14 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
- --}}
-<div class="choice-details">
-</div><!--
---><div class="choice-save">
-</div><!--
---><div class="choice-actions is-button" title="Shows a list of actions to take on the workspace" 
-    data-help="Shows a list of actions to take on the workspace.">
-</div>
+const Marionette = require('marionette');
+
+const hbs = require('ace/handlebars');
+
+Marionette.Renderer.render = function(template, data, view) {
+    data._view = view;
+    if (typeof template !== 'function') {
+        template = hbs.compile(template);  // it seems like this never happens, we should verify (I think webpack is precompiling them all for us)
+    }
+    return template.call(view, data);
+};
