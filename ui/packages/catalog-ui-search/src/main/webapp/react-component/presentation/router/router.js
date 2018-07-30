@@ -26,11 +26,13 @@ const Router = styled.div`
     }
 `
 
-const RouterComponent =  (props) => (
-    <Router>
-        {props.nav}
-        {props.content}
-    </Router>
-)
+const RouterComponent =  (props) => {
+    return (
+        <Router>
+            {props.nav}
+            {props.content}
+        </Router>
+    )
+}
 
 export default RouterComponent

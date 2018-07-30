@@ -11,7 +11,13 @@
  **/
 import React from 'react';
 import Marionette from 'backbone.marionette';
+import styled from 'styled-components';
 const intervalToCheck = 20;
+import { CustomElement } from '../../styles/customElement';
+
+const RegionContainer = styled.div`
+    ${CustomElement}
+`
 
 class MarionetteRegionContainer extends React.Component {
     constructor(props) {
@@ -38,7 +44,7 @@ class MarionetteRegionContainer extends React.Component {
         }
     }
     render() {
-        return <div ref={this.regionRef} />
+        return <RegionContainer innerRef={this.regionRef} />
     }
 }
 

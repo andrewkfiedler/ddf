@@ -11,32 +11,24 @@
  **/
 import React from 'react';
 import Router from '../../presentation/router'
-import {ThemeProvider} from 'styled-components'
-const user = require('component/singletons/user-instance');
 import MarionetteRegionContainer from '../../container/marionette-region-container';
-const NavigationView = require('component/navigation/navigation.view');
 const RouteView = require('component/route/route.view');
+
+import Navigation from '../navigation-container';
+import ThemeContainer from '../theme-container';
 
 class RouterContainer extends React.Component {
     constructor() {
         super();
-        this.state = user.get('user').get('preferences').get('theme').getTheme()
-    }
-    componentDidMount() {
-        user.get('user').get('preferences').on('change:theme', this.updateTheme.bind(this));
-    }
-    updateTheme() {
-        this.setState(user.get('user').get('preferences').get('theme').getTheme())
     }
     render() {
-        const nav = <MarionetteRegionContainer view={NavigationView} viewOptions={{...this.props}}>
-                    </MarionetteRegionContainer>
         const content = <MarionetteRegionContainer view={RouteView} viewOptions={{...this.props}}>
                         </MarionetteRegionContainer>
+        const navigation = <Navigation {...this.props} />
         return (
-            <ThemeProvider theme={this.state}>
-                <Router nav={nav} content={content} {...this.props}></Router>
-            </ThemeProvider>
+            <ThemeContainer>
+                <Router nav={navigation} content={content} {...this.props}></Router>
+            </ThemeContainer>
         )
     }
 }
