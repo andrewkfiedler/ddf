@@ -3,6 +3,10 @@ import * as React from 'react'
 import * as Backbone from 'backbone'
 
 export interface RouterComponentProps {
+    isDrawing: boolean;
+    hasUnavailable: boolean;
+    hasUnsaved: boolean;
+    hasLogo: boolean; 
     nav: React.Component;
     content: React.Component;
 }

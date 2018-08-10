@@ -14,23 +14,9 @@ import styled from 'styled-components';
 import { CustomElement } from '../../styles/customElement';
 import { ChangeBackground } from '../../styles/changeBackground';
 import { transparentize, readableColor } from 'polished';
-
-const NavigationLeft = styled.div`
-    width: ${props => {
-        if (props.hasLogo) {
-            if (props.hasUnavailable || props.hasUnsaved) {
-                return `calc(2*${props.theme.minimumButtonSize} + 1rem)`
-            } else {
-                return props.theme.multiple(2, props.theme.minimumButtonSize);
-            }
-        } else if (props.hasUnavailable || props.hasUnsaved) {
-            return `calc(${props.theme.minimumButtonSize} + 1rem)`;
-        } else {
-            return props.theme.minimumButtonSize;
-        }
-    }};
-    transition: ${props => `width ${props.theme.coreTransitionTime} ease-out`}
-`
+import NavigationLeftComponent from '../navigation-left';
+import NavigationRightComponent from '../navigation-right';
+import CancelDrawingContainer from '../../container/cancel-drawing'
 
 const NavigationRight = styled.div`
     position: absolute;
@@ -95,19 +81,19 @@ const Navigation = styled.div`
 
 const NavigationComponent =  (props) => (
     <Navigation>
-        <CancelDrawingButton className="is-negative" {...props}>
-            <span className="fa fa-times"></span>
-            <span>Cancel Drawing</span>
-        </CancelDrawingButton>
-        <NavigationLeft className="is-button is-img" {...props}>
-            {props.left}
-        </NavigationLeft>
+        <CancelDrawingContainer turnOffDrawing={props.turnOffDrawing}>
+            <CancelDrawingButton className="is-negative" {...props}>
+                <span className="fa fa-times"></span>
+                <span>Cancel Drawing</span>
+            </CancelDrawingButton>
+        </CancelDrawingContainer>
+        <NavigationLeftComponent showLogo={props.showLogo} hasUnavailable={props.hasUnavailable} hasUnsaved={props.hasUnsaved}>
+        </NavigationLeftComponent>
         <NavigationMiddle {...props}>
             {props.middle}
         </NavigationMiddle>
-        <NavigationRight>
-            {props.right}
-        </NavigationRight>
+        <NavigationRightComponent>
+        </NavigationRightComponent>
     </Navigation>
 )
 

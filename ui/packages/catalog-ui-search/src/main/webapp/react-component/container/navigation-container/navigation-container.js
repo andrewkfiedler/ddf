@@ -15,14 +15,13 @@ import Navigation from '../../presentation/navigation';
 
 const Backbone = require('backbone');
 
-var NavigationLeftView = require('component/navigation-left/navigation-left.view');
-var RouteView = require('component/route/route.view');
-var NavigationRightView = require('component/navigation-right/navigation-right.view');
+const RouteView = require('component/route/route.view');
+const NavigationRightView = require('component/navigation-right/navigation-right.view');
 
-var store = require('js/store');
-var wreqr = require('wreqr');
-var sources = require('component/singletons/sources-instance');
-var properties = require('properties');
+const store = require('js/store');
+const wreqr = require('wreqr');
+const sources = require('component/singletons/sources-instance');
+const properties = require('properties');
 
 const hasLogo = () => {
     return properties.showLogo && properties.ui.vendorImage !== ""
@@ -42,6 +41,10 @@ const hasUnsaved = () => {
 
 const isDrawing = () => {
     return store.get('content').get('drawing');
+}
+
+const turnOffDrawing = () => {
+    wreqr.vent.trigger('search:drawend', store.get('content').get('drawingModel'));
 }
 
 class NavigationContainer extends React.Component {
@@ -83,7 +86,6 @@ class NavigationContainer extends React.Component {
         wreqr.vent.trigger('search:drawend', store.get('content').get('drawingModel'));
     }
     render(props) {
-        const left = <MarionetteRegionContainer view={NavigationLeftView} viewOptions={{...this.props}} />
         const middle = <MarionetteRegionContainer view={RouteView} viewOptions={{isMenu: true, ...this.props}} />
         const right = <MarionetteRegionContainer view={NavigationRightView} viewOptions={{...this.props}} />
         return (
@@ -92,7 +94,10 @@ class NavigationContainer extends React.Component {
                 hasUnavailable={this.state.hasUnavailable} 
                 hasUnsaved={this.state.hasUnsaved} 
                 hasLogo={this.state.hasLogo} 
-                left={left} middle={middle} right={right} 
+                turnOffDrawing={() => {
+                    turnOffDrawing();
+                }}
+                middle={middle} right={right} 
                 {...this.props}>
             </Navigation>
         )

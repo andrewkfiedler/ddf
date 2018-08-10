@@ -1,22 +1,29 @@
 import React from 'react'
 import { expect } from 'chai'
 import { shallow, mount } from 'enzyme'
-import sinon from 'sinon'
 
 import MarionetteRegionContainer from './index'
 
-describe('<MarionetteRegionContainer />', () => {
+const Marionette = require('backbone.marionette');
 
-    it('gets mounted', () => {
-        sinon.spy(MarionetteRegionContainer.prototype, 'componentDidMount')
-        const wrapper = mount(<MarionetteRegionContainer/>)
-        expect(MarionetteRegionContainer.prototype.componentDidMount).to.have.property('callCount', 1)
-        MarionetteRegionContainer.prototype.componentDidMount.restore()
-    })
+describe('<MarionetteRegionContainer />', () => {
     
     it('renders a single div', () => {
-        const wrapper = shallow(<MarionetteRegionContainer/>)
+        const wrapper = mount(<MarionetteRegionContainer/>)
         expect(wrapper.find('div')).to.have.length(1)
+    })
+
+    it('renders a marionette view', (done) => {
+        const div = document.createElement('div');
+        document.body.appendChild(div);
+        const TestView = Marionette.ItemView.extend({
+            template: '<h1></h1>',
+            onRender() {
+                done();
+                div.remove();
+            }
+        })
+        const wrapper = mount(<MarionetteRegionContainer view={TestView}/>, {attachTo: div});
     })
 
 })

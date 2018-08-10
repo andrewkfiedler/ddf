@@ -18,7 +18,6 @@ import { CustomElement } from '../../styles/customElement';
 const RegionContainer = styled.div`
     ${CustomElement}
 `
-
 class MarionetteRegionContainer extends React.Component {
     constructor(props) {
         super(props);
