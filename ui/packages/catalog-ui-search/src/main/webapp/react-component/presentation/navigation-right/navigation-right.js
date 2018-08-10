@@ -38,7 +38,7 @@ const unseenNotifications = keyframes`
 `
 
 const Root = styled.div`
-    .customElement;
+    ${CustomElement}
     white-space: nowrap;
     overflow: hidden;
 
@@ -48,6 +48,7 @@ const Root = styled.div`
         height: 100%;
         text-align: center;
         vertical-align: top;
+        line-height: inherit;
     }
 
     .navigation-item.item-user {
@@ -98,42 +99,30 @@ const Root = styled.div`
         transform: translateY(-50%);
     }
 
-    &.is-guest {
-        .user-unique {
-            display: none;
-        }
+    .user-unique {
+        ${props => props.isGuest ? 'display:none;' : ''}
     }
 
-    &:not(.is-guest) {
-        .user-guest {
-            display: none;
-        }
+    .user-guest {
+        ${props => !props.isGuest ? 'display:none;' : ''}
     }
 
-    &.has-unseen-notifications {
-        .item-alerts {
-            opacity: 1;
-            animation: ${unseenNotifications} 4*${props => props.theme.coreTransitionTime} 5 alternate ease-in-out;
-            transform: scale(1.2);
-        }
+    ${props => {
+        if (props.hasUnseenNotifications) {
+            return `
+                .item-alerts {
+                    opacity: 1;
+                    animation: ${unseenNotifications} ${props.theme.multiple(4, props.theme.coreTransitionTime, 's')} 5 alternate ease-in-out;
+                    transform: scale(1.2);
+                }
 
-        .alerts-badge {
-            transform: scale(1) translateY(-50%);
+                .alerts-badge {
+                    transform: scale(1) translateY(-50%);
+                }
+            `
         }
-    }
+    }}
 `
-
-const handleUser = (props, classes) => {
-    if (user.isGuest()) {
-        classes.push('is-guest');
-    }
-}
-
-const handleUnseenNotifications = (props, classes) => {
-    if (notifications.hasUnseen()) {
-        classes.push('has-unseen-notifications');
-    }
-}
 
 const toggleAlerts = () => {
     SlideoutRightViewInstance.updateContent(new UserNotifications());
@@ -154,28 +143,21 @@ const toggleUser = () => {
     SlideoutRightViewInstance.open();
 }
 
-const getClassesFromProps = (props) => {
-    const classes = [];
-    handleUser(props, classes);
-    handleUnseenNotifications(props, classes);
-    return classes.join(' ');
-}
-
-export default function NavigationLeft(props) {
+export default function NavigationRight(props) {
     return (
-        <Root className={`${getClassesFromProps(props)}`}>
-            <button className="navigation-item item-help is-button" title="Shows helpful hints in the current context.">
+        <Root {...props}>
+            <button className="navigation-item item-help is-button" title="Shows helpful hints in the current context." onClick={toggleHelp}>
                 <span className="fa fa-question"></span>
             </button>
-            <button className="navigation-item item-settings is-button" title="Shows settings for the application.">
+            <button className="navigation-item item-settings is-button" title="Shows settings for the application." onClick={toggleUserSettings}>
                 <span className="fa fa-cog"></span>
             </button>
-            <button className="navigation-item item-alerts is-button" title="Shows notifications.">
+            <button className="navigation-item item-alerts is-button" title="Shows notifications." onClick={toggleAlerts}>
                 <span className="fa fa-bell"></span>
                 <span className="alerts-badge fa fa-exclamation"></span>
             </button>
-            <button className="navigation-item item-user is-button">
-                <div className="user-unique" title=`Logged in as ${user.getUserName()}`>
+            <button className="navigation-item item-user is-button" onClick={toggleUser}>
+                <div className="user-unique" title={`Logged in as ${user.getUserName()}`}>
                     <span className="">{user.getUserName()}</span>
                     <span className="fa fa-user"></span>
                 </div>

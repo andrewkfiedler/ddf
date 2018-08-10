@@ -162,8 +162,8 @@ function updateTheme(userTheme) {
         ...spacing(parseFloat(sizingTheme.minimumSpacing)),
         ...dividers(parseFloat(sizingTheme.minimumSpacing)),
         ...opacity,
-        multiple: (multiplier, variable) => {
-            return `${multiplier * parseFloat(variable)}rem`
+        multiple: (multiplier, variable, unit) => {
+            return `${multiplier * parseFloat(variable)}${unit ? unit : 'rem'}`
         }
     }
 }

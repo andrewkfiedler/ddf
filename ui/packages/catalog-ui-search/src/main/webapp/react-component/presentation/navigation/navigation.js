@@ -15,8 +15,8 @@ import { CustomElement } from '../../styles/customElement';
 import { ChangeBackground } from '../../styles/changeBackground';
 import { transparentize, readableColor } from 'polished';
 import NavigationLeftComponent from '../navigation-left';
-import NavigationRightComponent from '../navigation-right';
-import CancelDrawingContainer from '../../container/cancel-drawing'
+import NavigationRightComponent from '../../container/navigation-right-container';
+import CancelDrawingContainer from '../../container/cancel-drawing-container'
 
 const NavigationRight = styled.div`
     position: absolute;
@@ -92,8 +92,10 @@ const NavigationComponent =  (props) => (
         <NavigationMiddle {...props}>
             {props.middle}
         </NavigationMiddle>
-        <NavigationRightComponent>
-        </NavigationRightComponent>
+        <NavigationRight>
+            <NavigationRightComponent>
+            </NavigationRightComponent>
+        </NavigationRight>
     </Navigation>
 )
 
