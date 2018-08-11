@@ -71,10 +71,20 @@ class RouteContainer extends React.Component {
     componentWillUnmount() {
         this.deferred.reject();
     }
+    determineComponent() {
+        const Component = this.getComponent();
+        if (Component._isMarionetteView) {
+            return (
+                <MarionetteRegionContainer view={Component} />
+            )
+        } else {
+            return <Component />;
+        }
+    }
     render() {
         return (
             <LoadingCompanion loading={!this.state.isFetched}>
-                {this.state.isFetched ? <MarionetteRegionContainer view={this.getComponent()} /> : ''}
+                {this.state.isFetched ? this.determineComponent() : ''}
             </LoadingCompanion>
         )
     }

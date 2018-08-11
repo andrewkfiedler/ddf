@@ -50,7 +50,7 @@ module.exports = function (source, map) {
       `
       var $ = require('jquery')
       var onComponentResolution = function(deferred, options, component) {
-        this.component = this.component || new component(options);
+        this.component = this.component || (component.default ? component.default : new component(options))
         deferred.resolve(this.component);
       }
       module.exports = { ${routesObjectString} }`

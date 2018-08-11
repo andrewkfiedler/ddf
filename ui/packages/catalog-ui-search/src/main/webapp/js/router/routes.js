@@ -52,7 +52,7 @@
     },
     openAbout: {
         patterns: ['about(/)'],
-        component: 'component/about/about.view',
+        component: 'react-component/container/about-container/about-container',
         menu: {
             text: 'About',
             classes: 'is-bold'
