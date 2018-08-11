@@ -16,7 +16,7 @@ const Backbone = require('backbone');
 const router = require('component/router/router');
 
 import styled from 'styled-components';
-import CustomElement from '../../styles/customElement'
+import {CustomElement} from '../../styles/customElement'
 
 const RouteWrapper = styled.div`
     ${CustomElement}

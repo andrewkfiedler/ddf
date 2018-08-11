@@ -14,7 +14,7 @@ import MarionetteRegionContainer from '../../container/marionette-region-contain
 
 const $ = require('jquery');
 const wreqr = require('wreqr');
-const LoadingCompanionView = require('component/loading-companion/loading-companion.view');
+import LoadingCompanion from '../loading-companion'
 
 // needed for golden-layout
 const triggerResize = () => {
@@ -38,7 +38,6 @@ class RouteContainer extends React.Component {
             isMenu: props.isMenu,
             isFetched: isFetched(props)
         }
-        this.ref = React.createRef();
     }
     getComponent() {
         if (this.state.isMenu) {
@@ -55,22 +54,24 @@ class RouteContainer extends React.Component {
         }
     }
     componentDidMount() {
-        if (this.state.isFetched === false) {
-            // spinner?
-        } else {
+        if (this.state.isFetched !== false) {
             triggerResize();
         }
-        this.fetchComponent().then((component) => {
+        this.deferred = this.fetchComponent();
+        this.deferred.then(() => {
             this.setState({
                 isFetched: true
             });
         })
     }
+    componentWillUnmount() {
+        this.deferred.reject();
+    }
     render() {
         if (this.state.isFetched) {
             return <MarionetteRegionContainer view={this.getComponent()} />
         } else {
-            return <div ref={this.ref} />
+            return <LoadingCompanion />
         }
     }
 }
