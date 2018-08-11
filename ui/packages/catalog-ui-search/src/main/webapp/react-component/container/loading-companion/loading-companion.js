@@ -23,6 +23,11 @@ class LoadingCompanionContainer extends React.Component {
         super(props);
         this.ref = React.createRef();
     }
+    componentDidUpdate() {
+        if (this.props.loading === false) {
+            LoadingCompanionView.stopLoadingElement(this.ref.current);
+        }
+    }
     componentDidMount() {
         LoadingCompanionView.loadElement(this.ref.current);
     }
@@ -30,7 +35,11 @@ class LoadingCompanionContainer extends React.Component {
         LoadingCompanionView.stopLoadingElement(this.ref.current);
     }
     render() {
-        return <Root innerRef={this.ref} />
+        return (
+            <Root innerRef={this.ref}>
+                {this.props.children} 
+            </Root>
+        )
     }
 }
 

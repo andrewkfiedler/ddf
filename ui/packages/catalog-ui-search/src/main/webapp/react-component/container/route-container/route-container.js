@@ -18,8 +18,10 @@ import LoadingCompanion from '../loading-companion'
 
 // needed for golden-layout
 const triggerResize = () => {
-    wreqr.vent.trigger('resize');
-    $(window).trigger('resize');
+    setTimeout(() => {
+        wreqr.vent.trigger('resize');
+        $(window).trigger('resize');
+    }, 100)
 }
 
 const isFetched = (props) => {
@@ -53,10 +55,12 @@ class RouteContainer extends React.Component {
             return this.state.routeDefinition.getComponent();
         }
     }
-    componentDidMount() {
+    componentDidUpdate() {
         if (this.state.isFetched !== false) {
             triggerResize();
         }
+    }
+    componentDidMount() {
         this.deferred = this.fetchComponent();
         this.deferred.then(() => {
             this.setState({
@@ -68,11 +72,11 @@ class RouteContainer extends React.Component {
         this.deferred.reject();
     }
     render() {
-        if (this.state.isFetched) {
-            return <MarionetteRegionContainer view={this.getComponent()} />
-        } else {
-            return <LoadingCompanion />
-        }
+        return (
+            <LoadingCompanion loading={!this.state.isFetched}>
+                {this.state.isFetched ? <MarionetteRegionContainer view={this.getComponent()} /> : ''}
+            </LoadingCompanion>
+        )
     }
 }
 
