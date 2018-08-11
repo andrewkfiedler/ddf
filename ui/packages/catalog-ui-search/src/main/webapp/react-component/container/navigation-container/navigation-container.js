@@ -15,7 +15,7 @@ import Navigation from '../../presentation/navigation';
 
 const Backbone = require('backbone');
 
-const RouteView = require('component/route/route.view');
+import Routes from '../../container/routes-container'
 const NavigationRightView = require('component/navigation-right/navigation-right.view');
 
 const store = require('js/store');
@@ -86,7 +86,6 @@ class NavigationContainer extends React.Component {
         wreqr.vent.trigger('search:drawend', store.get('content').get('drawingModel'));
     }
     render(props) {
-        const middle = <MarionetteRegionContainer view={RouteView} viewOptions={{isMenu: true, ...this.props}} />
         const right = <MarionetteRegionContainer view={NavigationRightView} viewOptions={{...this.props}} />
         return (
             <Navigation 
@@ -97,7 +96,7 @@ class NavigationContainer extends React.Component {
                 turnOffDrawing={() => {
                     turnOffDrawing();
                 }}
-                middle={middle} right={right} 
+                middle={<Routes isMenu={true} routeDefinitions={this.props.routeDefinitions} />} right={right} 
                 {...this.props}>
             </Navigation>
         )

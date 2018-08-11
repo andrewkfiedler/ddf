@@ -10,16 +10,68 @@
  *
  **/
 import React from 'react';
-import Router from '../../presentation/router'
+import MarionetteRegionContainer from '../../container/marionette-region-container';
+
+const $ = require('jquery');
+const wreqr = require('wreqr');
+const LoadingCompanionView = require('component/loading-companion/loading-companion.view');
+
+// needed for golden-layout
+const triggerResize = () => {
+    wreqr.vent.trigger('resize');
+    $(window).trigger('resize');
+}
+
+const isFetched = (props) => {
+    if (props.isMenu) {
+        return props.routeDefinition.menu.component !== undefined;
+    } else {
+        return props.routeDefinition.component !== undefined;
+    }
+}
 
 class RouteContainer extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+        this.state = {
+            routeDefinition: props.routeDefinition,
+            isMenu: props.isMenu,
+            isFetched: isFetched(props)
+        }
+        this.ref = React.createRef();
+    }
+    getComponent() {
+        if (this.state.isMenu) {
+            return this.state.routeDefinition.menu.component;
+        } else {
+            return this.state.routeDefinition.component;
+        }
+    }
+    fetchComponent() {
+        if (this.state.isMenu) {
+            return this.state.routeDefinition.menu.getComponent();
+        } else {
+            return this.state.routeDefinition.getComponent();
+        }
+    }
+    componentDidMount() {
+        if (this.state.isFetched === false) {
+            // spinner?
+        } else {
+            triggerResize();
+        }
+        this.fetchComponent().then((component) => {
+            this.setState({
+                isFetched: true
+            });
+        })
     }
     render() {
-        return (
-            <Router nav={navigation} content={content} {...this.props}></Router>
-        )
+        if (this.state.isFetched) {
+            return <MarionetteRegionContainer view={this.getComponent()} />
+        } else {
+            return <div ref={this.ref} />
+        }
     }
 }
 

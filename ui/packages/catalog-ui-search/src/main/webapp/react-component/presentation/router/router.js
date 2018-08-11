@@ -12,16 +12,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import { CustomElement } from '../../styles/customElement';
+import Routes from '../../container/routes-container'
 
 const Router = styled.div`
     ${CustomElement}
     overflow: hidden;
 
-    > *:nth-of-type(1) {
+    > *:first-child {
         height: calc(2*${props => props.theme.minimumLineSize});
     }
 
-    > *:nth-of-type(2) {
+    > *:not(:first-child) {
         height: calc(100% - 2*${props => props.theme.minimumLineSize});
     }
 `
@@ -30,7 +31,7 @@ const RouterComponent =  (props) => {
     return (
         <Router>
             {props.nav}
-            {props.content}
+            <Routes isMenu={false} routeDefinitions={props.routeDefinitions} />
         </Router>
     )
 }

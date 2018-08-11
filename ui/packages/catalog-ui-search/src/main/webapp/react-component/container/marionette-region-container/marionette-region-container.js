@@ -23,6 +23,13 @@ class MarionetteRegionContainer extends React.Component {
         super(props);
         this.regionRef = React.createRef();
     }
+    showComponentInRegion() {
+        if (this.props.view._isMarionetteView) {
+            this.region.show(this.props.view);
+        } else {
+            this.region.show(new this.props.view(this.props.viewOptions));
+        }
+    }
     componentDidMount() {
         this.checkForMount = setInterval(() => {
             if (document.body.contains(this.regionRef.current)) {
@@ -30,7 +37,7 @@ class MarionetteRegionContainer extends React.Component {
                 this.region = new Marionette.Region({
                     el: this.regionRef.current
                 });
-                this.region.show(new this.props.view(this.props.viewOptions));
+                this.showComponentInRegion();
             }
         }, intervalToCheck);
     }
