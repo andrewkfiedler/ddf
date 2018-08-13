@@ -13,8 +13,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { CustomElement } from '../../styles/customElement';
 import MarionetteRegionContainer from '../../container/marionette-region-container';
-const WorkspaceItemCollection = require('component/workspace-item/workspace-item.collection.view');
-const store = require('js/store');
+import WorkspaceItemContainer from '../../container/workspace-item-container'
 
 const Root = styled.div`
     ${CustomElement}
@@ -57,6 +56,14 @@ const Root = styled.div`
     }}
 `
 
+const WorkspaceItemRoot = styled.div`
+    width: 18rem;
+    overflow: hidden;
+    display: inline-block;
+    margin-bottom: ${props => props.theme.minimumSpacing};
+    margin-right: ${props => props.theme.largeSpacing};
+`
+
 const WorkspacesItems =  (props) => {
     return (
         <Root>
@@ -89,15 +96,14 @@ const WorkspacesItems =  (props) => {
                         </div>
                     </div>
                 </div>
-                <div className="home-items-choices">
-                    <MarionetteRegionContainer 
-                        view={WorkspaceItemCollection}
-                        viewOptions={() => {
-                            return {
-                                collection: store.get('workspaces')
-                            }
-                        }}
-                    />
+                <div className="home-items-choices is-list is-inline has-list-highlighting">
+                    {props.workspaces.map((workspace) => {
+                        return <WorkspaceItemRoot key={workspace.id}>
+                            <WorkspaceItemContainer 
+                                workspace={workspace}
+                            />
+                        </WorkspaceItemRoot>
+                    })}
                 </div>
             </div>
         </Root>

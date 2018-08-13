@@ -68,7 +68,8 @@ class WorkspacesItemsContainer extends React.Component {
                 ],
                 defaultSelection: [preferences.get('homeDisplay')]
             }),
-            byDate: preferences.get('homeSort') === 'Last modified'
+            byDate: preferences.get('homeSort') === 'Last modified',
+            workspaces: store.get('workspaces')
         }
     }
     componentDidMount() {
@@ -100,6 +101,7 @@ class WorkspacesItemsContainer extends React.Component {
                 filterDropdown={this.state.filterDropdown}
                 sortDropdown={this.state.sortDropdown}
                 displayDropdown={this.state.displayDropdown}
+                workspaces={this.state.workspaces}
             />
         )
     }
