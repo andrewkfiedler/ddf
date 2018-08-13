@@ -14,9 +14,6 @@
  **/
 import React from 'react';
 import styled from 'styled-components';
-import { CustomElement } from '../../styles/customElement';
-import { ChangeBackground } from '../../styles/changeBackground';
-import { transparentize, readableColor } from 'polished';
 
 const Root = styled.span`
     display: inline-block;

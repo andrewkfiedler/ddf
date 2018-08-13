@@ -13,8 +13,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { keyframes } from 'styled-components'
 import { CustomElement } from '../../styles/customElement';
-import { ChangeBackground } from '../../styles/changeBackground';
-import { transparentize, readableColor } from 'polished';
 
 const HelpView = require('component/help/help.view');
 const UserSettings = require('component/user-settings/user-settings.view');

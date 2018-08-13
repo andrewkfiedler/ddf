@@ -11,9 +11,6 @@
  **/
 import React from 'react';
 import styled from 'styled-components';
-import { CustomElement } from '../../styles/customElement';
-import { ChangeBackground } from '../../styles/changeBackground';
-import { transparentize, readableColor } from 'polished';
 import UnsavedIndicator from '../unsaved-indicator';
 const SlideoutLeftViewInstance = require('component/singletons/slideout.left.view-instance.js');
 const NavigatorView = require('component/navigator/navigator.view');

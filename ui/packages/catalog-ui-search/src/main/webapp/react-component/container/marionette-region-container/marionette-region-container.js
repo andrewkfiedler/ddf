@@ -50,7 +50,7 @@ class MarionetteRegionContainer extends React.Component {
         }
     }
     render() {
-        return <RegionContainer innerRef={this.regionRef} />
+        return <RegionContainer innerRef={this.regionRef} {...this.props}/>
     }
 }
 

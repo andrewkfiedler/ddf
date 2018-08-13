@@ -8,7 +8,7 @@
     },
     home: {
         patterns: ['(?*)', 'workspaces(/)'],
-        component: 'component/workspaces/workspaces.view',
+        component: 'react-component/container/workspaces-container/workspaces-container',
         menu: {
             component: 'component/workspaces-menu/workspaces-menu.view'
         }
