@@ -43,7 +43,7 @@ const Root = styled.div`
     }
 
     ${props => {
-        if (props.theme.screenSize.includes('small')) {
+        if (props.theme.screenBelow(props.theme.smallScreenSize)) {
             return `
                 .home-items-center {
                     max-width: 100%;

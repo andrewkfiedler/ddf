@@ -163,17 +163,20 @@ function updateTheme(userTheme) {
         ...fontSizes,
         ...spacing(parseFloat(sizingTheme.minimumSpacing)),
         ...dividers(parseFloat(sizingTheme.minimumSpacing)),
-        ...opacity,
-        multiple: (multiplier, variable, unit) => {
-            return `${multiplier * parseFloat(variable)}${unit ? unit : 'rem'}`
-        }
+        ...opacity
     }
 }
 class ThemeContainer extends React.Component {
     constructor() {
         super();
         this.state = {
-            screenSize: [],
+            screenSize: this.determineScreenSize(),
+            multiple: (multiplier, variable, unit) => {
+                return `${multiplier * parseFloat(variable)}${unit ? unit : 'rem'}`
+            },
+            screenBelow: (specifiedSize) => {
+                return this.state.screenSize < parseFloat(specifiedSize);
+            },
             ...updateTheme(user.get('user').get('preferences').get('theme').getTheme())
         }
     }
@@ -188,17 +191,7 @@ class ThemeContainer extends React.Component {
     determineScreenSize() {
         const fontSize = parseInt(user.get('user').get('preferences').get('fontSize'));
         const screenSize = window.innerWidth / fontSize;
-        const sizes = [];
-        if (screenSize < parseFloat(screenSizes.mobileScreenSize)) {
-            sizes.push('mobile')
-        } 
-        if (screenSize < parseFloat(screenSizes.smallScreenSize)) {
-            sizes.push('small')
-        } 
-        if (screenSize < parseFloat(screenSizes.mediumScreenSize)) {
-            sizes.push('medium')
-        }
-        return sizes;
+        return screenSize;
     }
     updateMediaQueries() {
         this.setState({

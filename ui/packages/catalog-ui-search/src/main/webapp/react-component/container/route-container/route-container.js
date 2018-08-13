@@ -58,6 +58,7 @@ class RouteContainer extends React.Component {
     componentDidUpdate() {
         if (this.state.isFetched !== false) {
             triggerResize();
+            this.componentDidUpdate = () => {};
         }
     }
     componentDidMount() {
