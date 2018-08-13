@@ -13,11 +13,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { CustomElement } from '../../styles/customElement';
 import { ChangeBackground } from '../../styles/changeBackground';
-import createMixin from '../../styles/mixin';
-import MarionetteRegionContainer from '../../container/marionette-region-container';
 import WorkspacesTemplatesContainer from '../../container/workspaces-templates-container';
-const WorkspaceTemplatesView = require('component/workspaces-templates/workspaces-templates.view');
-const WorkspaceItemsView = require('component/workspaces-items/workspaces-items.view')
+import WorkspacesItemsContainer from '../../container/workspaces-items-container';
 
 const Root = styled.div`
     ${CustomElement}
@@ -93,7 +90,7 @@ const Workspaces =  (props) => {
                         toggleExpansion={props.toggleExpansion} />
                 </div>
                 <div className="home-items">
-                    <MarionetteRegionContainer view={WorkspaceItemsView} />
+                    <WorkspacesItemsContainer />
                 </div>
             </div> 
             <button className="home-save is-positive">
