@@ -41,6 +41,20 @@ const Root = styled.div`
         display: inline-block;
         padding: 0px 10px;
     }
+
+    ${props => {
+        if (props.theme.screenSize.includes('small')) {
+            return `
+                .home-items-center {
+                    max-width: 100%;
+                    padding: 0px 20px;
+                }
+                .home-items-choices {
+                    text-align: center;
+                }
+            `
+        }
+    }}
 `
 
 const WorkspacesItems =  (props) => {

@@ -12,6 +12,8 @@
 import React from 'react';
 import {ThemeProvider} from 'styled-components'
 const user = require('component/singletons/user-instance');
+const $ = require('jquery');
+const _ = require('underscore');
 
 const sizing = {
     comfortable: {
@@ -171,11 +173,41 @@ class ThemeContainer extends React.Component {
     constructor() {
         super();
         this.state = {
+            screenSize: [],
             ...updateTheme(user.get('user').get('preferences').get('theme').getTheme())
         }
     }
     componentDidMount() {
+        this.listenForUserChanges();
+        this.watchScreenSize();
+        this.updateMediaQueries();
+    }
+    watchScreenSize() {
+        $(window).resize(_.throttle(this.updateMediaQueries.bind(this), 30));
+    }
+    determineScreenSize() {
+        const fontSize = parseInt(user.get('user').get('preferences').get('fontSize'));
+        const screenSize = window.innerWidth / fontSize;
+        const sizes = [];
+        if (screenSize < parseFloat(screenSizes.mobileScreenSize)) {
+            sizes.push('mobile')
+        } 
+        if (screenSize < parseFloat(screenSizes.smallScreenSize)) {
+            sizes.push('small')
+        } 
+        if (screenSize < parseFloat(screenSizes.mediumScreenSize)) {
+            sizes.push('medium')
+        }
+        return sizes;
+    }
+    updateMediaQueries() {
+        this.setState({
+            screenSize: this.determineScreenSize()
+        })
+    }
+    listenForUserChanges() {
         user.get('user').get('preferences').on('change:theme', this.updateTheme.bind(this));
+        user.get('user').get('preferences').on('change:fontSize', this.updateMediaQueries.bind(this));
     }
     updateTheme() {
         this.setState(updateTheme(user.get('user').get('preferences').get('theme').getTheme()))

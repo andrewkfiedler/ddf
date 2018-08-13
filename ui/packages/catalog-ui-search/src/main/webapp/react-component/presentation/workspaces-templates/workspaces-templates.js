@@ -141,6 +141,31 @@ const Root = styled.div`
             `;
         }
     }}
+
+    ${props => {
+        if (props.theme.screenSize.includes('small')) {
+            return `
+                .home-templates-center,
+                .expanded-content{
+                    max-width: 100%;
+                }
+                .home-templates-adhoc {
+                    padding-right: 0px;
+                    padding-left: 0px;
+                }
+                .home-templates-center {
+                    padding: 0px 20px;
+                }
+                .expanded-content {
+                    padding: 0px 0px;
+                }
+
+                .home-templates-choices {
+                    text-align: center;
+                }
+            `
+        }
+    }}
 `
 
 const WorkspacesTemplates =  (props) => {
