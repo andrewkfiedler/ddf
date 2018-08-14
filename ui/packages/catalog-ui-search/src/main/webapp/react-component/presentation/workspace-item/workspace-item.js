@@ -15,6 +15,7 @@ import Card from '../card'
 const DropdownModel = require('component/dropdown/dropdown');
 const WorkspaceInteractionsDropdown = require('component/dropdown/workspace-interactions/dropdown.workspace-interactions.view');
 import MarionetteRegionContainer from '../../container/marionette-region-container';
+const CustomElements = require('js/CustomElements');
 
 const Root = styled.div`
     .choice-title {
@@ -30,13 +31,13 @@ const Root = styled.div`
             vertical-align: top;
         }
     }
-`
 
-const Interactions = styled.div`
-    > * {
+    .marionette-region-container,
+    ${CustomElements.getNamespace()}dropdown {
         display: inline-block;
         width: ${props => props.theme.minimumButtonSize};
         height: ${props => props.theme.minimumButtonSize};
+        text-align: center;
     }
 `
 
@@ -69,27 +70,25 @@ const Details = (props) => {
 
 const Footer = (props) => {
     return (
-        <Interactions>
-            <MarionetteRegionContainer 
-                view={WorkspaceInteractionsDropdown}
-                viewOptions={() => {
-                    return {
-                        model: new DropdownModel(),
-                        modelForComponent: props.workspace,
-                        dropdownCompanionBehaviors: {
-                            navigation: {}
-                        }
+        <MarionetteRegionContainer 
+            view={WorkspaceInteractionsDropdown}
+            viewOptions={() => {
+                return {
+                    model: new DropdownModel(),
+                    modelForComponent: props.workspace,
+                    dropdownCompanionBehaviors: {
+                        navigation: {}
                     }
-                }}
-            />
-        </Interactions>
+                }
+            }}
+        />
     )
 }
 
 
 const WorkspaceItem =  (props) => {
     return (
-        <Root>
+        <Root onClick={props.openWorkspace} tabIndex="0">
             <Card 
                 header={Header(props)}
                 details={Details(props)}

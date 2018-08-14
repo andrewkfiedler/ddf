@@ -51,6 +51,9 @@ class WorkspacesContainer extends React.Component {
             hasUnsaved: hasUnsaved()
         });
     }
+    saveAllWorkspaces() {
+        store.get('workspaces').saveAll();
+    }
     render() {
         return (
             <Workspaces 
@@ -58,6 +61,7 @@ class WorkspacesContainer extends React.Component {
                 hasUnsaved={this.state.hasUnsaved} 
                 hasTemplatesExpanded={this.state.hasTemplatesExpanded}
                 toggleExpansion={this.toggleExpansion.bind(this)}
+                saveAllWorkspaces={this.saveAllWorkspaces.bind(this)}
             />
         )
     }

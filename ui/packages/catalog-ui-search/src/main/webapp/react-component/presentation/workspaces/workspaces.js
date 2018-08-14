@@ -15,6 +15,7 @@ import { CustomElement } from '../../styles/customElement';
 import { ChangeBackground } from '../../styles/changeBackground';
 import WorkspacesTemplatesContainer from '../../container/workspaces-templates-container';
 import WorkspacesItemsContainer from '../../container/workspaces-items-container';
+import Button from '../button';
 
 const Root = styled.div`
     ${CustomElement}
@@ -93,10 +94,13 @@ const Workspaces =  (props) => {
                     <WorkspacesItemsContainer />
                 </div>
             </div> 
-            <button className="home-save is-positive">
-                <span className="fa fa-floppy-o"></span>
-                <span>Save all</span>
-            </button>
+            <Button
+                type='positive'
+                icon='fa fa-floppy-o'
+                text='Save all'
+                className="home-save"
+                onClick={props.saveAllWorkspaces}
+            />
         </Root>
     )
 }

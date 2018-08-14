@@ -13,6 +13,7 @@ import React from 'react';
 const Backbone = require('backbone');
 import WorkspacesItem from '../../presentation/workspace-item';
 const moment = require('moment');
+const wreqr = require('wreqr');
 
 const getStateFromWorkspace = (workspace) => {
     return {
@@ -29,7 +30,6 @@ class WorkspacesItemsContainer extends React.Component {
         super(props);
         this.state = getStateFromWorkspace(this.props.workspace);
     }
-
     componentDidMount() {
         this.backbone = new Backbone.Model({});
         this.backbone.listenTo(this.props.workspace, 'change', this.handleChange.bind(this));
@@ -40,6 +40,14 @@ class WorkspacesItemsContainer extends React.Component {
     handleChange() {
         this.setState(getStateFromWorkspace(this.props.workspace));
     }
+    openWorkspace() {
+        wreqr.vent.trigger('router:navigate', {
+            fragment: 'workspaces/'+this.props.workspace.id,
+            options: {
+                trigger: true
+            }
+        });
+    }
     render() {
         return (
             <WorkspacesItem 
@@ -49,6 +57,7 @@ class WorkspacesItemsContainer extends React.Component {
                unsaved={this.state.unsaved}
                localStorage={this.state.localStorage}
                workspace={this.props.workspace}
+               openWorkspace={this.openWorkspace.bind(this)}
             />
         )
     }

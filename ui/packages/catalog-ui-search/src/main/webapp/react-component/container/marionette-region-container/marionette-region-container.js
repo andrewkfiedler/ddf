@@ -30,27 +30,43 @@ class MarionetteRegionContainer extends React.Component {
             this.region.show(new this.props.view(this.props.viewOptions));
         }
     }
-    componentDidMount() {
-        this.checkForMount = setInterval(() => {
+    onceInDOM(callback) {
+        clearInterval(this.checkForElement);
+        this.checkForElement = setInterval(() => {
             if (document.body.contains(this.regionRef.current)) {
-                clearInterval(this.checkForMount);
-                this.region = new Marionette.Region({
-                    el: this.regionRef.current
-                });
-                this.showComponentInRegion();
+                clearInterval(this.checkForElement);
+                callback();
             }
-        }, intervalToCheck);
+        })
+    }
+    handleViewChange() {
+        this.onceInDOM(() => {
+            this.showComponentInRegion();
+        });
+    }
+    // we might need to update this to account for more scenarios later
+    componentDidUpdate(prevProps) {
+        if (this.props.view !== prevProps.view) {
+            this.handleViewChange();
+        }
+    }
+    componentDidMount() {
+        this.onceInDOM(() => {
+            this.region = new Marionette.Region({
+                el: this.regionRef.current
+            });
+            this.showComponentInRegion();
+        });
     }
     componentWillUnmount() {
-        clearInterval(this.checkForMount);
+        clearInterval(this.checkForElement);
         if (this.region) {
             this.region.empty();
             this.region.destroy();
-            this.region.$el.remove();
         }
     }
     render() {
-        return <RegionContainer innerRef={this.regionRef} {...this.props}/>
+        return <RegionContainer className="marionette-region-container" innerRef={this.regionRef} {...this.props}/>
     }
 }
 
