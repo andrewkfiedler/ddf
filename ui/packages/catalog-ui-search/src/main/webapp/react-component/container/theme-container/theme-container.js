@@ -12,6 +12,8 @@
 import React from 'react';
 import {ThemeProvider} from 'styled-components'
 const user = require('component/singletons/user-instance');
+const Common = require('js/Common');
+const Backbone = require('backbone');
 const $ = require('jquery');
 const _ = require('underscore');
 
@@ -179,14 +181,21 @@ class ThemeContainer extends React.Component {
             },
             ...updateTheme(user.get('user').get('preferences').get('theme').getTheme())
         }
+        this.id = Common.generateUUID();
     }
     componentDidMount() {
+        this.backbone = new Backbone.Model({});
         this.listenForUserChanges();
         this.watchScreenSize();
         this.updateMediaQueries();
     }
+    componentWillUnmount() {
+        $(window).off(this.id);
+        this.backbone.stopListening();
+        this.isDestroyed = true;  // we have a throttled listener that updates state, so we need this!
+    }
     watchScreenSize() {
-        $(window).resize(_.throttle(this.updateMediaQueries.bind(this), 30));
+        $(window).on(`resize.${this.id}`, _.throttle(this.updateMediaQueries.bind(this), 30));
     }
     determineScreenSize() {
         const fontSize = parseInt(user.get('user').get('preferences').get('fontSize'));
@@ -194,13 +203,16 @@ class ThemeContainer extends React.Component {
         return screenSize;
     }
     updateMediaQueries() {
+        if (this.isDestroyed === true) {
+            return;
+        }
         this.setState({
             screenSize: this.determineScreenSize()
         })
     }
     listenForUserChanges() {
-        user.get('user').get('preferences').on('change:theme', this.updateTheme.bind(this));
-        user.get('user').get('preferences').on('change:fontSize', this.updateMediaQueries.bind(this));
+        this.backbone.listenTo(user.get('user').get('preferences'), 'change:theme', this.updateTheme.bind(this));
+        this.backbone.listenTo(user.get('user').get('preferences'), 'change:fontSize', this.updateMediaQueries.bind(this));
     }
     updateTheme() {
         this.setState(updateTheme(user.get('user').get('preferences').get('theme').getTheme()))

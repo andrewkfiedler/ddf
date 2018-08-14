@@ -84,9 +84,10 @@ module.exports = Marionette.LayoutView.extend({
                     </div>
                     {ComponentToShow.prototype._isMarionetteView ? 
                         <MarionetteRegionContainer 
-                        className="component-details"
-                        view={ComponentToShow}
-                    /> : <ComponentToShow />
+                            className="component-details"
+                            view={ComponentToShow}
+                        /> : 
+                            <ComponentToShow />
                     }
                 </div>
             </React.Fragment>

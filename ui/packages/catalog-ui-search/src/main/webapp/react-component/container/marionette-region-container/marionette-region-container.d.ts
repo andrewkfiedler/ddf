@@ -4,7 +4,8 @@ import * as Backbone from 'backbone'
 
 export interface MarionetteRegionContainerProps {
     view: Backbone.View<Backbone.Model>;
-    viewOptions: object
+    viewOptions: object;
+    replaceElement: boolean;
 }
 
 declare class MarionetteRegionContainer extends React.Component<MarionetteRegionContainerProps> {}

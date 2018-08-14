@@ -25,9 +25,9 @@ class MarionetteRegionContainer extends React.Component {
     }
     showComponentInRegion() {
         if (this.props.view._isMarionetteView) {
-            this.region.show(this.props.view);
+            this.region.show(this.props.view, { replaceElement: this.props.replaceElement });
         } else {
-            this.region.show(new this.props.view(this.props.viewOptions));
+            this.region.show(new this.props.view(this.props.viewOptions), { replaceElement: this.props.replaceElement });
         }
     }
     onceInDOM(callback) {
@@ -40,6 +40,7 @@ class MarionetteRegionContainer extends React.Component {
         })
     }
     handleViewChange() {
+        this.resetRegion();
         this.onceInDOM(() => {
             this.showComponentInRegion();
         });
@@ -58,6 +59,11 @@ class MarionetteRegionContainer extends React.Component {
             this.showComponentInRegion();
         });
     }
+    resetRegion() {
+        if (this.region) {
+            this.region.empty();
+        }
+    }
     componentWillUnmount() {
         clearInterval(this.checkForElement);
         if (this.region) {
@@ -66,7 +72,8 @@ class MarionetteRegionContainer extends React.Component {
         }
     }
     render() {
-        return <RegionContainer className="marionette-region-container" innerRef={this.regionRef} {...this.props}/>
+        const { className, otherProps } = this.props;
+        return <RegionContainer className={`marionette-region-container ${className}`} innerRef={this.regionRef} {...otherProps}/>
     }
 }
 

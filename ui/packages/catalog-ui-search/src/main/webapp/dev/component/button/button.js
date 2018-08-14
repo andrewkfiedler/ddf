@@ -13,16 +13,37 @@ import React from 'react';
 import styled from 'styled-components';
 import { readableColor, darken, lighten } from 'polished';
 import MarionetteRegionContainer from '../../../react-component/container/marionette-region-container';
+import Button from '../../../react-component/presentation/button'
 
 const Root = styled.div`
     height: 100%;
 `
 
-const Button =  (props) => {
+const ButtonGuide =  (props) => {
     return (
         <Root {...props}>
+            <div className="section">
+                <div className="is-header">
+                    Examples
+                </div>
+                <div className="examples is-list has-list-highlighting">
+                    <div className="example">
+                        <div className="title">
+                            Neutral Button
+                        </div>
+                        <div className="instance">
+                            <Button 
+                                type="neutral"
+                                icon="fa fa-question"
+                                text="Neutral Action"
+                            />
+                        </div>
+                        <div className="editor" data-html></div>
+                    </div>
+                </div>
+            </div>
         </Root>
     )
 }
 
-export default Button
+export default ButtonGuide

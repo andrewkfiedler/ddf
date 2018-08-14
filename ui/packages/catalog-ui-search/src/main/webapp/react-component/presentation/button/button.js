@@ -106,7 +106,7 @@ const Root = styled.button`
 `
 
 const Icon = styled.span`
-    margin-right: ${props => props.theme.minimumSpacing};
+    margin: 0px ${props => props.theme.minimumSpacing} 0px 0px;
 `
 
 const Text = styled.span`
@@ -115,13 +115,14 @@ const Text = styled.span`
 
 
 const Button =  (props) => {
+    const { disabled, icon, text, type, ...otherProps } = props;
     return (
-        <Root {...props}>
-            {props.icon ? 
-                <Icon className={props.icon}></Icon> : ''
+        <Root disabled={disabled} type={type} {...otherProps}>
+            {icon ? 
+                <Icon className={icon}></Icon> : ''
             }
-            {props.text ? 
-                <Text>{props.text}</Text> : ''
+            {text ? 
+                <Text>{text}</Text> : ''
             }
         </Root>
     )

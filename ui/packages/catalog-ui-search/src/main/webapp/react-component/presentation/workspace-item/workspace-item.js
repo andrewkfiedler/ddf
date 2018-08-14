@@ -32,9 +32,8 @@ const Root = styled.div`
         }
     }
 
-    .marionette-region-container,
     ${CustomElements.getNamespace()}dropdown {
-        display: inline-block;
+        display: inline-block !important;
         width: ${props => props.theme.minimumButtonSize};
         height: ${props => props.theme.minimumButtonSize};
         text-align: center;
@@ -81,6 +80,7 @@ const Footer = (props) => {
                     }
                 }
             }}
+            replaceElement={true}
         />
     )
 }
