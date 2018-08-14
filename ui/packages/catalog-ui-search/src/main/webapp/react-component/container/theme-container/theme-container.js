@@ -168,26 +168,51 @@ function updateTheme(userTheme) {
         ...opacity
     }
 }
+
+function determineScreenSize() {
+    const fontSize = parseInt(user.get('user').get('preferences').get('fontSize'));
+    const screenSize = window.innerWidth / fontSize;
+    return screenSize;
+}
+
+/*
+    necessary evil since we have multiple react roots and want to share theming efficiently
+    yes it's awful, yes it's contained, yes you don't have to worry about theming as you go back and forth between
+    marionette and react because of this!
+*/
+const sharedState = {
+    screenSize: determineScreenSize(),
+    multiple: (multiplier, variable, unit) => {
+        return `${multiplier * parseFloat(variable)}${unit ? unit : 'rem'}`
+    },
+    screenBelow: (specifiedSize) => {
+        return sharedState.screenSize < parseFloat(specifiedSize);
+    },
+    ...updateTheme(user.get('user').get('preferences').get('theme').getTheme())
+}
+
+function updateMediaQueries() {
+    sharedState.screenSize = determineScreenSize();
+}
+
+function updateSharedTheme() {
+    _.extend(sharedState, updateTheme(user.get('user').get('preferences').get('theme').getTheme()));
+}
+
+$(window).on(`resize.themeContainer`, _.throttle(updateMediaQueries.bind(this), 30));
+user.get('user').get('preferences').on('change:theme', updateSharedTheme);
+user.get('user').get('preferences').on('change:fontSize', updateMediaQueries);
+
 class ThemeContainer extends React.Component {
     constructor() {
         super();
-        this.state = {
-            screenSize: this.determineScreenSize(),
-            multiple: (multiplier, variable, unit) => {
-                return `${multiplier * parseFloat(variable)}${unit ? unit : 'rem'}`
-            },
-            screenBelow: (specifiedSize) => {
-                return this.state.screenSize < parseFloat(specifiedSize);
-            },
-            ...updateTheme(user.get('user').get('preferences').get('theme').getTheme())
-        }
+        this.state = sharedState;
         this.id = Common.generateUUID();
     }
     componentDidMount() {
         this.backbone = new Backbone.Model({});
         this.listenForUserChanges();
         this.watchScreenSize();
-        this.updateMediaQueries();
     }
     componentWillUnmount() {
         $(window).off(this.id);
@@ -195,27 +220,17 @@ class ThemeContainer extends React.Component {
         this.isDestroyed = true;  // we have a throttled listener that updates state, so we need this!
     }
     watchScreenSize() {
-        $(window).on(`resize.${this.id}`, _.throttle(this.updateMediaQueries.bind(this), 30));
+        $(window).on(`resize.${this.id}`, _.throttle(this.syncToSharedState.bind(this), 30));
     }
-    determineScreenSize() {
-        const fontSize = parseInt(user.get('user').get('preferences').get('fontSize'));
-        const screenSize = window.innerWidth / fontSize;
-        return screenSize;
-    }
-    updateMediaQueries() {
+    syncToSharedState() {
         if (this.isDestroyed === true) {
             return;
         }
-        this.setState({
-            screenSize: this.determineScreenSize()
-        })
+        this.setState(sharedState);
     }
     listenForUserChanges() {
-        this.backbone.listenTo(user.get('user').get('preferences'), 'change:theme', this.updateTheme.bind(this));
-        this.backbone.listenTo(user.get('user').get('preferences'), 'change:fontSize', this.updateMediaQueries.bind(this));
-    }
-    updateTheme() {
-        this.setState(updateTheme(user.get('user').get('preferences').get('theme').getTheme()))
+        this.backbone.listenTo(user.get('user').get('preferences'), 'change:theme', this.syncToSharedState.bind(this));
+        this.backbone.listenTo(user.get('user').get('preferences'), 'change:fontSize', this.syncToSharedState.bind(this));
     }
     render() {
         return (
