@@ -9,11 +9,9 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
-import { readableColor, darken, lighten } from 'polished';
-import MarionetteRegionContainer from '../../../react-component/container/marionette-region-container';
-import Button from '../../../react-component/presentation/button'
+import { Button, buttonType } from '../../../react-component/presentation/button'
 
 const Root = styled.div`
     height: 100%;
@@ -33,9 +31,10 @@ const ButtonGuide =  (props) => {
                         </div>
                         <div className="instance">
                             <Button 
-                                type="neutral"
                                 icon="fa fa-question"
                                 text="Neutral Action"
+                                type={buttonType.neutral}
+
                             />
                         </div>
                         <div className="editor" data-html></div>

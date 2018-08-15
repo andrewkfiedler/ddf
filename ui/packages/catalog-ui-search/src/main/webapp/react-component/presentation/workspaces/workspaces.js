@@ -15,7 +15,7 @@ import { CustomElement } from '../../styles/customElement';
 import { ChangeBackground } from '../../styles/changeBackground';
 import WorkspacesTemplatesContainer from '../../container/workspaces-templates-container';
 import WorkspacesItemsContainer from '../../container/workspaces-items-container';
-import Button from '../button';
+import { Button, buttonType, ButtonProps } from '../button';
 
 const Root = styled.div`
     ${CustomElement}
@@ -95,7 +95,7 @@ const Workspaces =  (props) => {
                 </div>
             </div> 
             <Button
-                type='positive'
+                buttonType={buttonType.positive}
                 icon='fa fa-floppy-o'
                 text='Save all'
                 className="home-save"

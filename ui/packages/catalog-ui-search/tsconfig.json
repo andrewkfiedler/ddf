@@ -1,6 +1,13 @@
 {
     "compilerOptions": {
+        "jsx": "react",
+        "allowJs": true,
+        "sourceMap": true
     },
+    "include": [
+        "**/*.ts",
+        "**/*.tsx"
+    ],
     "exclude": [
         "node_modules"
     ]
