@@ -32,7 +32,7 @@ function getEnumTypes(enumObject: object) {
     return Object.keys(enumObject).slice(Object.keys(enumObject).length/2);
 }
 
-class ButtonGuide extends React.Component<{}, { code: any, buttonTypeModel: any, inTextModel: any, disabledModel: any, textModel: any, iconModel: any }> {
+class ButtonGuide extends React.Component<{}, { fadeUntilHoverModel: any, code: any, buttonTypeModel: any, inTextModel: any, disabledModel: any, textModel: any, iconModel: any }> {
     constructor(props) {
         super(props);
         const enumeration = getEnumTypes(buttonTypeEnum).map((type) => {
@@ -85,6 +85,12 @@ class ButtonGuide extends React.Component<{}, { code: any, buttonTypeModel: any,
                 value: [false],
                 type: 'BOOLEAN'
             }),
+            fadeUntilHoverModel: new PropertyModel({
+                isEditing: true,
+                label: 'Fade until hover',
+                value: [false],
+                type: 'BOOLEAN'
+            }),
             code: ''
         }
         this.state.buttonTypeModel.on('change:value', () => {
@@ -100,6 +106,9 @@ class ButtonGuide extends React.Component<{}, { code: any, buttonTypeModel: any,
             this.updateCode();
         })
         this.state.inTextModel.on('change:value', () => {
+            this.updateCode();
+        })
+        this.state.fadeUntilHoverModel.on('change:value', () => {
             this.updateCode();
         })
     }
@@ -124,6 +133,7 @@ class ButtonGuide extends React.Component<{}, { code: any, buttonTypeModel: any,
                 icon="${this.state.iconModel.getValue()[0]}"
                 style={{padding: '0px 10px'}}
                 inText={${inText}}
+                fadeUntilHover={${this.state.fadeUntilHoverModel.getValue()[0]}}
             />
             ${inText ? ` sentence that me be very long who knows where it will end up and finish
                     <Button 
@@ -133,6 +143,7 @@ class ButtonGuide extends React.Component<{}, { code: any, buttonTypeModel: any,
                     icon="${this.state.iconModel.getValue()[0]}"
                     style={{padding: '0px 10px'}}
                     inText={${inText}}
+                    fadeUntilHover={${this.state.fadeUntilHoverModel.getValue()[0]}}
                 />
             feel free to put it there </div>`: ''}
         `
@@ -190,6 +201,15 @@ class ButtonGuide extends React.Component<{}, { code: any, buttonTypeModel: any,
                                 viewOptions={() => {
                                     return {
                                         model: this.state.inTextModel
+                                    }
+                                }}
+                                replaceElement={false}
+                            />
+                            <MarionetteRegionContainer
+                                view={PropertyView}
+                                viewOptions={() => {
+                                    return {
+                                        model: this.state.fadeUntilHoverModel
                                     }
                                 }}
                                 replaceElement={false}

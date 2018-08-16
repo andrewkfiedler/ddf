@@ -11,7 +11,8 @@
  **/
 import * as React from 'react';
 import styled from 'styled-components'
-import { readableColor, darken, shade, lighten, tint } from 'polished';
+import { readableColor, darken, shade, lighten, tint, opacify } from 'polished';
+import { inherits } from 'openlayers';
 
 export enum buttonTypeEnum {
     neutral,
@@ -65,13 +66,36 @@ function determineColorFromProps(props: RootProps) {
     }
 }
 
+function shadeFromProps(amount: number, props: RootProps) {
+    switch(props.buttonType) {
+        case buttonTypeEnum.neutral:
+            return shade(1-amount, opacify(.1, determineBackgroundFromProps(props)));
+        default:
+            return shade(amount, determineBackgroundFromProps(props))
+    }
+}
+
+function tintFromProps(amount: number, props: RootProps) {
+    switch(props.buttonType) {
+        case buttonTypeEnum.neutral:
+            return tint(1-amount, opacify(.1, determineBackgroundFromProps(props)));
+        default:
+            return tint(amount, determineBackgroundFromProps(props))
+    }
+}
+
 interface RootProps {
     inText?: boolean,
     buttonType: buttonTypeEnum,
-    theme?: any
+    theme?: any,
+    fadeUntilHover?: boolean
 }
 
 const Root = styled.button`
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     display: inline-block;
     border: none;
     padding: ${(props: RootProps) => props.inText ? `0px ${props.theme.minimumSpacing}` : `0px`};
@@ -87,23 +111,33 @@ const Root = styled.button`
     background: ${props => determineBackgroundFromProps(props)};
     color: ${props => determineColorFromProps(props)};
 
-    &:hover:not([disabled]) {
-        background: ${props => shade(0.9, determineBackgroundFromProps(props))};
-        box-shadow: 0px 0px 2px ${props => shade(0.9, determineBackgroundFromProps(props))};
+    opacity: ${props => props.fadeUntilHover ? props.theme.minimumOpacity : 1};
+
+    &:hover:not([disabled]),
+    &:focus:not([disabled]) {
+        opacity: 1;
+        background: ${props => shadeFromProps(0.9, props)};
+        box-shadow: 0px 0px 2px ${props => shadeFromProps(0.9, props)};
     }
 
-    &:focus:not([disabled]) {
-        background: ${props => shade(0.9, determineBackgroundFromProps(props))};
-        box-shadow: 0px 0px 2px ${props => shade(0.9, determineBackgroundFromProps(props))};
+    &:active:not([disabled]) {
+        opacity: 1;
+        background: ${props => shadeFromProps(0.7, props)};
+        box-shadow: 0px 0px 2px ${props => shadeFromProps(0.7, props)};
     }
 
     &:disabled {
+        ${(props: RootProps) => {
+            if (props.buttonType !== buttonTypeEnum.neutral) {
+                return `text-shadow: 0px 0px 4px ${readableColor(determineColorFromProps(props))};`
+            }
+        }}
         background: repeating-linear-gradient(
                 45deg,
-                ${props => tint(0.9, determineBackgroundFromProps(props))},
-                ${props => tint(0.9, determineBackgroundFromProps(props))} 10px,
-                ${props => shade(0.9, determineBackgroundFromProps(props))} 10px,
-                ${props => shade(0.9, determineBackgroundFromProps(props))} 20px
+                ${props => tintFromProps(0.9, props)},
+                ${props => tintFromProps(0.9, props)} 10px,
+                ${props => shadeFromProps(0.9, props)} 10px,
+                ${props => shadeFromProps(0.9, props)} 20px
         );
         cursor: not-allowed;
     }
@@ -148,6 +182,10 @@ interface BaseButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
      *  Text to appear within the button
      */
     text?: string
+    /**
+     * Whether to appear faded when not hovered (helps avoid distracting the user)
+     */
+    fadeUntilHover?: boolean
 }
 
 interface IconButtonProps extends BaseButtonProps {
