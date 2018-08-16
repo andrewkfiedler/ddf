@@ -54,7 +54,8 @@ class NavigationContainer extends React.Component {
             hasLogo: hasLogo(),
             hasUnavailable: hasUnavailable(),
             hasUnsaved: hasUnsaved(),
-            isDrawing: isDrawing()
+            isDrawing: isDrawing(),
+            logo: properties.ui.vendorImage
         }
     }
     componentDidMount() {
@@ -93,6 +94,7 @@ class NavigationContainer extends React.Component {
                 hasUnavailable={this.state.hasUnavailable} 
                 hasUnsaved={this.state.hasUnsaved} 
                 hasLogo={this.state.hasLogo} 
+                logo={this.state.logo}
                 turnOffDrawing={() => {
                     turnOffDrawing();
                 }}

@@ -87,7 +87,11 @@ const NavigationComponent =  (props) => (
                 <span>Cancel Drawing</span>
             </CancelDrawingButton>
         </CancelDrawingContainer>
-        <NavigationLeftComponent showLogo={props.showLogo} hasUnavailable={props.hasUnavailable} hasUnsaved={props.hasUnsaved}>
+        <NavigationLeftComponent 
+            logo={props.logo}
+            hasLogo={props.hasLogo} 
+            hasUnavailable={props.hasUnavailable} 
+            hasUnsaved={props.hasUnsaved}>
         </NavigationLeftComponent>
         <NavigationMiddle {...props}>
             {props.middle}

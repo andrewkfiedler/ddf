@@ -14,6 +14,8 @@ import styled from 'styled-components';
 import UnsavedIndicator from '../unsaved-indicator';
 const SlideoutLeftViewInstance = require('component/singletons/slideout.left.view-instance.js');
 const NavigatorView = require('component/navigator/navigator.view');
+import { Button, buttonTypeEnum } from '../button';
+const HandlebarsHelpers = require('../../../js/HandlebarsHelpers');
 
 const Root = styled.div`
     position: relative;
@@ -35,40 +37,29 @@ const Root = styled.div`
     transition: ${props => `width ${props.theme.coreTransitionTime} ease-out`}
     
     button {
-        text-align: center;
-        width: ${props => {
-            return props.theme.minimumButtonSize  
-        }};
+        text-align: left;
         height: 100%;
+        width: 100%;
         padding-right: 0rem;
+        line-height: inherit;
+    }
+
+    button > .fa-bars {
+        display: inline-block;
+        width: ${props => props.theme.minimumButtonSize};
+        height: 100%;
+        text-align: center;
     }
 
     button > .navigation-sources {
         position: absolute;
         left: ${props => props.theme.minimumButtonSize};
-        top: ${props => props.theme.minimumSpacing};
         color: ${props => props.theme.warningColor};
-
-        .fa-cloud:nth-of-type(2) {
-            position: absolute;
-            left: 50%;
-            top: 65%;
-            transform: translateY(-50%) translateX(-50%) rotate(180deg);
-        }
-
-        .fa-bolt {
-            left: 50%;
-            top: 57%;
-            transform: translateY(-50%) translateX(-50%) rotate(10deg) scale(.8);
-            position: absolute;
-            color: ${props => props.theme.warningColor}
-        }
     }
 
     button > .navigation-multiple {
         position: absolute;
         left: ${props => props.theme.minimumButtonSize};
-        top: ${props => props.theme.minimumSpacing};
         color: ${props => props.theme.warningColor};
     }
     
@@ -86,7 +77,7 @@ const Root = styled.div`
             max-width: ${props => props.theme.minimumButtonSize};
             max-height: ${props => props.theme.minimumButtonSize};
             vertical-align: top;
-            position: relative;
+            position: absolute;
             top: 50%;
             transform: translateY(-50%) translateX(0);
             transition: ${props => {
@@ -142,10 +133,17 @@ const handleUnavailable = (props, classes) => {
     }
 }
 
+const handleLogo = (props, classes) => {
+    if (props.hasLogo) {
+        classes.push('has-logo');
+    }
+}
+
 const getClassesFromProps = (props) => {
     const classes = [];
     handleUnsaved(props, classes);
     handleUnavailable(props, classes);
+    handleLogo(props, classes);
     return classes.join(' ');
 }
 
@@ -156,17 +154,21 @@ const openNavigator = () => {
 
 export default function NavigationLeft(props) {
     return (
-        <Root className={`${getClassesFromProps(props)} is-button is-img`} {...props} onClick={() => openNavigator()}>
-            <button data-help="Click here to bring up the navigator.">
+        <Root className={`${getClassesFromProps(props)}`} {...props} onClick={() => openNavigator()}>
+            <Button
+                title="Click here to bring up the navigator"
+                buttonType={buttonTypeEnum.neutral}
+                fadeUntilHover={true}
+            >
                 <span className="fa fa-bars" />
                 <UnsavedIndicator shown={props.hasUnsaved && !props.hasUnavailable}/>
                 <span className="navigation-sources fa fa-bolt"/>
                 <span className="navigation-multiple fa fa-exclamation"/>
-            </button>
-            {
-                props.showLogo ? 
-                <img className="logo" src="{{getImageSrc logo}}"/> : null
-            }
+                {
+                    props.hasLogo ? 
+                    <img className="logo" src={HandlebarsHelpers.getImageSrc(props.logo)}/> : null
+                }
+            </Button>
         </Root>
     )
 }
