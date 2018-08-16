@@ -12,7 +12,6 @@
 import * as React from 'react';
 import styled from 'styled-components'
 import { readableColor, darken, shade, lighten, tint, opacify } from 'polished';
-import { inherits } from 'openlayers';
 
 export enum buttonTypeEnum {
     neutral,
