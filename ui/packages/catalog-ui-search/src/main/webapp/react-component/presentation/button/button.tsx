@@ -185,7 +185,10 @@ interface BaseButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
      * Whether to appear faded when not hovered (helps avoid distracting the user)
      */
     fadeUntilHover?: boolean
-    children?: any
+    /**
+     * Use for a more custom button (avoid if possible!)
+     */
+    children?: React.ReactNode
 }
 
 interface IconButtonProps extends BaseButtonProps {
