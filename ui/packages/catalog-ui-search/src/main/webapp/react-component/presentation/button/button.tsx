@@ -185,6 +185,7 @@ interface BaseButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
      * Whether to appear faded when not hovered (helps avoid distracting the user)
      */
     fadeUntilHover?: boolean
+    children?: any
 }
 
 interface IconButtonProps extends BaseButtonProps {
@@ -197,12 +198,17 @@ interface TextButtonProps extends BaseButtonProps {
 
 type ButtonProps = IconButtonProps | TextButtonProps | (IconButtonProps & TextButtonProps)
 
-export const Button: React.SFC<ButtonProps> = ({disabled, buttonType, icon, text, inText, ...otherProps}) => {
+export const Button: React.SFC<ButtonProps> = ({children, disabled, buttonType, icon, text, inText, ...otherProps}) => {
     return <Root inText={inText} disabled={disabled} buttonType={buttonType} {...otherProps}>
-        {icon ? 
+        {                
+            children ? children : ''
+        }
+        {
+            !children && icon ? 
             <Icon text={text} className={icon}></Icon> : ''
         }
-        {text ? 
+        {
+            !children && text ? 
             <Text inText={inText} >{text}</Text> : ''
         }
     </Root>

@@ -13,6 +13,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { keyframes } from 'styled-components'
 import { CustomElement } from '../../styles/customElement';
+import { Button, buttonTypeEnum } from '../button';
 
 const HelpView = require('component/help/help.view');
 const UserSettings = require('component/user-settings/user-settings.view');
@@ -82,7 +83,7 @@ const Root = styled.div`
         overflow: hidden;
         text-overflow: ellipsis;
         vertical-align: top;
-        max-width: 9rem - ${navigationRightUserIcon};
+        max-width: calc(9rem - ${navigationRightUserIcon});
         padding-right: ${navigationRightUserIcon};
     }
 
@@ -144,17 +145,38 @@ const toggleUser = () => {
 export default function NavigationRight(props) {
     return (
         <Root {...props}>
-            <button className="navigation-item item-help is-button" title="Shows helpful hints in the current context." onClick={toggleHelp}>
-                <span className="fa fa-question"></span>
-            </button>
-            <button className="navigation-item item-settings is-button" title="Shows settings for the application." onClick={toggleUserSettings}>
-                <span className="fa fa-cog"></span>
-            </button>
-            <button className="navigation-item item-alerts is-button" title="Shows notifications." onClick={toggleAlerts}>
+            <Button 
+                className="navigation-item"
+                icon="fa fa-question"
+                buttonType={buttonTypeEnum.neutral}
+                title="Shows helpful hints in the current context"
+                onClick={toggleHelp}
+                fadeUntilHover={true}
+            />
+            <Button 
+                className="navigation-item"
+                icon="fa fa-cog"
+                buttonType={buttonTypeEnum.neutral}
+                title="Shows settings for the application"
+                onClick={toggleUserSettings}
+                fadeUntilHover={true}
+            />
+            <Button 
+                className="navigation-item item-alerts"
+                buttonType={buttonTypeEnum.neutral}
+                title="Shows notifications"
+                onClick={toggleAlerts}
+                fadeUntilHover={true}
+            >
                 <span className="fa fa-bell"></span>
                 <span className="alerts-badge fa fa-exclamation"></span>
-            </button>
-            <button className="navigation-item item-user is-button" onClick={toggleUser}>
+            </Button>
+            <Button
+                className="navigation-item item-user"
+                buttonType={buttonTypeEnum.neutral}
+                onClick={toggleUser}
+                fadeUntilHover={true}
+            >
                 <div className="user-unique" title={`Logged in as ${user.getUserName()}`}>
                     <span className="">{user.getUserName()}</span>
                     <span className="fa fa-user"></span>
@@ -162,7 +184,7 @@ export default function NavigationRight(props) {
                 <div className="user-guest" title="Logged in as guest."> 
                     <span className="">Sign In</span>
                 </div>
-            </button>
+            </Button>
         </Root>
     )
 }
