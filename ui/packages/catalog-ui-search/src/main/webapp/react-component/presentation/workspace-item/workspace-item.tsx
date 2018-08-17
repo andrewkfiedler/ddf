@@ -51,6 +51,7 @@ interface Props {
     localStorage: boolean;
     owner: string;
     openWorkspace: openWorkspaceFunction;
+    unsaved: boolean;
 }
 
 const Header = (props: Props) => {

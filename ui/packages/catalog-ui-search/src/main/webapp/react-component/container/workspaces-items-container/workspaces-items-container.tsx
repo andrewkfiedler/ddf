@@ -9,9 +9,10 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 const Backbone = require('backbone');
 import WorkspacesItems from '../../presentation/workspaces-items';
+import MarionetteRegionContainer from '../../container/marionette-region-container';
 
 const FilterDropdownView = require('component/dropdown/workspaces-filter/dropdown.workspaces-filter.view');
 const SortDropdownView = require('component/dropdown/workspaces-filter/dropdown.workspaces-filter.view');
@@ -21,8 +22,16 @@ const store = require('js/store');
 
 const preferences = user.get('user').get('preferences');
 
-class WorkspacesItemsContainer extends React.Component {
-    constructor(props) {
+interface State {
+    filterDropdown: Marionette.View<any>;
+    sortDropdown: Marionette.View<any>;
+    displayDropdown: Marionette.View<any>;
+    byDate: boolean;
+    workspaces: Backbone.Collection<Backbone.Model>;
+}
+
+class WorkspacesItemsContainer extends React.Component<{}, State> {
+    constructor(props: {}) {
         super(props);
         this.state = {
             filterDropdown: FilterDropdownView.createSimpleDropdown({
@@ -72,8 +81,8 @@ class WorkspacesItemsContainer extends React.Component {
             workspaces: store.get('workspaces')
         }
     }
+    backbone = new Backbone.Model({});
     componentDidMount() {
-        this.backbone = new Backbone.Model({});
         this.backbone.listenTo(preferences, 'change:homeSort', this.handleSort.bind(this));
         this.backbone.listenTo(this.state.sortDropdown.model, 'change:value', this.save('homeSort'));
         this.backbone.listenTo(this.state.displayDropdown.model, 'change:value', this.save('homeDisplay'));
@@ -84,8 +93,8 @@ class WorkspacesItemsContainer extends React.Component {
             byDate: preferences.get('homeSort') === 'Last modified'
         })
     }
-    save(key) {
-        return function (model, value) {
+    save(key: string) {
+        return function (model: any, value: any) {
             var prefs = user.get('user').get('preferences');
             prefs.set(key, value[0]);
             prefs.savePreferences();
@@ -98,9 +107,9 @@ class WorkspacesItemsContainer extends React.Component {
         return (
             <WorkspacesItems 
                 byDate={this.state.byDate}
-                filterDropdown={this.state.filterDropdown}
-                sortDropdown={this.state.sortDropdown}
-                displayDropdown={this.state.displayDropdown}
+                filterDropdown={<MarionetteRegionContainer view={this.state.filterDropdown} />}
+                sortDropdown={<MarionetteRegionContainer view={this.state.sortDropdown}/>}
+                displayDropdown={<MarionetteRegionContainer view={this.state.displayDropdown}/>}
                 workspaces={this.state.workspaces}
             />
         )

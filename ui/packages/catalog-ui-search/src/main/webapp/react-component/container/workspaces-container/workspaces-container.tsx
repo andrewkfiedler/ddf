@@ -9,26 +9,32 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 import Workspaces from '../../presentation/workspaces'
 
 const Backbone = require('backbone');
 const store = require('js/store');
 
 function hasUnsaved() {
-    return store.get('workspaces').find(function(workspace){
+    return store.get('workspaces').find(function(workspace: any){
         return !workspace.isSaved();
     })
 }
 
-class WorkspacesContainer extends React.Component {
-    constructor(props) {
+type State = {
+    hasUnsaved: boolean;
+    hasTemplatesExpanded: boolean;
+}
+
+export default class WorkspacesContainer extends React.Component<{}, State> {
+    constructor(props: {}) {
         super(props);
         this.state = {
             hasUnsaved: hasUnsaved(),
             hasTemplatesExpanded: false
         }
     }
+    backbone = new Backbone.Model({});
     closeTemplates() {
         this.setState({
             hasTemplatesExpanded: false
@@ -40,7 +46,6 @@ class WorkspacesContainer extends React.Component {
         })
     }
     componentDidMount() {
-        this.backbone = new Backbone.Model({});
         this.backbone.listenTo(store.get('workspaces'), 'change:saved update add remove', this.handleSaved.bind(this));
     }
     componentWillUnmount() {
@@ -66,5 +71,3 @@ class WorkspacesContainer extends React.Component {
         )
     }
 }
-
-export default WorkspacesContainer

@@ -9,7 +9,7 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { CustomElement } from '../../styles/customElement';
 import { ChangeBackground } from '../../styles/changeBackground';
@@ -17,9 +17,22 @@ import WorkspacesTemplatesContainer from '../../container/workspaces-templates-c
 import WorkspacesItemsContainer from '../../container/workspaces-items-container';
 import { Button, buttonTypeEnum } from '../button';
 
+type RootProps = {
+    hasTemplatesExpanded: boolean;
+    hasUnsaved: boolean;
+    theme?:any;
+}
+
+type Props = {
+    closeTemplates: () => void;
+    toggleExpansion: () => void;
+    saveAllWorkspaces: () => void;
+    theme?: any;
+} & RootProps
+
 const Root = styled.div`
     ${CustomElement}
-    ${props => ChangeBackground(props.theme.backgroundContent)}
+    ${(props: RootProps) => ChangeBackground(props.theme.backgroundContent)}
     > .home-content,
     > .home-save {
         display: inline-block;
@@ -79,7 +92,7 @@ const Root = styled.div`
     }}
 `
 
-const Workspaces =  (props) => {
+const Workspaces =  (props: Props) => {
     return (
         <Root hasUnsaved={props.hasUnsaved} hasTemplatesExpanded={props.hasTemplatesExpanded}>
             <div className="home-content">

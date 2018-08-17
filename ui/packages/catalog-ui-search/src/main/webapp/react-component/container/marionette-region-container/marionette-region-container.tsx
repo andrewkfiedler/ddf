@@ -9,20 +9,29 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
-import Marionette from 'backbone.marionette';
+import * as React from 'react';
+import * as Marionette from 'backbone.marionette';
 import styled from 'styled-components';
 const intervalToCheck = 20;
 import { CustomElement } from '../../styles/customElement';
 
+type Props = {
+    view: any;
+    viewOptions?: object;
+    replaceElement?: boolean;
+    className?: string;
+} & React.HTMLProps<HTMLButtonElement> & JSX.IntrinsicAttributes
+
 const RegionContainer = styled.div`
     ${CustomElement}
 `
-class MarionetteRegionContainer extends React.Component {
-    constructor(props) {
+class MarionetteRegionContainer extends React.Component<Props, {}> {
+    constructor(props: Props) {
         super(props);
-        this.regionRef = React.createRef();
     }
+    checkForElement: number
+    region: any
+    regionRef = React.createRef()
     showComponentInRegion() {
         if (this.props.view._isMarionetteView) {
             this.region.show(this.props.view, { replaceElement: this.props.replaceElement });
@@ -30,14 +39,14 @@ class MarionetteRegionContainer extends React.Component {
             this.region.show(new this.props.view(this.props.viewOptions), { replaceElement: this.props.replaceElement });
         }
     }
-    onceInDOM(callback) {
+    onceInDOM(callback: () => void) {
         clearInterval(this.checkForElement);
-        this.checkForElement = setInterval(() => {
-            if (document.body.contains(this.regionRef.current)) {
+        this.checkForElement = window.setInterval(() => {
+            if (document.body.contains(this.regionRef.current as Node)) {
                 clearInterval(this.checkForElement);
                 callback();
             }
-        })
+        }, intervalToCheck)
     }
     handleViewChange() {
         this.resetRegion();
@@ -46,7 +55,7 @@ class MarionetteRegionContainer extends React.Component {
         });
     }
     // we might need to update this to account for more scenarios later
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps: Props) {
         if (this.props.view !== prevProps.view) {
             this.handleViewChange();
         }
@@ -72,8 +81,8 @@ class MarionetteRegionContainer extends React.Component {
         }
     }
     render() {
-        const { className, otherProps } = this.props;
-        return <RegionContainer className={`marionette-region-container ${className}`} innerRef={this.regionRef} {...otherProps}/>
+        const { className, ...otherProps } = this.props;
+        return <RegionContainer className={`marionette-region-container ${className}`} innerRef={this.regionRef as any} {...otherProps as JSX.IntrinsicAttributes}/>
     }
 }
 

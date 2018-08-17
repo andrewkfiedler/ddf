@@ -9,13 +9,25 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 const Backbone = require('backbone');
 import WorkspacesItem from '../../presentation/workspace-item';
 const moment = require('moment');
 const wreqr = require('wreqr');
 
-const getStateFromWorkspace = (workspace) => {
+interface Props {
+    workspace: any
+}
+
+interface State {
+    title: string;
+    date: string;
+    owner: string;
+    unsaved: boolean;
+    localStorage: boolean;
+}
+
+const getStateFromWorkspace = (workspace: any) => {
     return {
         title: workspace.get('title'),
         date: moment(workspace.get('metacard.modified')).fromNow(),
@@ -25,13 +37,13 @@ const getStateFromWorkspace = (workspace) => {
     }
 }
 
-class WorkspacesItemsContainer extends React.Component {
-    constructor(props) {
+class WorkspacesItemsContainer extends React.Component<Props, State> {
+    constructor(props: Props) {
         super(props);
         this.state = getStateFromWorkspace(this.props.workspace);
     }
+    backbone = new Backbone.Model({});
     componentDidMount() {
-        this.backbone = new Backbone.Model({});
         this.backbone.listenTo(this.props.workspace, 'change', this.handleChange.bind(this));
     }
     componentWillUnmount() {

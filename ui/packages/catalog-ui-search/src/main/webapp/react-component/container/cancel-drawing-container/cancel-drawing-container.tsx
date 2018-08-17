@@ -12,15 +12,11 @@
 import * as React from 'react';
 const $ = require('jquery');
 
-interface ComponentExtension {
-    ref: React.RefObject<any>
-}
-
 interface Props {
     turnOffDrawing: Function
 }
 
-class CancelDrawingContainer extends React.Component<Props, {}> implements ComponentExtension {
+class CancelDrawingContainer extends React.Component<Props, {}> {
     constructor(props: Props) {
         super(props);
     }

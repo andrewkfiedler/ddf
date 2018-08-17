@@ -9,7 +9,7 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 import WorkspacesTemplates from '../../presentation/workspaces-templates'
 
 const store = require('js/store');
@@ -19,13 +19,24 @@ const Property = require('component/property/property');
 const properties = require('properties');
 
 function hasUnsaved() {
-    return store.get('workspaces').find(function(workspace){
+    return store.get('workspaces').find(function(workspace: any){
         return !workspace.isSaved();
     })
 }
 
-class WorkspacesTemplatesContainer extends React.Component {
-    constructor(props) {
+interface Props {
+    closeTemplates: () => void;
+    hasUnsaved: boolean;
+    hasTemplatesExpanded: boolean;
+    toggleExpansion: () => void;
+}
+
+interface State {
+    adhocModel: any
+}
+
+class WorkspacesTemplatesContainer extends React.Component<Props, State> {
+    constructor(props: Props) {
         super(props);
         this.state = {
             adhocModel: new Property({
@@ -45,7 +56,7 @@ class WorkspacesTemplatesContainer extends React.Component {
     }
     prepForCreateNewWorkspace() {
         var loadingview = new LoadingView();
-        store.get('workspaces').once('sync', function(workspace, resp, options){
+        store.get('workspaces').once('sync', function(workspace: any){
             loadingview.remove();
             wreqr.vent.trigger('router:navigate', {
                 fragment: 'workspaces/'+workspace.id,
@@ -84,7 +95,6 @@ class WorkspacesTemplatesContainer extends React.Component {
                 createAllWorkspace={this.createAllWorkspace.bind(this)}
                 createGeoWorkspace={this.createGeoWorkspace.bind(this)}
                 createLatestWorkspace={this.createLatestWorkspace.bind(this)}
-                hasUnsaved={this.props.hasUnsaved}
                 hasTemplatesExpanded={this.props.hasTemplatesExpanded}
                 toggleExpansion={this.props.toggleExpansion}
                 startAdhocSearch={this.startAdhocSearch.bind(this)}

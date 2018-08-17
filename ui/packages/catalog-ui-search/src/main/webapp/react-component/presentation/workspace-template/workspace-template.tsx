@@ -13,8 +13,8 @@ import * as React from 'react';
 
 interface Props {
     help: string,
-    icon: string,
-    iconText: string,
+    icon?: string,
+    iconText?: string,
     description: string,
     onClick: () => void;
 }

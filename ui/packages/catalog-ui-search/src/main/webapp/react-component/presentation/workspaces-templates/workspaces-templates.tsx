@@ -9,7 +9,7 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { CustomElement } from '../../styles/customElement';
 import { ChangeBackground } from '../../styles/changeBackground';
@@ -17,12 +17,26 @@ import { transparentize, readableColor } from 'polished';
 import MarionetteRegionContainer from '../../container/marionette-region-container';
 import WorkspaceTemplate from '../workspace-template'
 const PropertyView = require('component/property/property.view');
-const Property = require('component/property/property');
-const properties = require('properties');
+
+type Props = {
+    hasTemplatesExpanded: boolean;   
+    startAdhocSearch: () => void;
+    toggleExpansion: () => void;
+    adhocModel: Backbone.Model;
+    createWorkspace: () => void;
+    createLocalWorkspace: () => void;
+    createAllWorkspace: () => void;
+    createGeoWorkspace: () => void;
+    createLatestWorkspace: () => void;
+}
+
+type RootProps = {
+    theme?: any
+} & Props
 
 const Root = styled.div`
     ${CustomElement}
-    ${props => ChangeBackground(props.theme.backgroundAccentContent)}
+    ${(props: RootProps) => ChangeBackground(props.theme.backgroundAccentContent)}
     height: calc(2.5 * ${props => props.theme.minimumButtonSize} + ${props => props.theme.minimumSpacing});
     overflow: hidden;
     transition: height ${props => props.theme.coreTransitionTime} ease-in-out;
@@ -128,7 +142,7 @@ const Root = styled.div`
         line-height: calc(2*${props => props.theme.minimumLineSize});
     }
 
-    ${props => {
+    ${(props: RootProps) => {
         if (props.hasTemplatesExpanded) {
             return `
                 .home-templates-expanded {
@@ -168,8 +182,9 @@ const Root = styled.div`
     }}
 `
 
-const WorkspacesTemplates =  (props) => {
+const WorkspacesTemplates =  (props: Props) => {
     return (
+        // @ts-ignore
         <Root hasTemplatesExpanded={props.hasTemplatesExpanded}>
             <div className="home-templates-center">
                 <div className="home-templates-header">

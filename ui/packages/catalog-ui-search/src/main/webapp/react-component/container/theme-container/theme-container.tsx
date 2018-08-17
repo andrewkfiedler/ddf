@@ -9,7 +9,7 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 import {ThemeProvider} from 'styled-components'
 const user = require('component/singletons/user-instance');
 const Common = require('js/Common');
@@ -17,7 +17,20 @@ const Backbone = require('backbone');
 const $ = require('jquery');
 const _ = require('underscore');
 
-const sizing = {
+type SpecificSizingInterface = {
+    minimumButtonSize: string
+    minimumLineSize: string
+    minimumSpacing: string
+}
+
+type SizingInterface = {
+    comfortable: SpecificSizingInterface;
+    cozy: SpecificSizingInterface;
+    compact: SpecificSizingInterface;
+    [key: string]: SpecificSizingInterface;
+}
+
+const sizing: SizingInterface = {
     comfortable: {
         minimumButtonSize: '2.75rem',
         minimumLineSize: '1.875rem',
@@ -71,7 +84,7 @@ const fontSizes = {
     largeFontSize: '1.4rem'
 }
 
-const spacing = (minSpacing) => {
+const spacing = (minSpacing: number) => {
     return {
         minimumSpacing: `${minSpacing}rem`,
         mediumSpacing: `${2*minSpacing}rem`,
@@ -79,7 +92,7 @@ const spacing = (minSpacing) => {
     };
 }
 
-const dividers = (minSpacing) => {
+const dividers = (minSpacing: number) => {
     return {
         dividerHeight: `${minSpacing}rem`,
         minimumDividerSize: `${3*minSpacing}rem`
@@ -90,7 +103,15 @@ const opacity = {
     minimumOpacity: 0.6
 }
 
-const themes = {
+type ThemeInterface = {
+    dark: object;
+    sea: object;
+    light: object;
+    custom: object;
+    [key: string]: object;
+}
+
+const themes: ThemeInterface = {
     dark: {
         primaryColor: '#3c6dd5',
         positiveColor: '#428442',
@@ -145,10 +166,15 @@ const themes = {
     }
 }
 
-function updateTheme(userTheme) {
+type UserTheme = {
+    theme: string
+    [key: string]: string;
+}
+
+function updateTheme(userTheme: UserTheme) {
     let relevantColorTheme = themes[userTheme.theme];
     if (userTheme.theme === 'custom') {
-        relevantColorTheme = Object.keys(relevantColorTheme).reduce((newMap, key) => {
+        relevantColorTheme = Object.keys(relevantColorTheme).reduce((newMap: UserTheme, key) => {
             newMap[key] = userTheme[`custom${key.replace(/^\w/, c => c.toUpperCase())}`];
             return newMap;
         }, {})
@@ -182,10 +208,10 @@ function determineScreenSize() {
 */
 const sharedState = {
     screenSize: determineScreenSize(),
-    multiple: (multiplier, variable, unit) => {
+    multiple: (multiplier: number, variable: string, unit: string) => {
         return `${multiplier * parseFloat(variable)}${unit ? unit : 'rem'}`
     },
-    screenBelow: (specifiedSize) => {
+    screenBelow: (specifiedSize: string) => {
         return sharedState.screenSize < parseFloat(specifiedSize);
     },
     ...updateTheme(user.get('user').get('preferences').get('theme').getTheme())
@@ -203,14 +229,15 @@ $(window).on(`resize.themeContainer`, _.throttle(updateMediaQueries.bind(this), 
 user.get('user').get('preferences').on('change:theme', updateSharedTheme);
 user.get('user').get('preferences').on('change:fontSize', updateMediaQueries);
 
-class ThemeContainer extends React.Component {
-    constructor() {
-        super();
+class ThemeContainer extends React.Component<{}, {}> {
+    constructor(props: {}) {
+        super(props);
         this.state = sharedState;
-        this.id = Common.generateUUID();
     }
+    id = Common.generateUUID();
+    backbone = new Backbone.Model({});
+    isDestroyed = false
     componentDidMount() {
-        this.backbone = new Backbone.Model({});
         this.listenForUserChanges();
         this.watchScreenSize();
     }

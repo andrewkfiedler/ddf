@@ -9,11 +9,18 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { CustomElement } from '../../styles/customElement';
-import MarionetteRegionContainer from '../../container/marionette-region-container';
 import WorkspaceItemContainer from '../../container/workspace-item-container'
+
+type Props = {
+    filterDropdown: React.ReactNode,
+    sortDropdown: React.ReactNode,
+    displayDropdown: React.ReactNode
+    byDate: boolean;
+    workspaces: Backbone.Collection<Backbone.Model>;
+}
 
 const Root = styled.div`
     ${CustomElement}
@@ -64,7 +71,7 @@ const WorkspaceItemRoot = styled.div`
     margin-right: ${props => props.theme.largeSpacing};
 `
 
-const WorkspacesItems =  (props) => {
+const WorkspacesItems =  (props: Props) => {
     return (
         <Root>
             <div className="home-items-center">
@@ -80,19 +87,13 @@ const WorkspacesItems =  (props) => {
                     }
                     <div className="header-menu">
                         <div className="menu-button home-items-filter">
-                            <MarionetteRegionContainer 
-                                view={props.filterDropdown}
-                            />
+                            {props.filterDropdown}
                         </div>
                         <div className="menu-button home-items-sort">
-                            <MarionetteRegionContainer 
-                                view={props.displayDropdown}
-                            />
+                            {props.displayDropdown}
                         </div>
                         <div className="menu-button home-items-display">
-                            <MarionetteRegionContainer 
-                                view={props.sortDropdown}
-                            />
+                            {props.sortDropdown}
                         </div>
                     </div>
                 </div>
