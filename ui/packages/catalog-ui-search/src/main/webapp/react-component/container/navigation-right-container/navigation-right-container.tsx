@@ -9,27 +9,43 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 import NavigationRightComponent from '../../presentation/navigation-right'
 const user = require('component/singletons/user-instance');
 const notifications = require('component/singletons/user-notifications');
 const Backbone = require('backbone');
 
-class NavigationRightContainer extends React.Component {
-    constructor() {
-        super();
+interface ComponentExtension {
+    backbone : any
+}
+
+interface Props {
+
+}
+
+interface State {
+    username: string,
+    isGuest: boolean,
+    hasUnseenNotifications: boolean
+}
+
+class NavigationRightContainer extends React.Component < Props, State> implements ComponentExtension {
+    constructor(props: Props) {
+        super(props);
         this.state = {
             isGuest: user.isGuest(),
             username: user.getUserName(),
             hasUnseenNotifications: notifications.hasUnseen()
         }
     }
+    backbone = new Backbone.Model({})
     componentDidMount() {
-        this.backbone = new Backbone.Model({});
-        this.backbone.listenTo(notifications, 'change add remove reset update', this.handleUnseenNotifications.bind(this));
+        this.backbone
+            .listenTo(notifications, 'change add remove reset update', this.handleUnseenNotifications.bind(this));
     }
     componentWillUnmount() {
-        this.backbone.stopListening();
+        this.backbone
+            .stopListening();
     }
     handleUnseenNotifications() {
         this.setState({
@@ -37,9 +53,10 @@ class NavigationRightContainer extends React.Component {
         })
     }
     render() {
-        return (
-            <NavigationRightComponent username={this.state.username} hasUnseenNotifications={this.state.hasUnseenNotifications} isGuest={this.state.isGuest}/>
-        )
+        return (<NavigationRightComponent
+            username={this.state.username}
+            hasUnseenNotifications={this.state.hasUnseenNotifications}
+            isGuest={this.state.isGuest}/>)
     }
 }
 

@@ -33,9 +33,9 @@ function getEnumTypes(enumObject: object) {
 }
 
 class ButtonGuide extends React.Component<{}, { fadeUntilHoverModel: any, code: any, buttonTypeModel: any, inTextModel: any, disabledModel: any, textModel: any, iconModel: any }> {
-    constructor(props) {
+    constructor(props: any) {
         super(props);
-        const enumeration = getEnumTypes(buttonTypeEnum).map((type) => {
+        const enumeration = getEnumTypes(buttonTypeEnum).map((type: any) => {
             return {
                 label: type,
                 value: buttonTypeEnum[type]

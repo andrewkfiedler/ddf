@@ -9,7 +9,7 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import Card from '../card'
 const DropdownModel = require('component/dropdown/dropdown');
@@ -40,7 +40,20 @@ const Root = styled.div`
     }
 `
 
-const Header = (props) => {
+interface openWorkspaceFunction {
+    (): void;
+}
+
+interface Props {
+    title: string;
+    workspace: any;
+    date: string;
+    localStorage: boolean;
+    owner: string;
+    openWorkspace: openWorkspaceFunction;
+}
+
+const Header = (props: Props) => {
     return (
         <div className="choice-title" data-help="The title of the workspace.">
             <span className="title-text"> {props.title} </span>
@@ -49,7 +62,7 @@ const Header = (props) => {
     )
 }
 
-const Details = (props) => {
+const Details = (props: Props) => {
     return (
         <React.Fragment>
             <div className="choice-date" title={props.date} data-help="The date the workspace was last modified">
@@ -67,7 +80,7 @@ const Details = (props) => {
     )
 }
 
-const Footer = (props) => {
+const Footer = (props: Props) => {
     return (
         <MarionetteRegionContainer 
             view={WorkspaceInteractionsDropdown}
@@ -86,9 +99,9 @@ const Footer = (props) => {
 }
 
 
-const WorkspaceItem =  (props) => {
+const WorkspaceItem =  (props: Props) => {
     return (
-        <Root onClick={props.openWorkspace} tabIndex="0">
+        <Root onClick={props.openWorkspace} tabIndex={0}>
             <Card 
                 header={Header(props)}
                 details={Details(props)}

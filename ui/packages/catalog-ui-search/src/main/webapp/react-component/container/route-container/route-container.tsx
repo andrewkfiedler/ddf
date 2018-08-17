@@ -9,12 +9,17 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
-import MarionetteRegionContainer from '../../container/marionette-region-container';
+import * as React from 'react';
+import MarionetteRegionContainer from '../marionette-region-container';
 
 const $ = require('jquery');
 const wreqr = require('wreqr');
 import LoadingCompanion from '../loading-companion'
+
+interface Props {
+    isMenu: boolean;
+    routeDefinition: any;
+}
 
 // needed for golden-layout
 const triggerResize = () => {
@@ -24,7 +29,7 @@ const triggerResize = () => {
     }, 100)
 }
 
-const isFetched = (props) => {
+const isFetched = (props: Props) => {
     if (props.isMenu) {
         return props.routeDefinition.menu.component !== undefined;
     } else {
@@ -32,8 +37,12 @@ const isFetched = (props) => {
     }
 }
 
-class RouteContainer extends React.Component {
-    constructor(props) {
+interface Extension {
+    deferred: any;
+}
+
+class RouteContainer extends React.Component<Props, { routeDefinition: any, isMenu: boolean, isFetched: boolean}> implements Extension {
+    constructor(props: Props) {
         super(props);
         this.state = {
             routeDefinition: props.routeDefinition,
@@ -41,6 +50,7 @@ class RouteContainer extends React.Component {
             isFetched: isFetched(props)
         }
     }
+    deferred: any
     getComponent() {
         if (this.state.isMenu) {
             return this.state.routeDefinition.menu.component;
@@ -76,6 +86,7 @@ class RouteContainer extends React.Component {
         const Component = this.getComponent();
         if (Component._isMarionetteView) {
             return (
+                // @ts-ignore
                 <MarionetteRegionContainer view={Component} />
             )
         } else {

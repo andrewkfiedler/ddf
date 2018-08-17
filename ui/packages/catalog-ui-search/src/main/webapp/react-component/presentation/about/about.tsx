@@ -9,10 +9,20 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { CustomElement } from '../../styles/customElement';
 import { ChangeBackground } from '../../styles/changeBackground';
+
+
+interface Props {
+    branding: string;
+    product: string;
+    version: string;
+    commitHash: string;
+    isDirty: boolean;
+    date: string;
+}
 
 const Root = styled.div`
     ${CustomElement}
@@ -32,7 +42,7 @@ const Root = styled.div`
     }
 `
 
-const About =  (props) => {
+export default (props: Props) => {
     return (
         <Root>
             <div className="about-content is-large-font">
@@ -63,5 +73,3 @@ const About =  (props) => {
         </Root>
     )
 }
-
-export default About

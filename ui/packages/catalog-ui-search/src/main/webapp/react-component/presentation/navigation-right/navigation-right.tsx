@@ -9,7 +9,7 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { keyframes } from 'styled-components'
 import { CustomElement } from '../../styles/customElement';
@@ -22,11 +22,17 @@ const UserView = require('component/user/user.view');
 const SlideoutViewInstance = require('component/singletons/slideout.view-instance.js');
 const SlideoutRightViewInstance = require('component/singletons/slideout.right.view-instance.js');
 const user = require('component/singletons/user-instance');
-const notifications = require('component/singletons/user-notifications');
+export interface Props {
+    username: string;
+    hasUnseenNotifications: boolean;
+    isGuest: boolean;
+    theme?: any;
+}
 
 const navigationRightUserIcon = '1.375rem';
 const unseenNotifications = keyframes`
     0% {
+        // @ts-ignore
         opacity: ${props => props.theme.minimumOpacity};
         transform: scale(1);
     }
@@ -43,7 +49,7 @@ const Root = styled.div`
 
     .navigation-item {
         display: inline-block;
-        width: ${props => props.theme.minimumButtonSize};
+        width: ${(props: Props) => props.theme.minimumButtonSize};
         height: 100%;
         text-align: center;
         vertical-align: top;
@@ -142,7 +148,7 @@ const toggleUser = () => {
     SlideoutRightViewInstance.open();
 }
 
-export default function NavigationRight(props) {
+export default function NavigationRight(props: Props) {
     return (
         <Root {...props}>
             <Button 

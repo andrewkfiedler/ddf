@@ -9,7 +9,7 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 import RouteContainer from '../route-container'
 
 const Backbone = require('backbone');
@@ -18,10 +18,19 @@ const router = require('component/router/router');
 import styled from 'styled-components';
 import {CustomElement} from '../../styles/customElement'
 
+type RouteWrapperProps = {
+    isCurrentRoute: boolean;
+}
+
+type Props = {
+    isMenu: boolean;
+    routeDefinitions: object;
+}
+
 const RouteWrapper = styled.div`
     ${CustomElement}
 
-    ${props => {
+    ${(props: RouteWrapperProps) => {
         if (props.isCurrentRoute) {
             return `display: block;`
         } else {
@@ -30,8 +39,8 @@ const RouteWrapper = styled.div`
     }}
 `
 
-class RoutesContainer extends React.Component {
-    constructor(props) {
+class RoutesContainer extends React.Component<Props, { currentRoute: string, routeDefinitions: any, isMenu: boolean }> {
+    constructor(props: Props) {
         super(props);
         this.state = {
             routeDefinitions: props.routeDefinitions,
@@ -39,8 +48,8 @@ class RoutesContainer extends React.Component {
             isMenu: props.isMenu
         }
     }
+    backbone = new Backbone.Model({})
     componentDidMount() {
-        this.backbone = new Backbone.Model({});
         this.backbone.listenTo(router, 'change', this.handleRouterChange.bind(this));
     }
     componentWillUnmount() {
@@ -54,7 +63,7 @@ class RoutesContainer extends React.Component {
     /*
         We want to keep things around to handle reconcilation.
     */
-    shouldShowRouteComponent(routeName) {
+    shouldShowRouteComponent(routeName: string) {
         if (this.state.currentRoute === routeName) {
             return true;
         }
@@ -64,7 +73,7 @@ class RoutesContainer extends React.Component {
             return this.state.routeDefinitions[routeName].component !== undefined;
         }
     }
-    isCurrentRoute(routeName) {
+    isCurrentRoute(routeName: string) {
         return this.state.currentRoute === routeName;
     }
     render() {

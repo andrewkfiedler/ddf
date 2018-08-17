@@ -9,7 +9,7 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { CustomElement } from '../../styles/customElement';
 import { ChangeBackground } from '../../styles/changeBackground';
@@ -17,6 +17,19 @@ import { transparentize, readableColor } from 'polished';
 import NavigationLeftComponent from '../navigation-left';
 import NavigationRightComponent from '../../container/navigation-right-container';
 import CancelDrawingContainer from '../../container/cancel-drawing-container'
+
+interface Props {
+    isDrawing: boolean;
+    hasUnavailable: boolean;
+    hasUnsaved: boolean;
+    hasLogo: boolean; 
+    nav: React.Component;
+    content: React.Component;
+    middle: React.Component;
+    logo: string;
+    turnOffDrawing: Function;
+    theme?: any;
+}
 
 const NavigationRight = styled.div`
     position: absolute;
@@ -26,7 +39,7 @@ const NavigationRight = styled.div`
 `
 
 const NavigationMiddle = styled.div`
-    width: ${props => {
+    width: ${(props: Props) => {
         if (props.hasLogo) {
             if (props.hasUnavailable || props.hasUnsaved) {
                 return `calc(100% - 6*${props.theme.minimumButtonSize} - 9rem - 1rem)`;
@@ -52,7 +65,7 @@ const CancelDrawingButton = styled.button`
     width: 100%;
     transform: translateY(-100%);
     transition: transform ${props => props.theme.coreTransitionTime} ease-in-out;
-    transform: ${props => {
+    transform: ${(props: Props) => {
         if (props.isDrawing) {
             return 'translateY(0%)';
         } else {
@@ -79,7 +92,7 @@ const Navigation = styled.div`
     }
 `
 
-const NavigationComponent =  (props) => (
+export default (props: Props) => (
     <Navigation>
         <CancelDrawingContainer turnOffDrawing={props.turnOffDrawing}>
             <CancelDrawingButton className="is-negative" {...props}>
@@ -102,5 +115,3 @@ const NavigationComponent =  (props) => (
         </NavigationRight>
     </Navigation>
 )
-
-export default NavigationComponent

@@ -9,31 +9,24 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
-import styled from 'styled-components';
-import { CustomElement } from '../../styles/customElement';
-import Routes from '../../container/routes-container'
+import * as React from 'react';
 
-const Router = styled.div`
-    ${CustomElement}
-    overflow: hidden;
+interface Props {
+    help: string,
+    icon: string,
+    iconText: string,
+    description: string,
+    onClick: () => void;
+}
 
-    > *:first-child {
-        height: calc(2*${props => props.theme.minimumLineSize});
-    }
-
-    > *:not(:first-child) {
-        height: calc(100% - 2*${props => props.theme.minimumLineSize});
-    }
-`
-
-const RouterComponent =  (props) => {
+const WorkspaceTemplate =  (props: Props) => {
+    const { help, icon, iconText, description, onClick } = props;
     return (
-        <Router>
-            {props.nav}
-            <Routes isMenu={false} routeDefinitions={props.routeDefinitions} />
-        </Router>
+        <div className="home-templates-choices-choice" onClick={onClick} data-help={help}>
+            <div className={`${icon} home-templates-choices-choice-preview ${icon ? 'home-templates-choices-choice-preview-icon' : ''}`}>{iconText}</div>
+            <div className="home-templates-choices-choice-description">{description}</div>
+        </div>
     )
 }
 
-export default RouterComponent
+export default WorkspaceTemplate

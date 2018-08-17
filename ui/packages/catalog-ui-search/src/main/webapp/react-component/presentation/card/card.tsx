@@ -9,7 +9,7 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 
 const Root = styled.div`
@@ -45,7 +45,13 @@ const Footer = styled.div`
     text-align: right;
 `
 
-const Card =  (props) => {
+interface Props {
+    header: React.ReactNode,
+    details: React.ReactNode,
+    footer: React.ReactNode
+}
+
+const Card =  (props: Props) => {
     return (
         <Root>
             <Header>

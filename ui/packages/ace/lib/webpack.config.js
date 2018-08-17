@@ -157,7 +157,16 @@ const base = ({ alias = {}, env }) => ({
       },
       {
         test: /\.tsx?$/,
-        use: nodeResolve('ts-loader')
+        use: {
+          loader: nodeResolve('ts-loader'),
+          options: {
+            "compilerOptions": {
+              "jsx": "react",
+              "allowJs": true,
+              "sourceMap": true
+            }
+          }
+        }
       }
     ]
   },

@@ -9,7 +9,7 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import UnsavedIndicator from '../unsaved-indicator';
 const SlideoutLeftViewInstance = require('component/singletons/slideout.left.view-instance.js');
@@ -17,11 +17,19 @@ const NavigatorView = require('component/navigator/navigator.view');
 import { Button, buttonTypeEnum } from '../button';
 const HandlebarsHelpers = require('../../../js/HandlebarsHelpers');
 
+export interface Props {
+    hasUnsaved: boolean;
+    hasUnavailable: boolean;
+    hasLogo: boolean;
+    theme?: any;
+    logo: string;
+}
+
 const Root = styled.div`
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    width: ${props => {
+    width: ${(props: Props) => {
         if (props.hasLogo) {
             if (props.hasUnavailable || props.hasUnsaved) {
                 return `calc(2*${props.theme.minimumButtonSize} + 1rem)`
@@ -121,26 +129,26 @@ const Root = styled.div`
     }
 `
 
-const handleUnsaved = (props, classes) => {
+const handleUnsaved = (props: Props, classes: string[]) => {
     if (props.hasUnsaved) {
         classes.push('has-unsaved');
     }
 }
 
-const handleUnavailable = (props, classes) => {
+const handleUnavailable = (props: Props, classes: string[]) => {
     if (props.hasUnavailable) {
         classes.push('has-unavailable');
     }
 }
 
-const handleLogo = (props, classes) => {
+const handleLogo = (props: Props, classes: string[]) => {
     if (props.hasLogo) {
         classes.push('has-logo');
     }
 }
 
-const getClassesFromProps = (props) => {
-    const classes = [];
+const getClassesFromProps = (props: Props) => {
+    const classes: string[] = [];
     handleUnsaved(props, classes);
     handleUnavailable(props, classes);
     handleLogo(props, classes);
@@ -152,7 +160,7 @@ const openNavigator = () => {
     SlideoutLeftViewInstance.open();
 }
 
-export default function NavigationLeft(props) {
+export default function NavigationLeft(props: Props) {
     return (
         <Root className={`${getClassesFromProps(props)}`} {...props} onClick={() => openNavigator()}>
             <Button

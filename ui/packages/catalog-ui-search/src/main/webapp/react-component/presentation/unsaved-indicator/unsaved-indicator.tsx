@@ -12,13 +12,18 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
+
+interface Props {
+    shown: boolean; 
+    theme?: any;
+}
 
 const Root = styled.span`
     display: inline-block;
     line-height: inherit;
-    color: ${props => {        
+    color: ${(props: Props) => {        
         return props.theme.warningColor; 
     }};
     transition: ${props => {
@@ -41,7 +46,7 @@ const Root = styled.span`
 
 
 
-export default function UnsavedIndicator(props) {
+export default function UnsavedIndicator(props: Props) {
     return (
         <Root {...props}>
             *

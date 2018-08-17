@@ -10,8 +10,8 @@
  *
  **/
 import * as React from 'react';
-import styled from 'styled-components'
-import { readableColor, darken, shade, lighten, tint, opacify } from 'polished';
+import * as styled from 'styled-components'
+import { readableColor, shade, tint, opacify } from 'polished';
 
 export enum buttonTypeEnum {
     neutral,
@@ -90,7 +90,7 @@ interface RootProps {
     fadeUntilHover?: boolean
 }
 
-const Root = styled.button`
+const Root = styled.default.button`
     max-width: 100%;
     white-space: nowrap;
     overflow: hidden;
@@ -147,7 +147,7 @@ interface IconProps {
     theme?: any
 }
 
-const Icon = styled.span`
+const Icon = styled.default.span`
     margin: 0px ${(props: IconProps) => (props.text !== undefined && props.text !== '') ? props.theme.minimumSpacing : '0px'} 0px 0px;
 `
 
@@ -156,15 +156,11 @@ interface TextProps {
     theme?: any
 }
 
-const Text = styled.span`
+const Text = styled.default.span`
     font-size: ${(props: TextProps) => props.inText ? 'inherit !important' : props.theme.largeFontSize};
 `
 
-interface BaseButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
-    /**
-     *  Disables the button.
-     */
-    disabled?: boolean
+type BaseButtonProps = {
     /**
      *  Affects how the button is styled in terms of color
      */
@@ -185,33 +181,21 @@ interface BaseButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
      * Whether to appear faded when not hovered (helps avoid distracting the user)
      */
     fadeUntilHover?: boolean
-    /**
-     * Use for a more custom button (avoid if possible!)
-     */
-    children?: React.ReactNode
-}
+} & React.HTMLProps<HTMLButtonElement>
 
-interface IconButtonProps extends BaseButtonProps {
-    icon: string
-}
-
-interface TextButtonProps extends BaseButtonProps {
-    text: string
-}
-
-type ButtonProps = IconButtonProps | TextButtonProps | (IconButtonProps & TextButtonProps)
-
-export const Button: React.SFC<ButtonProps> = ({children, disabled, buttonType, icon, text, inText, ...otherProps}) => {
-    return <Root inText={inText} disabled={disabled} buttonType={buttonType} {...otherProps}>
+export const Button: React.SFC<BaseButtonProps> = ({children, buttonType, icon, text, inText, ...otherProps}) => {
+    return <Root inText={inText} buttonType={buttonType} {...otherProps as JSX.IntrinsicAttributes}>
         {                
             children ? children : ''
         }
         {
             !children && icon ? 
+            // @ts-ignore
             <Icon text={text} className={icon}></Icon> : ''
         }
         {
             !children && text ? 
+            // @ts-ignore
             <Text inText={inText} >{text}</Text> : ''
         }
     </Root>

@@ -9,24 +9,32 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 const $ = require('jquery');
 
-class CancelDrawingContainer extends React.Component {
-    constructor(props) {
+interface ComponentExtension {
+    ref: React.RefObject<any>
+}
+
+interface Props {
+    turnOffDrawing: Function
+}
+
+class CancelDrawingContainer extends React.Component<Props, {}> implements ComponentExtension {
+    constructor(props: Props) {
         super(props);
-        this.myRef = React.createRef();
     }
+    ref = React.createRef()
     componentDidMount() {
-        $(this.myRef.current).on('mousedown', (e) => {
+        $(this.ref.current).on('mousedown', (e: Event) => {
             e.stopPropagation();
             this.props.turnOffDrawing();
         })
     }
     render() {
         const children = React.Children.map(this.props.children, (child) => {
-            return React.cloneElement(child, {
-                innerRef: this.myRef
+            return React.cloneElement(child as React.ReactElement<any>, {
+                innerRef: this.ref
             });
         });
         return children;
