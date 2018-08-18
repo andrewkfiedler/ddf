@@ -11,6 +11,7 @@
  **/
 import * as React from 'react';
 const Backbone = require('backbone');
+import { sortBy } from 'lodash';
 import WorkspacesItems from '../../presentation/workspaces-items';
 import MarionetteRegionContainer from '../../container/marionette-region-container';
 
@@ -27,7 +28,40 @@ interface State {
     sortDropdown: Marionette.View<any>;
     displayDropdown: Marionette.View<any>;
     byDate: boolean;
-    workspaces: Backbone.Collection<Backbone.Model>;
+    workspaces: Array<Backbone.Model[keyof Backbone.Model]>
+}
+
+function filterWorkspaces(workspaces: Backbone.Collection<Backbone.Model>) {
+    return workspaces.filter((workspace: Backbone.Model) => {
+        const localStorage = workspace.get('localStorage') || false;
+        const owner = workspace.get('metacard.owner');
+        const email = user.get('user').get('email');
+
+        switch (preferences.get('homeFilter')) {
+            case 'Not owned by me':
+                return !localStorage && email !== owner;
+            case 'Owned by me':
+                return localStorage || email === owner;
+            case 'Owned by anyone':
+            default:
+                return true;
+        }
+    })
+}
+
+function sortWorkspaces(workspaces: Backbone.Model[]) {
+    return sortBy(workspaces, (workspace: Backbone.Model) => {
+        switch (preferences.get('homeSort')) {
+            case 'Title':
+                return workspace.get('title').toLowerCase();
+            default:
+                return -workspace.get('metacard.modified');
+        } 
+    }) 
+}
+
+function determineWorkspaces(workspaces: Backbone.Collection<Backbone.Model>) {
+    return sortWorkspaces(filterWorkspaces(workspaces))
 }
 
 class WorkspacesItemsContainer extends React.Component<{}, State> {
@@ -78,18 +112,26 @@ class WorkspacesItemsContainer extends React.Component<{}, State> {
                 defaultSelection: [preferences.get('homeDisplay')]
             }),
             byDate: preferences.get('homeSort') === 'Last modified',
-            workspaces: store.get('workspaces')
+            workspaces: determineWorkspaces(store.get('workspaces'))
         }
     }
     backbone = new Backbone.Model({});
     componentDidMount() {
+        this.backbone.listenTo(store.get('workspaces'), 'add reset remove', this.updateWorkspaces.bind(this));
+        this.backbone.listenTo(preferences, 'change:homeFilter', this.updateWorkspaces.bind(this));
         this.backbone.listenTo(preferences, 'change:homeSort', this.handleSort.bind(this));
         this.backbone.listenTo(this.state.sortDropdown.model, 'change:value', this.save('homeSort'));
         this.backbone.listenTo(this.state.displayDropdown.model, 'change:value', this.save('homeDisplay'));
         this.backbone.listenTo(this.state.filterDropdown.model, 'change:value', this.save('homeFilter'));
     }
+    updateWorkspaces() {
+        this.setState({
+            workspaces: determineWorkspaces(store.get('workspaces'))
+        })
+    }
     handleSort() {
         this.setState({
+            workspaces: determineWorkspaces(store.get('workspaces')),
             byDate: preferences.get('homeSort') === 'Last modified'
         })
     }

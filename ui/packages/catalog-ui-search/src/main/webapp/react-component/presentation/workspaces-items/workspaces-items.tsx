@@ -19,7 +19,7 @@ type Props = {
     sortDropdown: React.ReactNode,
     displayDropdown: React.ReactNode
     byDate: boolean;
-    workspaces: Backbone.Collection<Backbone.Model>;
+    workspaces: Backbone.Model[];
 }
 
 const Root = styled.div`
