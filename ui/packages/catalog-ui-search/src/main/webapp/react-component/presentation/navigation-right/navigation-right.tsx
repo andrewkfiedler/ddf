@@ -26,7 +26,6 @@ export interface Props {
     username: string;
     hasUnseenNotifications: boolean;
     isGuest: boolean;
-    theme?: any;
 }
 
 const navigationRightUserIcon = '1.375rem';
@@ -42,14 +41,14 @@ const unseenNotifications = keyframes`
     }
 `
 
-const Root = styled.div`
+const Root = styled<Props, 'div'>('div')`
     ${CustomElement}
     white-space: nowrap;
     overflow: hidden;
 
     .navigation-item {
         display: inline-block;
-        width: ${(props: Props) => props.theme.minimumButtonSize};
+        width: ${props => props.theme.minimumButtonSize};
         height: 100%;
         text-align: center;
         vertical-align: top;

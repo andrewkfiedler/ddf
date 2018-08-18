@@ -17,22 +17,20 @@ import WorkspacesTemplatesContainer from '../../container/workspaces-templates-c
 import WorkspacesItemsContainer from '../../container/workspaces-items-container';
 import { Button, buttonTypeEnum } from '../button';
 
-type RootProps = {
-    hasTemplatesExpanded: boolean;
-    hasUnsaved: boolean;
-    theme?:any;
-}
-
 type Props = {
     closeTemplates: () => void;
     toggleExpansion: () => void;
     saveAllWorkspaces: () => void;
-    theme?: any;
-} & RootProps
+}
 
-const Root = styled.div`
+type RootProps = {
+    hasTemplatesExpanded: boolean;
+    hasUnsaved: boolean;
+}
+
+const Root = styled<RootProps, 'div'>('div')`
     ${CustomElement}
-    ${(props: RootProps) => ChangeBackground(props.theme.backgroundContent)}
+    ${props => ChangeBackground(props.theme.backgroundContent)}
     > .home-content,
     > .home-save {
         display: inline-block;
@@ -78,7 +76,7 @@ const Root = styled.div`
     }}
 `
 
-const Workspaces =  (props: Props) => {
+const Workspaces =  (props: Props & RootProps) => {
     return (
         <Root hasUnsaved={props.hasUnsaved} hasTemplatesExpanded={props.hasTemplatesExpanded}>
             <div className="home-content">

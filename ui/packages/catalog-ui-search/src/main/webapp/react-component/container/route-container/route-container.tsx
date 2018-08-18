@@ -86,7 +86,6 @@ class RouteContainer extends React.Component<Props, { routeDefinition: any, isMe
         const Component = this.getComponent();
         if (Component._isMarionetteView) {
             return (
-                // @ts-ignore
                 <MarionetteRegionContainer view={Component} />
             )
         } else {

@@ -21,15 +21,14 @@ export interface Props {
     hasUnsaved: boolean;
     hasUnavailable: boolean;
     hasLogo: boolean;
-    theme?: any;
     logo: string;
 }
 
-const Root = styled.div`
+const Root = styled<Props, 'div'>('div')`
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    width: ${(props: Props) => {
+    width: ${props => {
         if (props.hasLogo) {
             if (props.hasUnavailable || props.hasUnsaved) {
                 return `calc(2*${props.theme.minimumButtonSize} + 1rem)`

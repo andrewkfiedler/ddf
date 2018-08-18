@@ -27,7 +27,6 @@ interface Props {
     logo: string;
     turnOffDrawing: Function;
     routeDefinitions: object;
-    theme?: any;
 }
 
 const NavigationRight = styled.div`
@@ -37,8 +36,8 @@ const NavigationRight = styled.div`
     transition: width ${props => props.theme.coreTransitionTime} ease-in-out;
 `
 
-const NavigationMiddle = styled.div`
-    width: ${(props: Props) => {
+const NavigationMiddle = styled<Props, 'div'>('div')`
+    width: ${props => {
         if (props.hasLogo) {
             if (props.hasUnavailable || props.hasUnsaved) {
                 return `calc(100% - 6*${props.theme.minimumButtonSize} - 9rem - 1rem)`;

@@ -17,13 +17,12 @@ import styled from '../../styles/styled-components';
 
 interface Props {
     shown: boolean; 
-    theme?: any;
 }
 
-const Root = styled.span`
+const Root = styled<Props, 'span'>('span')`
     display: inline-block;
     line-height: inherit;
-    color: ${(props: Props) => {        
+    color: ${props => {        
         return props.theme.warningColor; 
     }};
     transition: ${props => {

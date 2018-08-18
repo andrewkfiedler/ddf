@@ -18,8 +18,11 @@ import MarionetteRegionContainer from '../../container/marionette-region-contain
 import WorkspaceTemplate from '../workspace-template'
 const PropertyView = require('component/property/property.view');
 
-type Props = {
+type RootProps = {
     hasTemplatesExpanded: boolean;   
+}
+
+type Props = {
     startAdhocSearch: () => void;
     toggleExpansion: () => void;
     adhocModel: Backbone.Model;
@@ -30,13 +33,9 @@ type Props = {
     createLatestWorkspace: () => void;
 }
 
-type RootProps = {
-    theme?: any
-} & Props
-
-const Root = styled.div`
+const Root = styled<RootProps, 'div'>('div')`
     ${CustomElement}
-    ${(props: RootProps) => ChangeBackground(props.theme.backgroundAccentContent)}
+    ${props => ChangeBackground(props.theme.backgroundAccentContent)}
     height: calc(2.5 * ${props => props.theme.minimumButtonSize} + ${props => props.theme.minimumSpacing});
     overflow: hidden;
     transition: height ${props => props.theme.coreTransitionTime} ease-in-out;
@@ -142,7 +141,7 @@ const Root = styled.div`
         line-height: calc(2*${props => props.theme.minimumLineSize});
     }
 
-    ${(props: RootProps) => {
+    ${props => {
         if (props.hasTemplatesExpanded) {
             return `
                 .home-templates-expanded {
@@ -182,9 +181,8 @@ const Root = styled.div`
     }}
 `
 
-const WorkspacesTemplates =  (props: Props) => {
+const WorkspacesTemplates =  (props: Props & RootProps) => {
     return (
-        // @ts-ignore
         <Root hasTemplatesExpanded={props.hasTemplatesExpanded}>
             <div className="home-templates-center">
                 <div className="home-templates-header">

@@ -10,9 +10,10 @@
  *
  **/
 import { readableColor } from 'polished';
+import { css } from '../styled-components'
 
 export const ChangeBackground = (newBackground) => {
-    return `
+    return css`
         background: ${newBackground};
         color: ${readableColor(newBackground)};
     `
