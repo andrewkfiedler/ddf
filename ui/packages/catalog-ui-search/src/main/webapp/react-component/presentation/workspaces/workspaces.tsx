@@ -62,20 +62,6 @@ const Root = styled.div`
     }
 
     ${props => {
-        if (props.hasTemplatesExpanded) {
-            return `
-                .home-content {
-                    overflow: hidden;
-                }
-
-                .home-save {
-                    transform: translateY(100%);
-                }
-            `
-        }
-    }}
-
-    ${props => {
         if (!props.hasUnsaved) {
             return `
                 .home-items  {
