@@ -10,9 +10,9 @@
  *
  **/
 import * as React from 'react';
-import styled from 'styled-components';
-import { CustomElement } from '../../styles/customElement';
-import { ChangeBackground } from '../../styles/changeBackground';
+import styled from '../../styles/styled-components';
+import { CustomElement } from '../../styles/mixins';
+import { ChangeBackground } from '../../styles/mixins';
 import { transparentize, readableColor } from 'polished';
 import MarionetteRegionContainer from '../../container/marionette-region-container';
 import WorkspaceTemplate from '../workspace-template'

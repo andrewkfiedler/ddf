@@ -15,8 +15,8 @@ import RouteContainer from '../route-container'
 const Backbone = require('backbone');
 const router = require('component/router/router');
 
-import styled from 'styled-components';
-import {CustomElement} from '../../styles/customElement'
+import styled from '../../styles/styled-components';
+import {CustomElement} from '../../styles/mixins'
 
 type RouteWrapperProps = {
     isCurrentRoute: boolean;

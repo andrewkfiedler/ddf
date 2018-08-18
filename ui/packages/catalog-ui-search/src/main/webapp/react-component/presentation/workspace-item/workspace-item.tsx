@@ -10,7 +10,7 @@
  *
  **/
 import * as React from 'react';
-import styled from 'styled-components';
+import styled from '../../styles/styled-components';
 import Card from '../card'
 const DropdownModel = require('component/dropdown/dropdown');
 const WorkspaceInteractionsDropdown = require('component/dropdown/workspace-interactions/dropdown.workspace-interactions.view');

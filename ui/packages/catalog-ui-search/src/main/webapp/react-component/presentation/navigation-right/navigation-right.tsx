@@ -10,9 +10,9 @@
  *
  **/
 import * as React from 'react';
-import styled from 'styled-components';
-import { keyframes } from 'styled-components'
-import { CustomElement } from '../../styles/customElement';
+import styled from '../../styles/styled-components';
+import { keyframes } from '../../styles/styled-components'
+import { CustomElement } from '../../styles/mixins';
 import { Button, buttonTypeEnum } from '../button';
 
 const HelpView = require('component/help/help.view');

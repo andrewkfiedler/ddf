@@ -9,15 +9,11 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-export {
-  default,
-  css,
-  injectGlobal,
-  keyframes,
-  ThemeProvider
-} from "./styled-components";
-export {
-  ThemeInterface,
-  SpecificSizingInterface,
-  ThemeColorInterface
-} from "./theme";
+import { readableColor } from 'polished';
+
+export const ChangeBackground = (newBackground) => {
+    return `
+        background: ${newBackground};
+        color: ${readableColor(newBackground)};
+    `
+}

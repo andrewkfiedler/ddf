@@ -86,7 +86,7 @@ type ThemeName = {
 
 type Helpers = {
   screenSize: number;
-  multiple: (multiplier: number, variable: string, unit: string) => string;
+  multiple: (multiplier: number, variable: string, unit?: string) => string;
   screenBelow: (specifiedSize: string) => boolean;
 };
 

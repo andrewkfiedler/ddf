@@ -10,7 +10,7 @@
  *
  **/
 import * as React from 'react';
-import styled from 'styled-components';
+import styled from '../../styles/styled-components';
 
 const Root = styled.div`
     width: 100%;

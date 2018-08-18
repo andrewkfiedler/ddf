@@ -10,9 +10,9 @@
  *
  **/
 import * as React from 'react';
-import styled from 'styled-components';
-import { CustomElement } from '../../styles/customElement';
-import { ChangeBackground } from '../../styles/changeBackground';
+import styled from '../../styles/styled-components';
+import { CustomElement } from '../../styles/mixins';
+import { ChangeBackground } from '../../styles/mixins';
 import WorkspacesTemplatesContainer from '../../container/workspaces-templates-container';
 import WorkspacesItemsContainer from '../../container/workspaces-items-container';
 import { Button, buttonTypeEnum } from '../button';

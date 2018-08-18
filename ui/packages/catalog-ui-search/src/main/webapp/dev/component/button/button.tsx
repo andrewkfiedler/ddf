@@ -10,7 +10,7 @@
  *
  **/
 import * as React from 'react';
-import styled from 'styled-components';
+import styled from '../../../react-component/styles/styled-components';
 import { Button, buttonTypeEnum } from '../../../react-component/presentation/button'
 import {
     LiveProvider,

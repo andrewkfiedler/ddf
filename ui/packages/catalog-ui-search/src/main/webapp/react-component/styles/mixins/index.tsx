@@ -9,15 +9,5 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-export {
-  default,
-  css,
-  injectGlobal,
-  keyframes,
-  ThemeProvider
-} from "./styled-components";
-export {
-  ThemeInterface,
-  SpecificSizingInterface,
-  ThemeColorInterface
-} from "./theme";
+export { CustomElement } from "./custom-element";
+export { ChangeBackground } from "./change-background";

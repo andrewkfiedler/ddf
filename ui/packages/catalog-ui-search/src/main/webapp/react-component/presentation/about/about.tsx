@@ -11,8 +11,8 @@
  **/
 import * as React from "react";
 import styled from "../../styles/styled-components";
-import { CustomElement } from "../../styles/customElement";
-import { ChangeBackground } from "../../styles/changeBackground";
+import { CustomElement } from '../../styles/mixins';
+import { ChangeBackground } from '../../styles/mixins';
 
 interface Props {
   branding: string;

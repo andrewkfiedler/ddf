@@ -10,8 +10,8 @@
  *
  **/
 import * as React from 'react';
-import styled from 'styled-components';
-import { CustomElement } from '../../styles/customElement';
+import styled from '../../styles/styled-components';
+import { CustomElement } from '../../styles/mixins';
 import Routes from '../../container/routes-container'
 
 const Router = styled.div`
