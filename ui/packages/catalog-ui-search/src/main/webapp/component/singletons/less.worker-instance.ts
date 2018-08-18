@@ -33,7 +33,7 @@ class LessWorkerModel extends Backbone.Model {
         this.getWorker().subscribe(callback);
     }
     initialize() {
-        this.getWorker().subscribe((data: any) => {
+        this.getWorker().subscribe(() => {
             this.set('isRendering', false);
         })
     }

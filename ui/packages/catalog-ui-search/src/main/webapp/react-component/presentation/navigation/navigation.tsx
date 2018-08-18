@@ -17,17 +17,16 @@ import { transparentize, readableColor } from 'polished';
 import NavigationLeftComponent from '../navigation-left';
 import NavigationRightComponent from '../../container/navigation-right-container';
 import CancelDrawingContainer from '../../container/cancel-drawing-container'
+import Routes from '../../container/routes-container';
 
 interface Props {
     isDrawing: boolean;
     hasUnavailable: boolean;
     hasUnsaved: boolean;
     hasLogo: boolean; 
-    nav: React.Component;
-    content: React.Component;
-    middle: React.Component;
     logo: string;
     turnOffDrawing: Function;
+    routeDefinitions: object;
     theme?: any;
 }
 
@@ -107,7 +106,10 @@ export default (props: Props) => (
             hasUnsaved={props.hasUnsaved}>
         </NavigationLeftComponent>
         <NavigationMiddle {...props}>
-            {props.middle}
+            <Routes 
+                isMenu={true} 
+                routeDefinitions={props.routeDefinitions}
+            />
         </NavigationMiddle>
         <NavigationRight>
             <NavigationRightComponent>

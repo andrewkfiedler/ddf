@@ -9,7 +9,7 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { CustomElement } from '../../styles/customElement';
 const LoadingCompanionView = require('component/loading-companion/loading-companion.view');
@@ -18,11 +18,15 @@ const Root = styled.div`
     ${CustomElement}
 `
 
-class LoadingCompanionContainer extends React.Component {
-    constructor(props) {
+export interface Props {
+    loading: boolean
+}
+
+export default class LoadingCompanionContainer extends React.Component<Props, {}> {
+    constructor(props: Props) {
         super(props);
-        this.ref = React.createRef();
     }
+    ref = React.createRef();
     componentDidUpdate() {
         if (this.props.loading === false) {
             LoadingCompanionView.stopLoadingElement(this.ref.current);
@@ -36,11 +40,9 @@ class LoadingCompanionContainer extends React.Component {
     }
     render() {
         return (
-            <Root innerRef={this.ref}>
+            <Root innerRef={this.ref as React.RefObject<HTMLDivElement>}>
                 {this.props.children} 
             </Root>
         )
     }
 }
-
-export default LoadingCompanionContainer

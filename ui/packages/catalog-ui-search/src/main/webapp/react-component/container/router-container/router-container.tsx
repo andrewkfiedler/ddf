@@ -9,25 +9,26 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 import Router from '../../presentation/router'
-import MarionetteRegionContainer from '../../container/marionette-region-container';
-const RouteView = require('component/route/route.view');
 
 import Navigation from '../navigation-container';
 import ThemeContainer from '../theme-container';
 
-class RouterContainer extends React.Component {
-    constructor() {
-        super();
+type Props = {
+    navigation: React.ReactNode
+    routeDefinitions: object;
+}
+
+class RouterContainer extends React.Component<Props, {}> {
+    constructor(props: Props) {
+        super(props);
     }
     render() {
-        const content = <MarionetteRegionContainer view={RouteView} viewOptions={{...this.props}}>
-                        </MarionetteRegionContainer>
         const navigation = <Navigation {...this.props} />
         return (
             <ThemeContainer>
-                <Router nav={navigation} content={content} {...this.props}></Router>
+                <Router nav={navigation} routeDefinitions={this.props.routeDefinitions} {...this.props}></Router>
             </ThemeContainer>
         )
     }

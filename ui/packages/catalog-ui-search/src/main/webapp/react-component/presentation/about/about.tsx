@@ -9,67 +9,69 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import * as React from 'react';
-import styled from 'styled-components';
-import { CustomElement } from '../../styles/customElement';
-import { ChangeBackground } from '../../styles/changeBackground';
-
+import * as React from "react";
+import styled from "../../styles/styled-components";
+import { CustomElement } from "../../styles/customElement";
+import { ChangeBackground } from "../../styles/changeBackground";
 
 interface Props {
-    branding: string;
-    product: string;
-    version: string;
-    commitHash: string;
-    isDirty: boolean;
-    date: string;
+  branding: string;
+  product: string;
+  version: string;
+  commitHash: string;
+  commitDate: string;
+  isDirty: boolean;
+  date: string;
 }
 
 const Root = styled.div`
-    ${CustomElement}
-    ${props => ChangeBackground(props.theme.backgroundContent)}
+  ${CustomElement} ${props =>
+    ChangeBackground(props.theme.backgroundContent)}
 
     overflow: auto;
 
-    .about-content {
-        margin: auto;
-        max-width: 1200px;
-        padding: ${props => props.theme.minimumSpacing} 100px;
-    }
-    
-    .content-version,
-    .version-message {
-        padding: ${props => props.theme.minimumSpacing};
-    }
-`
+  .about-content {
+    margin: auto;
+    max-width: 1200px;
+    padding: ${props => props.theme.minimumSpacing} 100px;
+  }
+
+  .content-version,
+  .version-message {
+    padding: ${props => props.theme.minimumSpacing};
+  }
+`;
 
 export default (props: Props) => {
-    return (
-        <Root>
-            <div className="about-content is-large-font">
-                <div>
-                    <span className="is-bold">{props.branding}</span> 
-                    <span> {props.product}</span>
-                </div>
-                <div className="is-divider"></div>
-                <div className="content-version">
-                    <div>
-                        <div className="version-title">Version</div>
-                        <div className="version-message is-medium-font">{props.version}</div>
-                    </div>
-                    <div className="is-divider"></div>
-                    <div>
-                        <div className="version-title">Unique Identifier</div>
-                        <div className="version-message is-medium-font">
-                            {`${props.commitHash} ${props.isDirty ? 'with Changes' : ''}`}
-                        </div>
-                    </div>
-                    <div className="is-divider"></div>
-                    <div>
-                        <div className="version-title">Release Date</div>
-                        <div className="version-message is-medium-font">{props.date}</div>
-                    </div>
-                </div>
+  return (
+    <Root>
+      <div className="about-content is-large-font">
+        <div>
+          <span className="is-bold">{props.branding}</span>
+          <span> {props.product}</span>
+        </div>
+        <div className="is-divider" />
+        <div className="content-version">
+          <div>
+            <div className="version-title">Version</div>
+            <div className="version-message is-medium-font">
+              {props.version}
             </div>
-        </Root>
-    )
-}
+          </div>
+          <div className="is-divider" />
+          <div>
+            <div className="version-title">Unique Identifier</div>
+            <div className="version-message is-medium-font">
+              {`${props.commitHash} ${props.isDirty ? "with Changes" : ""}`}
+            </div>
+          </div>
+          <div className="is-divider" />
+          <div>
+            <div className="version-title">Release Date</div>
+            <div className="version-message is-medium-font">{props.date}</div>
+          </div>
+        </div>
+      </div>
+    </Root>
+  );
+};

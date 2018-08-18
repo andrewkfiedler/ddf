@@ -9,14 +9,10 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
-import MarionetteRegionContainer from '../../container/marionette-region-container';
+import * as React from 'react';
 import Navigation from '../../presentation/navigation';
 
 const Backbone = require('backbone');
-
-import Routes from '../../container/routes-container'
-const NavigationRightView = require('component/navigation-right/navigation-right.view');
 
 const store = require('js/store');
 const wreqr = require('wreqr');
@@ -28,13 +24,13 @@ const hasLogo = () => {
 }
 
 const hasUnavailable = () => {
-    return sources.some(function(source){
+    return sources.some(function(source: Backbone.Model){
         return !source.get('available');
     });
 }
 
 const hasUnsaved = () => {
-    return store.get('workspaces').some(function(workspace){
+    return store.get('workspaces').some(function(workspace: any){
         return !workspace.isSaved();
     });
 }
@@ -47,9 +43,21 @@ const turnOffDrawing = () => {
     wreqr.vent.trigger('search:drawend', store.get('content').get('drawingModel'));
 }
 
-class NavigationContainer extends React.Component {
-    constructor() {
-        super();
+type Props = {
+    routeDefinitions: object
+}
+
+type State = {
+    hasLogo: boolean;
+    hasUnavailable: boolean;
+    hasUnsaved: boolean;
+    isDrawing: boolean;
+    logo: string;
+}
+
+class NavigationContainer extends React.Component<Props, State> {
+    constructor(props: Props) {
+        super(props);
         this.state = {
             hasLogo: hasLogo(),
             hasUnavailable: hasUnavailable(),
@@ -58,8 +66,8 @@ class NavigationContainer extends React.Component {
             logo: properties.ui.vendorImage
         }
     }
+    backbone = new Backbone.Model({});
     componentDidMount() {
-        this.backbone = new Backbone.Model({});
         this.backbone.listenTo(store.get('workspaces'), 'change:saved update add remove', this.handleSaved.bind(this));
         this.backbone.listenTo(sources, 'all', this.handleSources.bind(this));
         this.backbone.listenTo(store.get('content'), 'change:drawing', this.handleDrawing.bind(this));
@@ -82,12 +90,7 @@ class NavigationContainer extends React.Component {
     componentWillUnmount() {
         this.backbone.stopListening();
     }
-    handleCancelDrawing(e){
-        e.stopPropagation();
-        wreqr.vent.trigger('search:drawend', store.get('content').get('drawingModel'));
-    }
-    render(props) {
-        const right = <MarionetteRegionContainer view={NavigationRightView} viewOptions={{...this.props}} />
+    render() {
         return (
             <Navigation 
                 isDrawing={this.state.isDrawing}
@@ -98,7 +101,6 @@ class NavigationContainer extends React.Component {
                 turnOffDrawing={() => {
                     turnOffDrawing();
                 }}
-                middle={<Routes isMenu={true} routeDefinitions={this.props.routeDefinitions} />} right={right} 
                 {...this.props}>
             </Navigation>
         )

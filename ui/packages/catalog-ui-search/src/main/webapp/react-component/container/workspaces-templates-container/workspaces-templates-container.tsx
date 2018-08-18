@@ -18,12 +18,6 @@ const wreqr = require('wreqr')
 const Property = require('component/property/property');
 const properties = require('properties');
 
-function hasUnsaved() {
-    return store.get('workspaces').find(function(workspace: any){
-        return !workspace.isSaved();
-    })
-}
-
 interface Props {
     closeTemplates: () => void;
     hasUnsaved: boolean;

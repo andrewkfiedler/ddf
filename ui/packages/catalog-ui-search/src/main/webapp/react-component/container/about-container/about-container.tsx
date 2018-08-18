@@ -9,13 +9,13 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import React from 'react';
+import * as React from 'react';
 import About from '../../presentation/about'
 const properties = require('properties');
 const moment = require('moment');
 
 class AboutContainer extends React.Component {
-    constructor(props) {
+    constructor(props: {}) {
         super(props);
     }
     render() {

@@ -10,7 +10,8 @@
  *
  **/
 import * as React from 'react';
-import * as styled from 'styled-components'
+import styled from '../../styles/styled-components';
+import { ThemeInterface } from '../../styles/styled-components'
 import { readableColor, shade, tint, opacify } from 'polished';
 
 export enum buttonTypeEnum {
@@ -20,7 +21,7 @@ export enum buttonTypeEnum {
     primary
 }
 
-function determineBackgroundFromProps(props: RootProps) {
+function determineBackgroundFromProps(props: { buttonType: buttonTypeEnum, theme: ThemeInterface}) {
     switch(props.buttonType) {
         case buttonTypeEnum.positive:
             return props.theme.positiveColor;
@@ -33,7 +34,7 @@ function determineBackgroundFromProps(props: RootProps) {
     }
 }
 
-function determineColorFromPropsDefault(props: RootProps) {
+function determineColorFromPropsDefault(props: { buttonType: buttonTypeEnum, theme: ThemeInterface}) {
     switch(props.buttonType) {
         case buttonTypeEnum.neutral:
             return `inherit`;
@@ -43,7 +44,7 @@ function determineColorFromPropsDefault(props: RootProps) {
 }
 
 // most of our premade themes will want white text on buttons, if not we can change this later
-function determineColorFromPropsPremade(props: RootProps) {
+function determineColorFromPropsPremade(props: { buttonType: buttonTypeEnum }) {
     switch(props.buttonType) {
         case buttonTypeEnum.neutral:
             return `inherit`;
@@ -52,7 +53,7 @@ function determineColorFromPropsPremade(props: RootProps) {
     }
 }
 
-function determineColorFromProps(props: RootProps) {
+function determineColorFromProps(props: { buttonType: buttonTypeEnum, theme: ThemeInterface}) {
     switch(props.theme.theme) {
         case 'dark':
             return determineColorFromPropsPremade(props);
@@ -65,7 +66,7 @@ function determineColorFromProps(props: RootProps) {
     }
 }
 
-function shadeFromProps(amount: number, props: RootProps) {
+function shadeFromProps(amount: number, props: { buttonType: buttonTypeEnum, theme: ThemeInterface}) {
     switch(props.buttonType) {
         case buttonTypeEnum.neutral:
             return shade(1-amount, opacify(.1, determineBackgroundFromProps(props)));
@@ -74,7 +75,7 @@ function shadeFromProps(amount: number, props: RootProps) {
     }
 }
 
-function tintFromProps(amount: number, props: RootProps) {
+function tintFromProps(amount: number, props: { buttonType: buttonTypeEnum, theme: ThemeInterface}) {
     switch(props.buttonType) {
         case buttonTypeEnum.neutral:
             return tint(1-amount, opacify(.1, determineBackgroundFromProps(props)));
@@ -83,21 +84,20 @@ function tintFromProps(amount: number, props: RootProps) {
     }
 }
 
-interface RootProps {
+type RootProps = {
     inText?: boolean,
     buttonType: buttonTypeEnum,
-    theme?: any,
     fadeUntilHover?: boolean
 }
 
-const Root = styled.default.button`
+const Root = styled<RootProps, 'button'>('button')`
     max-width: 100%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     display: inline-block;
     border: none;
-    padding: ${(props: RootProps) => props.inText ? `0px ${props.theme.minimumSpacing}` : `0px`};
+    padding: ${props => props.inText ? `0px ${props.theme.minimumSpacing}` : `0px`};
     margin: ${props => props.inText ? `0px ${props.theme.minimumSpacing}` : `0px`};
     border-radius: ${props => props.theme.borderRadius};
     font-size: ${props => props.inText ? 'inherit !important' : props.theme.largeFontSize};
@@ -126,7 +126,7 @@ const Root = styled.default.button`
     }
 
     &:disabled {
-        ${(props: RootProps) => {
+        ${props => {
             if (props.buttonType !== buttonTypeEnum.neutral) {
                 return `text-shadow: 0px 0px 4px ${readableColor(determineColorFromProps(props))};`
             }
@@ -142,23 +142,21 @@ const Root = styled.default.button`
     }
 `
 
-interface IconProps {
-    text?: string,
-    theme?: any
+type IconProps = {
+    text?: string
 }
 
-const Icon = styled.default.span`
-    margin: 0px ${(props: IconProps) => (props.text !== undefined && props.text !== '') ? props.theme.minimumSpacing : '0px'} 0px 0px;
+const Icon = styled<IconProps, 'span'>('span')`
+    margin: 0px ${props => (props.text !== undefined && props.text !== '') ? props.theme.minimumSpacing : '0px'} 0px 0px;
 `
 
-interface TextProps {
-    inText?: boolean,
-    theme?: any
+type TextProps = {
+    inText?: boolean
 }
 
-const Text = styled.default.span`
-    font-size: ${(props: TextProps) => props.inText ? 'inherit !important' : props.theme.largeFontSize};
-`
+const Text = styled<TextProps, 'span'>('span')`
+    font-size: ${props => props.inText ? 'inherit !important' : props.theme.largeFontSize};
+` 
 
 type BaseButtonProps = {
     /**
@@ -183,19 +181,17 @@ type BaseButtonProps = {
     fadeUntilHover?: boolean
 } & React.HTMLProps<HTMLButtonElement>
 
-export const Button: React.SFC<BaseButtonProps> = ({children, buttonType, icon, text, inText, ...otherProps}) => {
+export const Button = ({children, buttonType, icon, text, inText, ...otherProps} : BaseButtonProps) => {
     return <Root inText={inText} buttonType={buttonType} {...otherProps as JSX.IntrinsicAttributes}>
         {                
             children ? children : ''
         }
         {
             !children && icon ? 
-            // @ts-ignore
             <Icon text={text} className={icon}></Icon> : ''
         }
         {
             !children && text ? 
-            // @ts-ignore
             <Text inText={inText} >{text}</Text> : ''
         }
     </Root>

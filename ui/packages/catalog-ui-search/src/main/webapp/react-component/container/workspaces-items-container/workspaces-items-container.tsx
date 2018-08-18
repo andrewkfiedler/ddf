@@ -94,7 +94,7 @@ class WorkspacesItemsContainer extends React.Component<{}, State> {
         })
     }
     save(key: string) {
-        return function (model: any, value: any) {
+        return function (_unused_model: any, value: any) {
             var prefs = user.get('user').get('preferences');
             prefs.set(key, value[0]);
             prefs.savePreferences();

@@ -1,9 +1,13 @@
 {
     "compilerOptions": {
-        "jsx": "react",
+        "jsx": "preserve",
         "allowJs": true,
         "sourceMap": true,
-        "noImplicitAny": true
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "strictNullChecks": true
     },
     "include": [
         "**/*.ts",

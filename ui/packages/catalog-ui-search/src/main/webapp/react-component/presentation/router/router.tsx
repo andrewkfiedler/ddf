@@ -28,7 +28,7 @@ const Router = styled.div`
 `
 
 interface Props {
-    nav: React.Component;
+    nav: React.ReactNode;
     routeDefinitions: any;
 }
 

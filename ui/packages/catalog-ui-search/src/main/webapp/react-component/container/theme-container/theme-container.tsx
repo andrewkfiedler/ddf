@@ -9,196 +9,204 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import * as React from 'react';
-import {ThemeProvider} from 'styled-components'
-const user = require('component/singletons/user-instance');
-const Common = require('js/Common');
-const Backbone = require('backbone');
-const $ = require('jquery');
-const _ = require('underscore');
-
-type SpecificSizingInterface = {
-    minimumButtonSize: string
-    minimumLineSize: string
-    minimumSpacing: string
-}
+import * as React from "react";
+import {
+  ThemeProvider,
+  ThemeInterface,
+  SpecificSizingInterface,
+  ThemeColorInterface
+} from "../../styles/styled-components";
+const user = require("component/singletons/user-instance");
+const Common = require("js/Common");
+const Backbone = require("backbone");
+const $ = require("jquery");
+const _ = require("underscore");
 
 type SizingInterface = {
-    comfortable: SpecificSizingInterface;
-    cozy: SpecificSizingInterface;
-    compact: SpecificSizingInterface;
-    [key: string]: SpecificSizingInterface;
-}
+  comfortable: SpecificSizingInterface;
+  cozy: SpecificSizingInterface;
+  compact: SpecificSizingInterface;
+  [key: string]: SpecificSizingInterface;
+};
 
 const sizing: SizingInterface = {
-    comfortable: {
-        minimumButtonSize: '2.75rem',
-        minimumLineSize: '1.875rem',
-        minimumSpacing: '0.625rem'
-    },
-    cozy: {
-        minimumButtonSize: '2.275rem',
-        minimumLineSize: '1.6875rem',
-        minimumSpacing: '0.4625rem'
-    },
-    compact: {
-        minimumButtonSize: '1.8rem',
-        minimumLineSize: '1.5rem',
-        minimumSpacing: '0.3rem'
-    }
-}
+  comfortable: {
+    minimumButtonSize: "2.75rem",
+    minimumLineSize: "1.875rem",
+    minimumSpacing: "0.625rem"
+  },
+  cozy: {
+    minimumButtonSize: "2.275rem",
+    minimumLineSize: "1.6875rem",
+    minimumSpacing: "0.4625rem"
+  },
+  compact: {
+    minimumButtonSize: "1.8rem",
+    minimumLineSize: "1.5rem",
+    minimumSpacing: "0.3rem"
+  }
+};
 
 const borderRadius = {
-    borderRadius: '1px'
-}
+  borderRadius: "1px"
+};
 
 const screenSizes = {
-    minimumScreenSize: '20rem',
-    mobileScreenSize: '26.25rem',
-    smallScreenSize: '58.75rem',
-    mediumScreenSize: '90rem'
-}
+  minimumScreenSize: "20rem",
+  mobileScreenSize: "26.25rem",
+  smallScreenSize: "58.75rem",
+  mediumScreenSize: "90rem"
+};
 
 const zIndexes = {
-    zIndexMenubar: 101,
-    zIndexLightbox: 101,
-    zIndexLoadingCompanion: 101,
-    zIndexSlideout: 103,
-    zIndexContent: 101,
-    zIndexConfirmation: 103,
-    zIndexHelp: 104,
-    zIndexVerticalMenu: 101,
-    zIndexDropdown: 103,
-    zIndexMenuItem: 102,
-    zIndexBlocking: 105
-}
+  zIndexMenubar: 101,
+  zIndexLightbox: 101,
+  zIndexLoadingCompanion: 101,
+  zIndexSlideout: 103,
+  zIndexContent: 101,
+  zIndexConfirmation: 103,
+  zIndexHelp: 104,
+  zIndexVerticalMenu: 101,
+  zIndexDropdown: 103,
+  zIndexMenuItem: 102,
+  zIndexBlocking: 105
+};
 
 const transitions = {
-    transitionTime: '0s',
-    coreTransitionTime: '0.250s'
-}
+  transitionTime: "0s",
+  coreTransitionTime: "0.250s"
+};
 
 const fontSizes = {
-    minimumFontSize: '1rem',
-    mediumFontSize: '1.2rem',
-    largeFontSize: '1.4rem'
-}
+  minimumFontSize: "1rem",
+  mediumFontSize: "1.2rem",
+  largeFontSize: "1.4rem"
+};
 
 const spacing = (minSpacing: number) => {
-    return {
-        minimumSpacing: `${minSpacing}rem`,
-        mediumSpacing: `${2*minSpacing}rem`,
-        largeSpacing: `${3*minSpacing}rem`
-    };
-}
+  return {
+    minimumSpacing: `${minSpacing}rem`,
+    mediumSpacing: `${2 * minSpacing}rem`,
+    largeSpacing: `${3 * minSpacing}rem`
+  };
+};
 
 const dividers = (minSpacing: number) => {
-    return {
-        dividerHeight: `${minSpacing}rem`,
-        minimumDividerSize: `${3*minSpacing}rem`
-    };
-}
+  return {
+    dividerHeight: `${minSpacing}rem`,
+    minimumDividerSize: `${3 * minSpacing}rem`
+  };
+};
 
 const opacity = {
-    minimumOpacity: 0.6
-}
+  minimumOpacity: 0.6
+};
 
-type ThemeInterface = {
-    dark: object;
-    sea: object;
-    light: object;
-    custom: object;
-    [key: string]: object;
-}
+type ThemesInterface = {
+  dark: ThemeColorInterface;
+  sea: ThemeColorInterface;
+  light: ThemeColorInterface;
+  custom: ThemeColorInterface;
+  [key: string]: ThemeColorInterface;
+};
 
-const themes: ThemeInterface = {
-    dark: {
-        primaryColor: '#3c6dd5',
-        positiveColor: '#428442',
-        negativeColor: '#8a423c',
-        warningColor: '#c89600',
-        favoriteColor: '#d1d179',
-        backgroundNavigation: '#252529',
-        backgroundAccentContent: '#2A2A2E',
-        backgroundDropdown: '#35353a',
-        backgroundContent: '#35353a',
-        backgroundModal: '#252529',
-        backgroundSlideout: '#252529'
-    },
-    sea: {
-        primaryColor: '#32a6ad',
-        positiveColor: '#154e7d',
-        negativeColor: '#a32c00',
-        warningColor: '#b65e1f',
-        favoriteColor: '#709e33',
-        backgroundNavigation: '#0f3757',
-        backgroundAccentContent: '#ffffff',
-        backgroundDropdown: '#ffffff',
-        backgroundContent: '#ffffff',
-        backgroundModal: '#e5e6e6',
-        backgroundSlideout: '#e5e6e6'
-    },
-    light: {
-        primaryColor: '#3c6dd5',
-        positiveColor: '#428442',
-        negativeColor: '#8a423c',
-        warningColor: '#c89600',
-        favoriteColor: '#d1d179',
-        backgroundNavigation: '#3c6dd5',
-        backgroundAccentContent: '#edf9fc',
-        backgroundDropdown: '#f3fdff',
-        backgroundContent: '#f3fdff',
-        backgroundModal: '#edf9fc',
-        backgroundSlideout: '#edf9fc'
-    },
-    custom: {
-        primaryColor: '#3c6dd5',
-        positiveColor: '#428442',
-        negativeColor: '#8a423c',
-        warningColor: '#c89600',
-        favoriteColor: '#d1d179',
-        backgroundNavigation: '#252529',
-        backgroundAccentContent: '#2A2A2E',
-        backgroundDropdown: '#35353a',
-        backgroundContent: '#35353a',
-        backgroundModal: '#252529',
-        backgroundSlideout: '#252529'
-    }
-}
+const themes: ThemesInterface = {
+  dark: {
+    primaryColor: "#3c6dd5",
+    positiveColor: "#428442",
+    negativeColor: "#8a423c",
+    warningColor: "#c89600",
+    favoriteColor: "#d1d179",
+    backgroundNavigation: "#252529",
+    backgroundAccentContent: "#2A2A2E",
+    backgroundDropdown: "#35353a",
+    backgroundContent: "#35353a",
+    backgroundModal: "#252529",
+    backgroundSlideout: "#252529"
+  },
+  sea: {
+    primaryColor: "#32a6ad",
+    positiveColor: "#154e7d",
+    negativeColor: "#a32c00",
+    warningColor: "#b65e1f",
+    favoriteColor: "#709e33",
+    backgroundNavigation: "#0f3757",
+    backgroundAccentContent: "#ffffff",
+    backgroundDropdown: "#ffffff",
+    backgroundContent: "#ffffff",
+    backgroundModal: "#e5e6e6",
+    backgroundSlideout: "#e5e6e6"
+  },
+  light: {
+    primaryColor: "#3c6dd5",
+    positiveColor: "#428442",
+    negativeColor: "#8a423c",
+    warningColor: "#c89600",
+    favoriteColor: "#d1d179",
+    backgroundNavigation: "#3c6dd5",
+    backgroundAccentContent: "#edf9fc",
+    backgroundDropdown: "#f3fdff",
+    backgroundContent: "#f3fdff",
+    backgroundModal: "#edf9fc",
+    backgroundSlideout: "#edf9fc"
+  },
+  custom: {
+    primaryColor: "#3c6dd5",
+    positiveColor: "#428442",
+    negativeColor: "#8a423c",
+    warningColor: "#c89600",
+    favoriteColor: "#d1d179",
+    backgroundNavigation: "#252529",
+    backgroundAccentContent: "#2A2A2E",
+    backgroundDropdown: "#35353a",
+    backgroundContent: "#35353a",
+    backgroundModal: "#252529",
+    backgroundSlideout: "#252529"
+  }
+};
 
 type UserTheme = {
-    theme: string
-    [key: string]: string;
-}
+  theme: string;
+  [key: string]: string;
+};
 
 function updateTheme(userTheme: UserTheme) {
-    let relevantColorTheme = themes[userTheme.theme];
-    if (userTheme.theme === 'custom') {
-        relevantColorTheme = Object.keys(relevantColorTheme).reduce((newMap: UserTheme, key) => {
-            newMap[key] = userTheme[`custom${key.replace(/^\w/, c => c.toUpperCase())}`];
-            return newMap;
-        }, {})
-    }
-    let sizingTheme = sizing[userTheme.spacingMode];
-    return {
-        ...relevantColorTheme,
-        ...userTheme,
-        ...sizingTheme,
-        ...borderRadius,
-        ...screenSizes,
-        ...zIndexes,
-        ...transitions,
-        ...fontSizes,
-        ...spacing(parseFloat(sizingTheme.minimumSpacing)),
-        ...dividers(parseFloat(sizingTheme.minimumSpacing)),
-        ...opacity
-    }
+  let relevantColorTheme = themes[userTheme.theme];
+  if (userTheme.theme === "custom") {
+    relevantColorTheme = Object.keys(relevantColorTheme).reduce(
+      (newMap: UserTheme, key) => {
+        newMap[key] =
+          userTheme[`custom${key.replace(/^\w/, c => c.toUpperCase())}`];
+        return newMap;
+      },
+      {}
+    ) as ThemeColorInterface;
+  }
+  let sizingTheme = sizing[userTheme.spacingMode];
+  return {
+    ...relevantColorTheme,
+    ...userTheme,
+    ...sizingTheme,
+    ...borderRadius,
+    ...screenSizes,
+    ...zIndexes,
+    ...transitions,
+    ...fontSizes,
+    ...spacing(parseFloat(sizingTheme.minimumSpacing)),
+    ...dividers(parseFloat(sizingTheme.minimumSpacing)),
+    ...opacity
+  };
 }
 
 function determineScreenSize() {
-    const fontSize = parseInt(user.get('user').get('preferences').get('fontSize'));
-    const screenSize = window.innerWidth / fontSize;
-    return screenSize;
+  const fontSize = parseInt(
+    user
+      .get("user")
+      .get("preferences")
+      .get("fontSize")
+  );
+  const screenSize = window.innerWidth / fontSize;
+  return screenSize;
 }
 
 /*
@@ -206,66 +214,95 @@ function determineScreenSize() {
     yes it's awful, yes it's contained, yes you don't have to worry about theming as you go back and forth between
     marionette and react because of this!
 */
-const sharedState = {
-    screenSize: determineScreenSize(),
-    multiple: (multiplier: number, variable: string, unit: string) => {
-        return `${multiplier * parseFloat(variable)}${unit ? unit : 'rem'}`
-    },
-    screenBelow: (specifiedSize: string) => {
-        return sharedState.screenSize < parseFloat(specifiedSize);
-    },
-    ...updateTheme(user.get('user').get('preferences').get('theme').getTheme())
-}
+const sharedState: ThemeInterface = {
+  screenSize: determineScreenSize(),
+  multiple: (multiplier: number, variable: string, unit: string) => {
+    return `${multiplier * parseFloat(variable)}${unit ? unit : "rem"}`;
+  },
+  screenBelow: (specifiedSize: string) => {
+    return sharedState.screenSize < parseFloat(specifiedSize);
+  },
+  ...updateTheme(
+    user
+      .get("user")
+      .get("preferences")
+      .get("theme")
+      .getTheme()
+  )
+};
 
 function updateMediaQueries() {
-    sharedState.screenSize = determineScreenSize();
+  sharedState.screenSize = determineScreenSize();
 }
 
 function updateSharedTheme() {
-    _.extend(sharedState, updateTheme(user.get('user').get('preferences').get('theme').getTheme()));
+  _.extend(
+    sharedState,
+    updateTheme(
+      user
+        .get("user")
+        .get("preferences")
+        .get("theme")
+        .getTheme()
+    )
+  );
 }
 
-$(window).on(`resize.themeContainer`, _.throttle(updateMediaQueries.bind(this), 30));
-user.get('user').get('preferences').on('change:theme', updateSharedTheme);
-user.get('user').get('preferences').on('change:fontSize', updateMediaQueries);
-
-class ThemeContainer extends React.Component<{}, {}> {
-    constructor(props: {}) {
-        super(props);
-        this.state = sharedState;
+$(window).on(`resize.themeContainer`, _.throttle(updateMediaQueries, 30));
+user
+  .get("user")
+  .get("preferences")
+  .on("change:theme", updateSharedTheme);
+user
+  .get("user")
+  .get("preferences")
+  .on("change:fontSize", updateMediaQueries);
+class ThemeContainer extends React.Component<{}, ThemeInterface> {
+  constructor(props: {}) {
+    super(props);
+    this.state = sharedState;
+  }
+  id = Common.generateUUID();
+  backbone = new Backbone.Model({});
+  isDestroyed = false;
+  componentDidMount() {
+    this.listenForUserChanges();
+    this.watchScreenSize();
+  }
+  componentWillUnmount() {
+    $(window).off(this.id);
+    this.backbone.stopListening();
+    this.isDestroyed = true; // we have a throttled listener that updates state, so we need this!
+  }
+  watchScreenSize() {
+    $(window).on(
+      `resize.${this.id}`,
+      _.throttle(this.syncToSharedState.bind(this), 30)
+    );
+  }
+  syncToSharedState() {
+    if (this.isDestroyed === true) {
+      return;
     }
-    id = Common.generateUUID();
-    backbone = new Backbone.Model({});
-    isDestroyed = false
-    componentDidMount() {
-        this.listenForUserChanges();
-        this.watchScreenSize();
-    }
-    componentWillUnmount() {
-        $(window).off(this.id);
-        this.backbone.stopListening();
-        this.isDestroyed = true;  // we have a throttled listener that updates state, so we need this!
-    }
-    watchScreenSize() {
-        $(window).on(`resize.${this.id}`, _.throttle(this.syncToSharedState.bind(this), 30));
-    }
-    syncToSharedState() {
-        if (this.isDestroyed === true) {
-            return;
-        }
-        this.setState(sharedState);
-    }
-    listenForUserChanges() {
-        this.backbone.listenTo(user.get('user').get('preferences'), 'change:theme', this.syncToSharedState.bind(this));
-        this.backbone.listenTo(user.get('user').get('preferences'), 'change:fontSize', this.syncToSharedState.bind(this));
-    }
-    render() {
-        return (
-            <ThemeProvider theme={this.state}>
-                {this.props.children}
-            </ThemeProvider>
-        )
-    }
+    this.setState(sharedState);
+  }
+  listenForUserChanges() {
+    this.backbone.listenTo(
+      user.get("user").get("preferences"),
+      "change:theme",
+      this.syncToSharedState.bind(this)
+    );
+    this.backbone.listenTo(
+      user.get("user").get("preferences"),
+      "change:fontSize",
+      this.syncToSharedState.bind(this)
+    );
+  }
+  render() {
+    return (
+      <ThemeProvider theme={this.state}>{this.props.children}</ThemeProvider>
+    );
+  }
 }
 
-export default ThemeContainer
+export default ThemeContainer;
