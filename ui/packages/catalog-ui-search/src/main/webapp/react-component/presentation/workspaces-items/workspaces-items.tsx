@@ -17,7 +17,6 @@ import WorkspaceItemContainer from '../../container/workspace-item-container'
 type Props = {
     filterDropdown: React.ReactNode,
     sortDropdown: React.ReactNode,
-    displayDropdown: React.ReactNode
     byDate: boolean;
     workspaces: Backbone.Model[];
 }
@@ -88,9 +87,6 @@ const WorkspacesItems =  (props: Props) => {
                     <div className="header-menu">
                         <div className="menu-button home-items-filter">
                             {props.filterDropdown}
-                        </div>
-                        <div className="menu-button home-items-sort">
-                            {props.displayDropdown}
                         </div>
                         <div className="menu-button home-items-display">
                             {props.sortDropdown}

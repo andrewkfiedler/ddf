@@ -17,7 +17,6 @@ import MarionetteRegionContainer from '../../container/marionette-region-contain
 
 const FilterDropdownView = require('component/dropdown/workspaces-filter/dropdown.workspaces-filter.view');
 const SortDropdownView = require('component/dropdown/workspaces-filter/dropdown.workspaces-filter.view');
-const DisplayDropdownView = require('component/dropdown/workspaces-display/dropdown.workspaces-display.view');
 const user = require('component/singletons/user-instance');
 const store = require('js/store');
 
@@ -26,7 +25,6 @@ const preferences = user.get('user').get('preferences');
 interface State {
     filterDropdown: Marionette.View<any>;
     sortDropdown: Marionette.View<any>;
-    displayDropdown: Marionette.View<any>;
     byDate: boolean;
     workspaces: Array<Backbone.Model[keyof Backbone.Model]>
 }
@@ -98,19 +96,6 @@ class WorkspacesItemsContainer extends React.Component<WithBackboneProps, State>
                 ],
                 defaultSelection: [preferences.get('homeSort')]
             }),
-            displayDropdown: DisplayDropdownView.createSimpleDropdown({
-                list: [
-                    {
-                        label: 'Grid',
-                        value: 'Grid',
-                    },
-                    {
-                        label: 'List',
-                        value: 'List',
-                    }
-                ],
-                defaultSelection: [preferences.get('homeDisplay')]
-            }),
             byDate: preferences.get('homeSort') === 'Last modified',
             workspaces: determineWorkspaces(store.get('workspaces'))
         }
@@ -120,7 +105,6 @@ class WorkspacesItemsContainer extends React.Component<WithBackboneProps, State>
         this.props.listenTo(preferences, 'change:homeFilter', this.updateWorkspaces.bind(this));
         this.props.listenTo(preferences, 'change:homeSort', this.handleSort.bind(this));
         this.props.listenTo(this.state.sortDropdown.model, 'change:value', this.save('homeSort'));
-        this.props.listenTo(this.state.displayDropdown.model, 'change:value', this.save('homeDisplay'));
         this.props.listenTo(this.state.filterDropdown.model, 'change:value', this.save('homeFilter'));
     }
     updateWorkspaces() {
@@ -147,7 +131,6 @@ class WorkspacesItemsContainer extends React.Component<WithBackboneProps, State>
                 byDate={this.state.byDate}
                 filterDropdown={<MarionetteRegionContainer view={this.state.filterDropdown} />}
                 sortDropdown={<MarionetteRegionContainer view={this.state.sortDropdown}/>}
-                displayDropdown={<MarionetteRegionContainer view={this.state.displayDropdown}/>}
                 workspaces={this.state.workspaces}
             />
         )
