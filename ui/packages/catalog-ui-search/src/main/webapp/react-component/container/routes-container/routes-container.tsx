@@ -12,20 +12,20 @@
 import * as React from 'react';
 import RouteContainer from '../route-container'
 
-const Backbone = require('backbone');
 const router = require('component/router/router');
 
 import styled from '../../styles/styled-components';
 import {CustomElement} from '../../styles/mixins'
+import withListenTo, { WithBackboneProps } from '../backbone-container';
 
 type RouteWrapperProps = {
     isCurrentRoute: boolean;
 }
 
 type Props = {
-    isMenu: boolean;
-    routeDefinitions: object;
-}
+    isMenu: boolean
+    routeDefinitions: object
+} & WithBackboneProps
 
 const RouteWrapper = styled.div`
     ${CustomElement}
@@ -48,12 +48,8 @@ class RoutesContainer extends React.Component<Props, { currentRoute: string, rou
             isMenu: props.isMenu
         }
     }
-    backbone = new Backbone.Model({})
     componentDidMount() {
-        this.backbone.listenTo(router, 'change', this.handleRouterChange.bind(this));
-    }
-    componentWillUnmount() {
-        this.backbone.stopListening();
+        this.props.listenTo(router, 'change', this.handleRouterChange.bind(this));
     }
     handleRouterChange() {
         this.setState({
@@ -97,4 +93,4 @@ class RoutesContainer extends React.Component<Props, { currentRoute: string, rou
     }
 }
 
-export default RoutesContainer
+export default withListenTo(RoutesContainer)

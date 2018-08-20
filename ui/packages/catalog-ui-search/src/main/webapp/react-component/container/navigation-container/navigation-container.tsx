@@ -11,8 +11,7 @@
  **/
 import * as React from 'react';
 import Navigation from '../../presentation/navigation';
-
-const Backbone = require('backbone');
+import withListenTo, { WithBackboneProps } from '../backbone-container';
 
 const store = require('js/store');
 const wreqr = require('wreqr');
@@ -45,7 +44,7 @@ const turnOffDrawing = () => {
 
 type Props = {
     routeDefinitions: object
-}
+} & WithBackboneProps
 
 type State = {
     hasLogo: boolean;
@@ -66,11 +65,10 @@ class NavigationContainer extends React.Component<Props, State> {
             logo: properties.ui.vendorImage
         }
     }
-    backbone = new Backbone.Model({});
     componentDidMount() {
-        this.backbone.listenTo(store.get('workspaces'), 'change:saved update add remove', this.handleSaved.bind(this));
-        this.backbone.listenTo(sources, 'all', this.handleSources.bind(this));
-        this.backbone.listenTo(store.get('content'), 'change:drawing', this.handleDrawing.bind(this));
+        this.props.listenTo(store.get('workspaces'), 'change:saved update add remove', this.handleSaved.bind(this));
+        this.props.listenTo(sources, 'all', this.handleSources.bind(this));
+        this.props.listenTo(store.get('content'), 'change:drawing', this.handleDrawing.bind(this));
     }
     handleSaved() {
         this.setState({
@@ -86,9 +84,6 @@ class NavigationContainer extends React.Component<Props, State> {
         this.setState({
             isDrawing: isDrawing()
         })
-    }
-    componentWillUnmount() {
-        this.backbone.stopListening();
     }
     render() {
         return (
@@ -107,4 +102,4 @@ class NavigationContainer extends React.Component<Props, State> {
     }
 }
 
-export default NavigationContainer
+export default withListenTo(NavigationContainer)

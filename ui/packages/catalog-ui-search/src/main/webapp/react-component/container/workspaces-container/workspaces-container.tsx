@@ -12,7 +12,7 @@
 import * as React from 'react';
 import Workspaces from '../../presentation/workspaces'
 
-const Backbone = require('backbone');
+import withListenTo, { WithBackboneProps } from '../backbone-container';
 const store = require('js/store');
 
 function hasUnsaved() {
@@ -26,15 +26,14 @@ type State = {
     hasTemplatesExpanded: boolean;
 }
 
-export default class WorkspacesContainer extends React.Component<{}, State> {
-    constructor(props: {}) {
+class WorkspacesContainer extends React.Component<WithBackboneProps, State> {
+    constructor(props: WithBackboneProps) {
         super(props);
         this.state = {
             hasUnsaved: hasUnsaved(),
             hasTemplatesExpanded: false
         }
     }
-    backbone = new Backbone.Model({});
     closeTemplates() {
         this.setState({
             hasTemplatesExpanded: false
@@ -46,10 +45,7 @@ export default class WorkspacesContainer extends React.Component<{}, State> {
         })
     }
     componentDidMount() {
-        this.backbone.listenTo(store.get('workspaces'), 'change:saved update add remove', this.handleSaved.bind(this));
-    }
-    componentWillUnmount() {
-        this.backbone.stopListening();
+        this.props.listenTo(store.get('workspaces'), 'change:saved update add remove', this.handleSaved.bind(this));
     }
     handleSaved() {
         this.setState({
@@ -71,3 +67,5 @@ export default class WorkspacesContainer extends React.Component<{}, State> {
         )
     }
 }
+
+export default withListenTo(WorkspacesContainer)

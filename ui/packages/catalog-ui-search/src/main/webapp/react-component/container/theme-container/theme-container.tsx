@@ -18,7 +18,7 @@ import {
 } from "../../styles/styled-components";
 const user = require("component/singletons/user-instance");
 const Common = require("js/Common");
-const Backbone = require("backbone");
+import withListenTo, { WithBackboneProps } from '../backbone-container';
 const $ = require("jquery");
 const _ = require("underscore");
 
@@ -257,13 +257,12 @@ user
   .get("user")
   .get("preferences")
   .on("change:fontSize", updateMediaQueries);
-class ThemeContainer extends React.Component<{}, ThemeInterface> {
-  constructor(props: {}) {
+class ThemeContainer extends React.Component<WithBackboneProps, ThemeInterface> {
+  constructor(props: WithBackboneProps) {
     super(props);
     this.state = sharedState;
   }
   id = Common.generateUUID();
-  backbone = new Backbone.Model({});
   isDestroyed = false;
   componentDidMount() {
     this.listenForUserChanges();
@@ -271,7 +270,6 @@ class ThemeContainer extends React.Component<{}, ThemeInterface> {
   }
   componentWillUnmount() {
     $(window).off(this.id);
-    this.backbone.stopListening();
     this.isDestroyed = true; // we have a throttled listener that updates state, so we need this!
   }
   watchScreenSize() {
@@ -287,12 +285,12 @@ class ThemeContainer extends React.Component<{}, ThemeInterface> {
     this.setState(sharedState);
   }
   listenForUserChanges() {
-    this.backbone.listenTo(
+    this.props.listenTo(
       user.get("user").get("preferences"),
       "change:theme",
       this.syncToSharedState.bind(this)
     );
-    this.backbone.listenTo(
+    this.props.listenTo(
       user.get("user").get("preferences"),
       "change:fontSize",
       this.syncToSharedState.bind(this)
@@ -305,4 +303,4 @@ class ThemeContainer extends React.Component<{}, ThemeInterface> {
   }
 }
 
-export default ThemeContainer;
+export default withListenTo(ThemeContainer);

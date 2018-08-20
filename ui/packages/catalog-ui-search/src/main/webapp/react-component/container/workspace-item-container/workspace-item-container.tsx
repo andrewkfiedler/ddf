@@ -10,14 +10,14 @@
  *
  **/
 import * as React from 'react';
-const Backbone = require('backbone');
+import withListenTo, { WithBackboneProps } from '../backbone-container';
 import WorkspacesItem from '../../presentation/workspace-item';
 const moment = require('moment');
 const wreqr = require('wreqr');
 
-interface Props {
+type Props = {
     workspace: any
-}
+} & WithBackboneProps
 
 interface State {
     title: string;
@@ -42,12 +42,8 @@ class WorkspacesItemsContainer extends React.Component<Props, State> {
         super(props);
         this.state = getStateFromWorkspace(this.props.workspace);
     }
-    backbone = new Backbone.Model({});
     componentDidMount() {
-        this.backbone.listenTo(this.props.workspace, 'change', this.handleChange.bind(this));
-    }
-    componentWillUnmount() {
-        this.backbone.stopListening();
+        this.props.listenTo(this.props.workspace, 'change', this.handleChange.bind(this));
     }
     handleChange() {
         this.setState(getStateFromWorkspace(this.props.workspace));
@@ -75,4 +71,4 @@ class WorkspacesItemsContainer extends React.Component<Props, State> {
     }
 }
 
-export default WorkspacesItemsContainer
+export default withListenTo(WorkspacesItemsContainer)

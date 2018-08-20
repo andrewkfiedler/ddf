@@ -10,7 +10,7 @@
  *
  **/
 import * as React from 'react';
-const Backbone = require('backbone');
+import withListenTo, { WithBackboneProps } from '../backbone-container';
 import { sortBy } from 'lodash';
 import WorkspacesItems from '../../presentation/workspaces-items';
 import MarionetteRegionContainer from '../../container/marionette-region-container';
@@ -64,8 +64,8 @@ function determineWorkspaces(workspaces: Backbone.Collection<Backbone.Model>) {
     return sortWorkspaces(filterWorkspaces(workspaces))
 }
 
-class WorkspacesItemsContainer extends React.Component<{}, State> {
-    constructor(props: {}) {
+class WorkspacesItemsContainer extends React.Component<WithBackboneProps, State> {
+    constructor(props: WithBackboneProps) {
         super(props);
         this.state = {
             filterDropdown: FilterDropdownView.createSimpleDropdown({
@@ -115,14 +115,13 @@ class WorkspacesItemsContainer extends React.Component<{}, State> {
             workspaces: determineWorkspaces(store.get('workspaces'))
         }
     }
-    backbone = new Backbone.Model({});
     componentDidMount() {
-        this.backbone.listenTo(store.get('workspaces'), 'add reset remove', this.updateWorkspaces.bind(this));
-        this.backbone.listenTo(preferences, 'change:homeFilter', this.updateWorkspaces.bind(this));
-        this.backbone.listenTo(preferences, 'change:homeSort', this.handleSort.bind(this));
-        this.backbone.listenTo(this.state.sortDropdown.model, 'change:value', this.save('homeSort'));
-        this.backbone.listenTo(this.state.displayDropdown.model, 'change:value', this.save('homeDisplay'));
-        this.backbone.listenTo(this.state.filterDropdown.model, 'change:value', this.save('homeFilter'));
+        this.props.listenTo(store.get('workspaces'), 'add reset remove', this.updateWorkspaces.bind(this));
+        this.props.listenTo(preferences, 'change:homeFilter', this.updateWorkspaces.bind(this));
+        this.props.listenTo(preferences, 'change:homeSort', this.handleSort.bind(this));
+        this.props.listenTo(this.state.sortDropdown.model, 'change:value', this.save('homeSort'));
+        this.props.listenTo(this.state.displayDropdown.model, 'change:value', this.save('homeDisplay'));
+        this.props.listenTo(this.state.filterDropdown.model, 'change:value', this.save('homeFilter'));
     }
     updateWorkspaces() {
         this.setState({
@@ -142,9 +141,6 @@ class WorkspacesItemsContainer extends React.Component<{}, State> {
             prefs.savePreferences();
         };
     }
-    componentWillUnmount() {
-        this.backbone.stopListening();
-    }
     render() {
         return (
             <WorkspacesItems 
@@ -158,4 +154,4 @@ class WorkspacesItemsContainer extends React.Component<{}, State> {
     }
 }
 
-export default WorkspacesItemsContainer
+export default withListenTo(WorkspacesItemsContainer)

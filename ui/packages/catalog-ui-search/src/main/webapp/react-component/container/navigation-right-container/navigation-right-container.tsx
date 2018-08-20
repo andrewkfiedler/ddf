@@ -13,15 +13,9 @@ import * as React from 'react';
 import NavigationRightComponent from '../../presentation/navigation-right'
 const user = require('component/singletons/user-instance');
 const notifications = require('component/singletons/user-notifications');
-const Backbone = require('backbone');
+import withListenTo, { WithBackboneProps } from '../backbone-container';
 
-interface ComponentExtension {
-    backbone : any
-}
-
-interface Props {
-
-}
+type Props = {} & WithBackboneProps
 
 interface State {
     username: string,
@@ -29,7 +23,7 @@ interface State {
     hasUnseenNotifications: boolean
 }
 
-class NavigationRightContainer extends React.Component < Props, State> implements ComponentExtension {
+class NavigationRightContainer extends React.Component < Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -38,14 +32,8 @@ class NavigationRightContainer extends React.Component < Props, State> implement
             hasUnseenNotifications: notifications.hasUnseen()
         }
     }
-    backbone = new Backbone.Model({})
     componentDidMount() {
-        this.backbone
-            .listenTo(notifications, 'change add remove reset update', this.handleUnseenNotifications.bind(this));
-    }
-    componentWillUnmount() {
-        this.backbone
-            .stopListening();
+        this.props.listenTo(notifications, 'change add remove reset update', this.handleUnseenNotifications.bind(this));
     }
     handleUnseenNotifications() {
         this.setState({
@@ -60,4 +48,4 @@ class NavigationRightContainer extends React.Component < Props, State> implement
     }
 }
 
-export default NavigationRightContainer
+export default withListenTo(NavigationRightContainer)
