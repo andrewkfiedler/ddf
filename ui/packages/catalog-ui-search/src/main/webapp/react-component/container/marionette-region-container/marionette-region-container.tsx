@@ -82,7 +82,7 @@ class MarionetteRegionContainer extends React.Component<Props, {}> {
     }
     render() {
         const { className, ...otherProps } = this.props;
-        return <RegionContainer className={`marionette-region-container ${className}`} innerRef={this.regionRef as any} {...otherProps as JSX.IntrinsicAttributes}/>
+        return <RegionContainer className={`marionette-region-container ${className ? className : ''}`} innerRef={this.regionRef as any} {...otherProps as JSX.IntrinsicAttributes}/>
     }
 }
 
