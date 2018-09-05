@@ -53,4 +53,5 @@ class ProviderContainer extends React.Component<{}, {}> {
   }
 }
 
+export { store }
 export default ProviderContainer

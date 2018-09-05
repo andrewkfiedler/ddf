@@ -25,6 +25,7 @@ var UnsavedIndicatorView = require('component/unsaved-indicator/workspaces/works
 var sources = require('component/singletons/sources-instance')
 const plugin = require('plugins/navigator')
 const $ = require('jquery')
+import { store as reduxStore } from '../../react-component/container/provider'
 
 const visitFragment = fragment =>
   wreqr.vent.trigger('router:navigate', {
@@ -47,6 +48,8 @@ module.exports = plugin(
       'click .navigation-choice': 'handleChoice',
     },
     initialize: function() {
+      console.log(reduxStore)
+      debugger
       this.listenTo(
         store.get('workspaces'),
         'change:saved update add remove',
