@@ -47,16 +47,16 @@ type Source = {
 }
 
 type Props = {
-  sources: Source[]
+  list: Source[]
   amountDown: number
 }
 
-export default hot(module)(({ sources, amountDown }: Props) => {
+export default hot(module)(({ list, amountDown }: Props) => {
   return (
     <Root>
       <SourcesCenter>
         <SourcesSummary amountDown={amountDown} />
-        {sources.map(source => {
+        {list.map(source => {
           return (
             <SourceItem
               key={source.id}

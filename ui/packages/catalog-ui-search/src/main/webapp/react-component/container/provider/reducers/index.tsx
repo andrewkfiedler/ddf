@@ -9,12 +9,11 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import Sources from '../../presentation/sources'
-import { connect } from 'react-redux'
+import { combineReducers } from 'redux'
+import sources from './sources'
+import store from './store'
 
-const mapStateToProps = (state: any) => ({
-  list: state.sources.list,
-  amountDown: state.sources.amountDown,
+export default combineReducers({
+  sources,
+  store,
 })
-
-export default connect(mapStateToProps)(Sources)

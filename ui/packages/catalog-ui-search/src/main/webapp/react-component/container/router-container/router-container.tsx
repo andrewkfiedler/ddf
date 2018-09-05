@@ -11,6 +11,7 @@
  **/
 import * as React from 'react'
 import Router from '../../presentation/router'
+import Provider from '../provider'
 
 import Navigation from '../navigation-container'
 import ThemeContainer from '../theme-container'
@@ -27,13 +28,15 @@ class RouterContainer extends React.Component<Props, {}> {
   render() {
     const navigation = <Navigation {...this.props} />
     return (
-      <ThemeContainer>
-        <Router
-          nav={navigation}
-          routeDefinitions={this.props.routeDefinitions}
-          {...this.props}
-        />
-      </ThemeContainer>
+      <Provider>
+        <ThemeContainer>
+          <Router
+            nav={navigation}
+            routeDefinitions={this.props.routeDefinitions}
+            {...this.props}
+          />
+        </ThemeContainer>
+      </Provider>
     )
   }
 }

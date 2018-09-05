@@ -28,23 +28,6 @@ const routeDefinitions = {
   ...require('!./router/routes-loader!js/router/routes-notfound.js'),
 }
 
-const initializeRoutes = function(routeDefinitions) {
-  Application.App.router.show(
-    new RouterView({
-      routeDefinitions,
-    }),
-    {
-      replaceElement: true,
-    }
-  )
-}
-
-const onComponentResolution = function(deferred, component) {
-  this.component = this.component || new component()
-  deferred.resolve(this.component)
-}
-
-//initializeRoutes(routeDefinitions);
 render(
   <ReactRouter routeDefinitions={routeDefinitions} />,
   Application.App.router.$el[0]

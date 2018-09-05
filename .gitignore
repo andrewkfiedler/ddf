@@ -18,6 +18,7 @@ package-lock.json
 atlassian-ide-plugin.xml
 *.sonar-ide.properties
 **/webapp/css/styles.css
+bin/
 platform/solr/**/overlays
 distribution/docs/src/main/resources/content/_catalogFrameworks/.asciidoctor
 distribution/docs/src/main/resources/content/_catalogFrameworks/catalog_architecture_framework.png

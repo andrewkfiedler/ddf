@@ -9,12 +9,24 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import Sources from '../../presentation/sources'
-import { connect } from 'react-redux'
 
-const mapStateToProps = (state: any) => ({
-  list: state.sources.list,
-  amountDown: state.sources.amountDown,
-})
+const assign = require('lodash.assign')
 
-export default connect(mapStateToProps)(Sources)
+type StateState = {
+  store: any
+}
+
+const initialState = {
+  store: {},
+}
+
+function sources(state: StateState = initialState, action: any) {
+  switch (action.type) {
+    case 'UPDATE_STORE':
+      return assign({}, state, { store: action.data })
+    default:
+      return state
+  }
+}
+
+export default sources
