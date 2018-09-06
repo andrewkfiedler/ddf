@@ -11,42 +11,111 @@
  **/
 import * as React from 'react'
 import styled from '../../styles/styled-components'
+import { Button, buttonTypeEnum } from '../../presentation/button'
 import { hot } from 'react-hot-loader'
 
 const Root = styled<{}, 'div'>('div')`
+  width: 100%;
+  height: 100%;
+
+  button {
     width: 100%;
-    height: 100%;
+  }
+
+  input {
+    width: 100%;
+    text-align: center;
+  }
+
+  .user-info {
+    padding: ${props => props.theme.mediumSpacing};
+    overflow: auto;
+    max-height: calc(
+      100% - ${props => props.theme.minimumButtonSize} -
+        ${props => props.theme.minimumDividerSize}
+    );
+    text-align: center;
+
+    div + div {
+      margin-top: ${props => props.theme.mediumSpacing};
+    }
+  }
+
+  input + input {
+    margin-top: ${props => props.theme.mediumSpacing};
+  }
 `
 
 type Props = {
   username: string
+  password: string
   email: string
+  isGuest: boolean
+  isIdp: boolean
+  signIn: () => void
+  signOut: () => void
+  handleUsernameChange: () => void
+  handlePasswordChange: () => void
 }
 
-export default hot(module)(({ username, email }: Props) => {
-  return (
-    <Root>
-      <div className="is-guest">
+export default hot(module)(
+  ({
+    username,
+    email,
+    isGuest,
+    isIdp,
+    signIn,
+    signOut,
+    password,
+    handleUsernameChange,
+    handlePasswordChange,
+  }: Props) => {
+    return (
+      <Root>
+        {isGuest && !isIdp ? (
+          <>
             <div className="user-info">
-                <input placeholder="Username" type="text" id="username" name="username" />
-                <input placeholder="Password" type="password" id="password" name="password" />
+              <input
+                placeholder="Username"
+                type="text"
+                id="username"
+                name="username"
+                value={username}
+                onChange={handleUsernameChange}
+              />
+              <input
+                placeholder="Password"
+                type="password"
+                id="password"
+                name="password"
+                value={password}
+                onChange={handlePasswordChange}
+              />
             </div>
-            <div className="is-divider">
-            </div>
-            <button id="sign-in" className="is-primary">Sign In</button>
-        </div>
-        <div className="is-idp">
+            <div className="is-divider" />
+            <Button
+              buttonType={buttonTypeEnum.primary}
+              text="Sign In"
+              onClick={signIn}
+            />
+          </>
+        ) : (
+          <>
             <div className="user-info">
-                <div className="info-username is-large-font is-bold">
-                    {username}
-                </div>
-                <div className="info-email is-medium-font">
-                    {email}
-                </div>
+              <div className="info-username is-large-font is-bold">
+                {username}
+              </div>
+              <div className="info-email is-medium-font">{email}</div>
             </div>
-            <div className="is-divider"></div>
-            <button id="sign-out" className="is-negative">Sign Out</button>
-        </div>
-    </Root>
-  )
-})
+            <div className="is-divider" />
+            <Button
+              buttonType={buttonTypeEnum.negative}
+              text="Sign Out"
+              onClick={signOut}
+            />
+          </>
+        )}
+      </Root>
+    )
+  }
+)

@@ -21,7 +21,7 @@ const UserNotifications = require('component/user-notifications/user-notificatio
 const SlideoutViewInstance = require('component/singletons/slideout.view-instance.js')
 const SlideoutRightViewInstance = require('component/singletons/slideout.right.view-instance.js')
 const user = require('component/singletons/user-instance')
-import ReactUserView from '../../../react-component/presentation/user';
+import UserView from '../../../react-component/container/user'
 export interface Props {
   username: string
   hasUnseenNotifications: boolean
@@ -146,7 +146,7 @@ const toggleUserSettings = () => {
 }
 
 const toggleUser = () => {
-  SlideoutRightViewInstance.updateContent(ReactUserView)
+  SlideoutRightViewInstance.updateContent(UserView)
   SlideoutRightViewInstance.open()
 }
 
