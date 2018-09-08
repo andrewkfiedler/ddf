@@ -9,4 +9,4 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-export { default, store, observeStore } from './provider'
+export { default, store, observeStore, ListenableStore } from './provider'

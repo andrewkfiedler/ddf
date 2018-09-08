@@ -9,12 +9,5 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-import Sources from '../../presentation/sources'
-import { connect } from 'react-redux'
-
-const mapStateToProps = (state: any) => ({
-  list: state.sources.sources,
-  amountDown: state.sources.amountDown,
-})
-
-export default connect(mapStateToProps)(Sources)
+/*global define*/
+module.exports = new (require('js/model/Sources'))()

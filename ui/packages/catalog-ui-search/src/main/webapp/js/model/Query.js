@@ -18,7 +18,7 @@ define([
   'js/cql',
   'js/model/QueryResponse',
   'js/model/ResultSort',
-  'component/singletons/sources-instance',
+  'component/singletons/sources-instance2',
   'js/Common',
   'js/CacheSourceSelector',
   'component/announcement',

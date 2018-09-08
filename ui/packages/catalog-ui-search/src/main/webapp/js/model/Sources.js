@@ -10,9 +10,6 @@
  *
  **/
 /*global define*/
-
-var user = require('component/singletons/user-instance')
-
 define([
   'underscore',
   'backbone',

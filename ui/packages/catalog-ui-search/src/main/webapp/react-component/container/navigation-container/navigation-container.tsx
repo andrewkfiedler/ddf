@@ -15,7 +15,7 @@ import withListenTo, { WithBackboneProps } from '../backbone-container'
 
 const store = require('js/store')
 const wreqr = require('wreqr')
-const sources = require('component/singletons/sources-instance')
+const sources = require('component/singletons/sources-instance2')
 const properties = require('properties')
 
 const hasLogo = () => {
