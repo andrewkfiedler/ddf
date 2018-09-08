@@ -22,13 +22,9 @@ var store = require('js/store')
 var metacard = require('component/metacard/metacard')
 var SaveView = require('component/save/workspaces/workspaces-save.view')
 var UnsavedIndicatorView = require('component/unsaved-indicator/workspaces/workspaces-unsaved-indicator.view')
-//var sources = require('component/singletons/sources-instance')
+var sources = require('component/singletons/sources-instance')
 const plugin = require('plugins/navigator')
 const $ = require('jquery')
-import {
-  observeStore,
-  store as reduxStore,
-} from '../../react-component/container/provider'
 
 const visitFragment = fragment =>
   wreqr.vent.trigger('router:navigate', {
@@ -56,7 +52,7 @@ module.exports = plugin(
         'change:saved update add remove',
         this.handleSaved
       )
-      observeStore(state => state.sources, this.handleSourcesChange.bind(this))
+      this.listenTo(state, 'all', this.handleSourcesChange)
       this.handleSaved()
       this.handleSourcesChange()
     },
@@ -76,7 +72,7 @@ module.exports = plugin(
       this.$el.toggleClass('is-saved', !hasUnsaved)
     },
     handleSourcesChange: function() {
-      var hasDown = reduxStore.getState().sources.amountdown > 0
+      var hasDown = reduxStore.getState().sources.amountDown > 0
       this.$el.toggleClass('has-unavailable', hasDown)
     },
     handleChoice(e) {

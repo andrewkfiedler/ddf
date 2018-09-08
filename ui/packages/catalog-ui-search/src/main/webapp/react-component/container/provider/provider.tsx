@@ -15,7 +15,8 @@ import { createStore } from 'redux'
 import rootReducer from './reducers'
 import { devToolsEnhancer } from 'redux-devtools-extension'
 const Backbone = require('backbone')
-import isEqual from 'lodash.isequal'
+const isEqual = require('lodash.isequal')
+const SourcesInstance = require('js/model/Sources')()
 
 const BackboneModel = new Backbone.Model({})
 const sources = require('component/singletons/sources-instance')
@@ -39,7 +40,7 @@ function observeStore(select: any, onChange: any) {
   return unsubscribe
 }
 
-BackboneModel.listenTo(sources, 'all', () => {
+BackboneModel.listenTo(SourcesInstance, 'all', () => {
   store.dispatch({
     type: 'UPDATE_SOURCES',
     data: sources.toJSON(),
