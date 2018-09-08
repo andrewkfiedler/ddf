@@ -22,7 +22,8 @@ var store = require('js/store')
 var metacard = require('component/metacard/metacard')
 var SaveView = require('component/save/workspaces/workspaces-save.view')
 var UnsavedIndicatorView = require('component/unsaved-indicator/workspaces/workspaces-unsaved-indicator.view')
-var sources = require('component/singletons/sources-instance')
+import { ListenableStore } from '../../react-component/container/provider'
+const sources = new ListenableStore('sources.sources')
 const plugin = require('plugins/navigator')
 const $ = require('jquery')
 
@@ -52,7 +53,7 @@ module.exports = plugin(
         'change:saved update add remove',
         this.handleSaved
       )
-      this.listenTo(state, 'all', this.handleSourcesChange)
+      this.listenTo(sources, 'all', this.handleSourcesChange)
       this.handleSaved()
       this.handleSourcesChange()
     },
@@ -72,7 +73,9 @@ module.exports = plugin(
       this.$el.toggleClass('is-saved', !hasUnsaved)
     },
     handleSourcesChange: function() {
-      var hasDown = reduxStore.getState().sources.amountDown > 0
+      var hasDown = sources.some(function(source) {
+        return !source.available
+      })
       this.$el.toggleClass('has-unavailable', hasDown)
     },
     handleChoice(e) {

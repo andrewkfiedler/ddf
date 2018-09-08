@@ -10,4 +10,13 @@
  *
  **/
 /*global define*/
-export { store } from '../../react-component/container/provider'
+import { ListenableStore } from '../../react-component/container/provider'
+const listenableStore = new ListenableStore('sources.sources')
+listenableStore.on(
+  'all',
+  () => {
+    listenableStore.localCatalog = listenableStore.toJSON().localCatalog // backwards compatibility with old sources model
+  },
+  listenableStore
+)
+module.exports = listenableStore

@@ -24,22 +24,29 @@ type Source = {
 type Sources = Source[]
 
 type SourcesState = {
-  list: Sources[]
+  sources: Sources[]
   amountDown: number
+  localCatalog: string
 }
 
 const initialState = {
-  list: [],
+  sources: [],
   amountDown: 0,
+  localCatalog: 'ddf.distribution',
 }
+// @ts-ignore
+initialState.sources.localCatalog = initialState.localCatalog // backwards compatibility with old sources model
 
 function sources(state: SourcesState = initialState, action: any) {
   switch (action.type) {
     case 'UPDATE_SOURCES':
-      const amountDown = action.data.filter(function(source: any) {
+      const localCatalog = action.data.localCatalog
+      const sources = action.data.toJSON()
+      sources.localCatalog = localCatalog // backwards compatibility with old sources model
+      const amountDown = sources.filter(function(source: any) {
         return !source.available
       }).length
-      return assign({}, state, { list: action.data, amountDown })
+      return assign({}, state, { sources, amountDown, localCatalog })
     default:
       return state
   }

@@ -9,6 +9,24 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-export { default } from './provider'
-export { default as store } from './store'
-export { default as ListenableStore } from './listenable-store'
+import { createStore } from 'redux'
+import rootReducer from './reducers'
+import { devToolsEnhancer } from 'redux-devtools-extension'
+const BackboneModel = new (require('backbone')).Model({})
+
+const sourcesInstance = require('component/singletons/sources-instance2')
+const store = createStore(rootReducer, devToolsEnhancer({}))
+
+BackboneModel.listenTo(sourcesInstance, 'all', () => {
+  store.dispatch({
+    type: 'UPDATE_SOURCES',
+    data: sourcesInstance,
+  })
+})
+
+store.dispatch({
+  type: 'UPDATE_SOURCES',
+  data: sourcesInstance,
+})
+
+export default store

@@ -13,7 +13,7 @@ import Sources from '../../presentation/sources'
 import { connect } from 'react-redux'
 
 const mapStateToProps = (state: any) => ({
-  list: state.sources.list,
+  list: state.sources.sources,
   amountDown: state.sources.amountDown,
 })
 

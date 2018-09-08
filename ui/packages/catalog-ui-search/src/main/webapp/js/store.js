@@ -12,14 +12,12 @@
 /*global define,window*/
 
 define([
-  'jquery',
   'backbone',
-  'backbone-poller',
   'underscore',
   'js/model/Workspace.collection',
   'component/content/content',
   'component/router/router',
-], function($, Backbone, poller, _, WorkspaceCollection, Content, router) {
+], function(Backbone, _, WorkspaceCollection, Content, router) {
   return new (Backbone.Model.extend({
     initialize: function() {
       this.set('content', new Content())

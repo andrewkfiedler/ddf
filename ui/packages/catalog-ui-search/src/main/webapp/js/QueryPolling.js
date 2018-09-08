@@ -16,7 +16,7 @@ define([
   'wreqr',
   'js/cql',
   'js/CQLUtils',
-  'component/singletons/sources-instance',
+  'component/singletons/sources-instance2',
   'moment',
   './jquery.whenAll',
 ], function($, _, wreqr, cql, CQLUtils, sources, moment) {

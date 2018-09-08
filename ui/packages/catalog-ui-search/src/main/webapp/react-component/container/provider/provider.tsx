@@ -11,57 +11,7 @@
  **/
 import * as React from 'react'
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
-import rootReducer from './reducers'
-import { devToolsEnhancer } from 'redux-devtools-extension'
-const Backbone = require('backbone')
-const isEqual = require('lodash.isequal')
-const SourcesInstance = require('js/model/Sources')()
-
-const BackboneModel = new Backbone.Model({})
-const sources = require('component/singletons/sources-instance')
-const oldStore = require('js/store')
-
-const store = createStore(rootReducer, devToolsEnhancer({}))
-
-function observeStore(select: any, onChange: any) {
-  let currentState: any
-
-  function handleChange() {
-    let nextState = select(store.getState())
-    if (!isEqual(nextState, currentState)) {
-      currentState = nextState
-      onChange(currentState)
-    }
-  }
-
-  let unsubscribe = store.subscribe(handleChange)
-  handleChange()
-  return unsubscribe
-}
-
-BackboneModel.listenTo(SourcesInstance, 'all', () => {
-  store.dispatch({
-    type: 'UPDATE_SOURCES',
-    data: sources.toJSON(),
-  })
-})
-store.dispatch({
-  type: 'UPDATE_STORE',
-  data: oldStore.toJSON(),
-})
-BackboneModel.listenTo(oldStore.get('content'), 'all', () => {
-  store.dispatch({
-    type: 'UPDATE_STORE',
-    data: oldStore.toJSON(),
-  })
-})
-BackboneModel.listenTo(oldStore.get('workspaces'), 'all', () => {
-  store.dispatch({
-    type: 'UPDATE_STORE',
-    data: oldStore.toJSON(),
-  })
-})
+import store from './store'
 
 class ProviderContainer extends React.Component<{}, {}> {
   constructor(props: {}) {
@@ -72,5 +22,4 @@ class ProviderContainer extends React.Component<{}, {}> {
   }
 }
 
-export { store, observeStore }
 export default ProviderContainer

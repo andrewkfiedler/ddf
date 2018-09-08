@@ -9,6 +9,5 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-export { default } from './provider'
-export { default as store } from './store'
-export { default as ListenableStore } from './listenable-store'
+/*global define*/
+module.exports = new (require('js/model/Sources'))()
