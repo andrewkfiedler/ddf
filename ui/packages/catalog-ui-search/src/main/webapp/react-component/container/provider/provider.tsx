@@ -72,7 +72,7 @@ const collectionMethods = Object.keys({
 })
 
 const BackboneModel = new Backbone.Model({})
-const oldStore = require('js/store')
+const oldStore = require('js/store2')
 
 const store = createStore(rootReducer, devToolsEnhancer({}))
 
@@ -104,18 +104,18 @@ store.dispatch({
 
 store.dispatch({
   type: 'UPDATE_STORE',
-  data: oldStore.toJSON(),
+  data: oldStore.toJSON({ includeProto: true }),
 })
 BackboneModel.listenTo(oldStore.get('content'), 'all', () => {
   store.dispatch({
     type: 'UPDATE_STORE',
-    data: oldStore.toJSON(),
+    data: oldStore.toJSON({ includeProto: true }),
   })
 })
 BackboneModel.listenTo(oldStore.get('workspaces'), 'all', () => {
   store.dispatch({
     type: 'UPDATE_STORE',
-    data: oldStore.toJSON(),
+    data: oldStore.toJSON({ includeProto: true }),
   })
 })
 
@@ -138,8 +138,45 @@ class ListenableStore {
       this[method] = this[method].bind(this)
     })
   }
+  get(subpath: string) {
+    const result = _get(store.getState(), `${this.path}.${subpath}`)
+    if (typeof result === 'object') {
+      return new ListenableStore(`${this.path}.${subpath}`)
+    }
+    return result
+  }
   toJSON() {
     return _get(store.getState(), this.path)
+  }
+  once(name: any, callback: any, context: any) {
+    console.log(name)
+    if (context !== undefined) {
+      if (this.observers[context.cid] !== undefined) {
+        console.log('already listening')
+      } else {
+        const boundCallback = callback.bind(context)
+        this.observers[context.cid] = observeStore(
+          (storeRef: Object) => {
+            return _get(storeRef, this.path)
+          },
+          () => {
+            boundCallback()
+            this.observers[context.cid]()
+          }
+        )
+      }
+    } else {
+      const boundCallback = callback.bind(context)
+      const unsubscribe = observeStore(
+        (storeRef: Object) => {
+          return _get(storeRef, this.path)
+        },
+        () => {
+          boundCallback()
+          unsubscribe()
+        }
+      )
+    }
   }
   on(name: any, callback: any, context: any) {
     console.log(name)
@@ -155,7 +192,6 @@ class ListenableStore {
     console.log(name + callback)
     this.observers[context.cid]()
   }
-  get() {}
 }
 
 // emulate backbone collections

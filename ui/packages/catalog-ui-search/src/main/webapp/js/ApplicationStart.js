@@ -39,25 +39,17 @@ require([
   }
 
   function checkForEmptyHashAndOneWorkspace() {
-    if (
-      location.hash === '' &&
-      workspaces.fetched &&
-      getWorkspacesOwnedByUser().length === 1
-    ) {
+    if (location.hash === '' && getWorkspacesOwnedByUser().length === 1) {
       location.hash = '#workspaces/' + getWorkspacesOwnedByUser()[0].id
     }
   }
 
   function attemptToStart() {
     checkForEmptyHashAndOneWorkspace()
-    if (workspaces.fetched && user.fetched && !hasEmptyHashAndNoWorkspaces()) {
+    if (user.fetched && !hasEmptyHashAndNoWorkspaces()) {
       app.App.start({})
     } else if (!user.fetched) {
       user.once('sync', function() {
-        attemptToStart()
-      })
-    } else if (!workspaces.fetched) {
-      workspaces.once('sync', function() {
         attemptToStart()
       })
     } else if (hasEmptyHashAndNoWorkspaces()) {

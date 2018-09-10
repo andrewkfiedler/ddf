@@ -17,8 +17,21 @@ define([
   'js/model/Workspace.collection',
   'component/content/content',
   'component/router/router',
+  'backbone-associations',
 ], function(Backbone, _, WorkspaceCollection, Content, router) {
-  return new (Backbone.Model.extend({
+  return new (Backbone.AssociatedModel.extend({
+    relations: [
+      {
+        type: Backbone.One,
+        key: 'content',
+        relatedModel: Content,
+      },
+      {
+        type: Backbone.Many,
+        key: 'workspaces',
+        collectionType: WorkspaceCollection,
+      },
+    ],
     initialize: function() {
       this.set('content', new Content())
       this.set('workspaces', new WorkspaceCollection())

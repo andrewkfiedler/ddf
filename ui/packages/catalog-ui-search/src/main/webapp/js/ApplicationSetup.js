@@ -147,6 +147,16 @@ Backbone.Model.prototype.toJSON = function(options) {
       originalJSON[property] = backboneModel[property]
     })
   }
+  if (options && options.includeProto) {
+    Object.getOwnPropertyNames(this.__proto__).forEach(protoMethod => {
+      originalJSON[protoMethod] = this.__proto__[protoMethod]
+    })
+    originalJSON.get = function(attr) {
+      return this[attr]
+    }
+    originalJSON.on = function() {}
+    originalJSON.off = function() {}
+  }
   return originalJSON
 }
 var clone = Backbone.Model.prototype.clone
