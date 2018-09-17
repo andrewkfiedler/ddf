@@ -25,6 +25,7 @@ import Enum from '../enum'
 import InputWithParam from '../input-with-param'
 import Textarea from '../textarea'
 import MultiEnum from '../multi-enum'
+import Wip from '../wip'
 import MarionetteRegionContainer from '../../../react-component/container/marionette-region-container'
 import React from 'react'
 
@@ -126,6 +127,10 @@ module.exports = Marionette.LayoutView.extend({
         {
           label: 'Regions (Layout Views)',
           value: 'Regions',
+        },
+        {
+          label: 'Work in Progress',
+          value: 'wip',
         },
       ],
       id: 'component',
@@ -230,6 +235,9 @@ module.exports = Marionette.LayoutView.extend({
         break
       case 'Regions':
         componentToShow = RegionGuideView
+        break
+      case 'wip':
+        componentToShow = Wip
         break
       default:
         componentToShow = CardGuideView

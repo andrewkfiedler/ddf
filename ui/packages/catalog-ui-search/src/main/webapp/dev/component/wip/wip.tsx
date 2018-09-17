@@ -14,8 +14,9 @@ import styled from '../../../react-component/styles/styled-components'
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from 'react-live'
 import { hot } from 'react-hot-loader'
 
-import Text from '../../../react-component/container/input-wrappers/text'
-import Text2 from '../../../react-component/container/atoms/inputs/text'
+import Text from '../../../react-component/container/atoms/inputs/text'
+import Date from '../../../react-component/container/atoms/inputs/date'
+const Announcement = require('component/announcement')
 
 const Root = styled.div`
   height: 100%;
@@ -31,12 +32,13 @@ class ButtonGuide extends React.Component<{}, {}> {
               <Text 
                 value="value"
                 label="TextInput 1"
+                onChange={(value) => Announcement.announce({title: value})}
               />
 
-              <Text2 
+              <Date 
                 value="value"
                 label="TextInput 1"
-                  onChange={(value) => alert(value)}
+                onChange={(value) => Announcement.announce({title: value})}
               />
             </div>
         `
@@ -49,7 +51,10 @@ class ButtonGuide extends React.Component<{}, {}> {
           <div className="examples is-list has-list-highlighting">
             <div className="example">
               <div className="title">Example</div>
-              <LiveProvider code={this.getCode()} scope={{ Text, Text2 }}>
+              <LiveProvider
+                code={this.getCode()}
+                scope={{ Text, Date, Announcement }}
+              >
                 <LiveEditor contentEditable={true} />
                 <LiveError />
                 <LivePreview style={{ padding: '20px' }} />
