@@ -160,13 +160,6 @@ const base = ({ alias = {}, env }) => ({
         use: [
           {
             loader: nodeResolve('ts-loader'),
-            options: {
-              compilerOptions: {
-                jsx: 'react',
-                allowJs: true,
-                sourceMap: true,
-              },
-            },
           },
           {
             loader: nodeResolve('stylelint-custom-processor-loader'),

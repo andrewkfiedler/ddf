@@ -20,8 +20,7 @@ type Props = {
   viewOptions?: object
   replaceElement?: boolean
   className?: string
-} & React.HTMLProps<HTMLButtonElement> &
-  JSX.IntrinsicAttributes
+} & React.HTMLProps<HTMLDivElement>
 
 const RegionContainer = styled.div`
   ${CustomElement};
