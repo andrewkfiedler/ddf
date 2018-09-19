@@ -94,8 +94,8 @@ const Dev = (props: any) => {
           },
         ]}
         active="About"
-        gaseous
         vertical
+        gaseous
       />
       <MarionetteRegionContainer
         className="content"

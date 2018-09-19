@@ -26,6 +26,10 @@ type Props = {
    * Component will behave like a gas and fill it's container
    */
   gaseous?: boolean
+  /**
+   * Tab buttons will always remain visible.  Sets gaseous to true.
+   */
+  sticky?: boolean
 }
 
 type State = Props & {
@@ -33,13 +37,18 @@ type State = Props & {
   activeLocation: number
   vertical: boolean
   gaseous: boolean
+  sticky: boolean
 }
 
-const Root = styled<{ vertical: boolean; gaseous: boolean }, 'div'>('div')`
+const Root = styled<
+  { vertical: boolean; gaseous: boolean; sticky: boolean },
+  'div'
+>('div')`
   width: ${props => (props.gaseous ? '100%' : 'auto')};
   height: ${props => (props.gaseous ? '100%' : 'auto')};
   overflow: auto;
-  display: flex;
+  display: ${props =>
+    props.vertical === false && props.sticky === false ? 'block' : 'flex'};
   flex-direction: ${props => (props.vertical ? 'row' : 'column')};
   align-items: ${props => (props.vertical ? 'flex-start' : 'center')};
 `
@@ -86,26 +95,49 @@ const TabIndicator = styled<
   transition: transform ${props => props.theme.coreTransitionTime} ease-in-out;
 `
 
-const TabContent = styled<{ gaseous: boolean }, 'div'>('div')`
+const TabContent = styled<{ gaseous: boolean; sticky: boolean }, 'div'>('div')`
   display: block;
   width: ${props => (props.gaseous ? '100%' : 'auto')};
+  height: ${props => (props.sticky ? '100%' : 'auto')};
+  overflow: ${props => (props.sticky ? 'auto' : 'hidden')};
 `
+
+const debounce = (callback: Function) => {
+  let timeoutId: any
+  return () => {
+    clearTimeout(timeoutId)
+    timeoutId = setTimeout(callback, 200)
+  }
+}
 
 class Tabs extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
+    let {
+      active = '',
+      tabs = [],
+      vertical = false,
+      gaseous = false,
+      sticky = false,
+    } = props
+    if (sticky) {
+      gaseous = true
+    }
     this.state = {
-      active: props.active || '',
-      tabs: props.tabs || [],
+      active,
+      tabs,
       activeWidth: 0,
       activeLocation: 0,
-      vertical: props.vertical === undefined ? false : props.vertical,
-      gaseous: props.gaseous === undefined ? false : props.gaseous,
+      vertical,
+      gaseous,
+      sticky,
     }
   }
+  debouncedUpdateTabIndicator = debounce(this.updateTabIndicator.bind(this))
   activeTabRef = React.createRef()
   componentDidMount() {
     this.updateTabIndicator()
+    window.addEventListener('resize', this.debouncedUpdateTabIndicator)
   }
   updateTabIndicator() {
     if (this.activeTabRef.current) {
@@ -124,6 +156,13 @@ class Tabs extends React.Component<Props, State> {
     }
   }
   componentDidUpdate(_prevProps: Props, prevState: State) {
+    if (this.props.sticky !== _prevProps.sticky) {
+      this.setState({
+        sticky: this.props.sticky !== undefined ? this.props.sticky : false,
+      })
+      this.updateTabIndicator()
+      return
+    }
     if (this.props.vertical !== _prevProps.vertical) {
       this.setState({
         vertical:
@@ -144,6 +183,9 @@ class Tabs extends React.Component<Props, State> {
     }
     this.updateTabIndicator()
   }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.debouncedUpdateTabIndicator)
+  }
   render() {
     const {
       tabs,
@@ -152,9 +194,10 @@ class Tabs extends React.Component<Props, State> {
       activeLocation,
       vertical,
       gaseous,
+      sticky,
     } = this.state
     return (
-      <Root vertical={vertical} gaseous={gaseous}>
+      <Root vertical={vertical} gaseous={gaseous} sticky={sticky}>
         <TabsWrapper vertical={vertical} gaseous={gaseous}>
           {tabs.map(tab => {
             return active === tab.title ? (
@@ -178,7 +221,7 @@ class Tabs extends React.Component<Props, State> {
             vertical={vertical}
           />
         </TabsWrapper>
-        <TabContent gaseous={gaseous}>
+        <TabContent gaseous={gaseous} sticky={sticky}>
           {tabs.filter(tab => tab.title === active)[0].content}
         </TabContent>
       </Root>
