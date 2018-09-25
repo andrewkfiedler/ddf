@@ -14,10 +14,12 @@ import styled from '../../styles/styled-components'
 import { hot } from 'react-hot-loader'
 const DropdownModel = require('component/dropdown/dropdown')
 const WorkspaceInteractionsView = require('component/dropdown/workspace-interactions/dropdown.workspace-interactions.view')
+const WorkspaceInteractions = require('component/workspace-interactions/workspace-interactions.view')
 const DropdownQueryView = require('component/dropdown/query/dropdown.query.view')
 import MarionetteRegionContainer from '../../container/marionette-region-container'
 import SaveButton from '../save-button'
 import WorkspaceTitle from '../../container/workspace-title'
+import Dropdown from '../dropdown'
 
 type Props = {
   currentWorkspace: Backbone.Model
@@ -30,6 +32,11 @@ const StyledSaveButton = styled.div`
 
 const StyledWorkspaceTitle = styled.div`
   display: block;
+`
+
+const StyledDropdown = styled(Dropdown)`
+  height: 100%;
+  line-height: inherit;
 `
 
 const Root = styled<{ saved: boolean }, 'div'>('div')`
@@ -90,6 +97,22 @@ const render = (props: Props) => {
           }}
         />
       </StyledSaveButton>
+      <StyledDropdown
+        content={
+          <>
+            <MarionetteRegionContainer
+              view={WorkspaceInteractions}
+              viewOptions={() => {
+                return {
+                  model: currentWorkspace,
+                }
+              }}
+            />
+          </>
+        }
+      >
+        <span className="fa fa-ellipsis-v" />
+      </StyledDropdown>
       <MarionetteRegionContainer
         className="content-interactions is-button"
         view={WorkspaceInteractionsView}
