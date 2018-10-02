@@ -12,17 +12,17 @@
 import * as React from 'react'
 import styled from '../../../react-component/styles/styled-components'
 import MarionetteRegionContainer from '../../../react-component/container/marionette-region-container'
-const TabsModel = require('component/tabs/tabs')
-const TabsView = require('component/tabs/tabs.view')
-const GuideView = require('dev/component/guide/guide.view')
 const AboutView = require('dev/component/about/about.view')
 const VideosView = require('dev/component/videos/videos.view')
 import Tabs from '../../../react-component/presentation/tabs'
+import Guide from '../guide'
+import Section from '../../../react-component/presentation/section'
 
 import { hot } from 'react-hot-loader'
 
 const Root = styled.div`
   height: 100%;
+  overflow: auto;
 
   .content {
     height: 100%;
@@ -78,40 +78,34 @@ const Root = styled.div`
 const Dev = (props: any) => {
   return (
     <Root {...props}>
-      <Tabs
-        tabs={[
-          {
-            title: 'About',
-            content: <MarionetteRegionContainer view={AboutView} />,
-          },
-          {
-            title: 'Guide',
-            content: <MarionetteRegionContainer view={GuideView} />,
-          },
-          {
-            title: 'Videos',
-            content: <MarionetteRegionContainer view={VideosView} />,
-          },
-        ]}
-        active="About"
-        vertical
-        gaseous
-      />
-      <MarionetteRegionContainer
-        className="content"
-        view={TabsView}
-        viewOptions={() => {
-          return {
-            model: new TabsModel({
-              tabs: {
-                About: AboutView,
-                Guide: GuideView,
-                Videos: VideosView,
+      <div className="limit-to-center">
+        <Section>
+          <Tabs
+            tabs={[
+              {
+                title: 'About',
+                content: <MarionetteRegionContainer view={AboutView} />,
               },
-            }),
-          }
-        }}
-      />
+              {
+                title: 'Guide',
+                content: (
+                  <Section>
+                    <Guide />
+                  </Section>
+                ),
+              },
+              {
+                title: 'Videos',
+                content: <MarionetteRegionContainer view={VideosView} />,
+              },
+            ]}
+            active="About"
+            sticky
+            gaseous
+            className="limit-to-center"
+          />
+        </Section>
+      </div>
     </Root>
   )
 }

@@ -21,6 +21,7 @@ type Tab = {
 type Props = {
   tabs: Tab[]
   active: string
+  className?: string
   vertical?: boolean
   /**
    * Component will behave like a gas and fill it's container
@@ -110,28 +111,32 @@ const debounce = (callback: Function) => {
   }
 }
 
+const mapPropsToState = (props: Props) => {
+  let {
+    active = '',
+    tabs = [],
+    vertical = false,
+    gaseous = false,
+    sticky = false,
+  } = props
+  if (sticky) {
+    gaseous = true
+  }
+  return {
+    active,
+    tabs,
+    activeWidth: 0,
+    activeLocation: 0,
+    vertical,
+    gaseous,
+    sticky,
+  }
+}
+
 class Tabs extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
-    let {
-      active = '',
-      tabs = [],
-      vertical = false,
-      gaseous = false,
-      sticky = false,
-    } = props
-    if (sticky) {
-      gaseous = true
-    }
-    this.state = {
-      active,
-      tabs,
-      activeWidth: 0,
-      activeLocation: 0,
-      vertical,
-      gaseous,
-      sticky,
-    }
+    this.state = mapPropsToState(props)
   }
   debouncedUpdateTabIndicator = debounce(this.updateTabIndicator.bind(this))
   activeTabRef = React.createRef()
@@ -156,25 +161,8 @@ class Tabs extends React.Component<Props, State> {
     }
   }
   componentDidUpdate(_prevProps: Props, prevState: State) {
-    if (this.props.sticky !== _prevProps.sticky) {
-      this.setState({
-        sticky: this.props.sticky !== undefined ? this.props.sticky : false,
-      })
-      this.updateTabIndicator()
-      return
-    }
-    if (this.props.vertical !== _prevProps.vertical) {
-      this.setState({
-        vertical:
-          this.props.vertical !== undefined ? this.props.vertical : false,
-      })
-      this.updateTabIndicator()
-      return
-    }
-    if (this.props.gaseous !== _prevProps.gaseous) {
-      this.setState({
-        gaseous: this.props.gaseous !== undefined ? this.props.gaseous : false,
-      })
+    if (this.props !== _prevProps) {
+      this.setState(mapPropsToState(_prevProps))
       this.updateTabIndicator()
       return
     }
@@ -196,8 +184,14 @@ class Tabs extends React.Component<Props, State> {
       gaseous,
       sticky,
     } = this.state
+    const { className } = this.props
     return (
-      <Root vertical={vertical} gaseous={gaseous} sticky={sticky}>
+      <Root
+        vertical={vertical}
+        gaseous={gaseous}
+        sticky={sticky}
+        className={className}
+      >
         <TabsWrapper vertical={vertical} gaseous={gaseous}>
           {tabs.map(tab => {
             return active === tab.title ? (
