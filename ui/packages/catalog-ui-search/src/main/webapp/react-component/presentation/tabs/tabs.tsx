@@ -39,6 +39,7 @@ type State = Props & {
   vertical: boolean
   gaseous: boolean
   sticky: boolean
+  overflow: boolean
 }
 
 const Root = styled<
@@ -56,10 +57,12 @@ const Root = styled<
 
 const TabButton = styled<{}, 'button'>('button')`
   display: block;
+  overflow: hidden;
   opacity: ${props => props.theme.minimumOpacity};
   height: ${props => props.theme.minimumButtonSize};
   min-width: ${props => props.theme.minimumButtonSize};
   padding: 0px ${props => props.theme.mediumSpacing};
+  flex-shrink: 0;
 `
 
 const ActiveTabButton = styled(TabButton)`
@@ -78,6 +81,7 @@ const TabsWrapper = styled<{ vertical: boolean; gaseous: boolean }, 'div'>(
   height: ${props => (props.gaseous && props.vertical ? '100%' : 'auto')};
   width: ${props =>
     props.gaseous && props.vertical === false ? '100%' : 'auto'};
+  flex-wrap: nowrap;
 `
 
 const TabIndicator = styled<
@@ -136,14 +140,19 @@ const mapPropsToState = (props: Props) => {
 class Tabs extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
-    this.state = mapPropsToState(props)
+    this.state = {
+      ...mapPropsToState(props),
+      overflow: false,
+    }
   }
   debouncedUpdateTabIndicator = debounce(this.updateTabIndicator.bind(this))
   activeTabRef = React.createRef()
+  overflowTabRef = React.createRef()
   componentDidMount() {
     this.updateTabIndicator()
     window.addEventListener('resize', this.debouncedUpdateTabIndicator)
   }
+  checkOverflow() {}
   updateTabIndicator() {
     if (this.activeTabRef.current) {
       const current = this.activeTabRef.current as HTMLButtonElement
@@ -209,6 +218,7 @@ class Tabs extends React.Component<Props, State> {
               </TabButton>
             )
           })}
+          <TabButton innerRef={this.overflowTabRef}>More</TabButton>
           <TabIndicator
             width={activeWidth}
             location={activeLocation}
