@@ -38,18 +38,7 @@ require([
     return getWorkspacesOwnedByUser().length === 0 && location.hash === ''
   }
 
-  function checkForEmptyHashAndOneWorkspace() {
-    if (
-      location.hash === '' &&
-      workspaces.fetched &&
-      getWorkspacesOwnedByUser().length === 1
-    ) {
-      location.hash = '#workspaces/' + getWorkspacesOwnedByUser()[0].id
-    }
-  }
-
   function attemptToStart() {
-    checkForEmptyHashAndOneWorkspace()
     if (workspaces.fetched && user.fetched && !hasEmptyHashAndNoWorkspaces()) {
       app.App.start({})
     } else if (!user.fetched) {
