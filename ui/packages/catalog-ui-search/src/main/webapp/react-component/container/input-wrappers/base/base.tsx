@@ -32,6 +32,7 @@ export enum Type {
   inputWithParam = 'NEAR',
   text = 'STRING',
   textarea = 'TEXTAREA',
+  password = 'PASSWORD',
 }
 
 /**
