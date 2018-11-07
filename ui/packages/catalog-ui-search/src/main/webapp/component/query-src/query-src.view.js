@@ -19,9 +19,48 @@ const $ = require('jquery')
 const template = require('./query-src.hbs')
 const CustomElements = require('js/CustomElements')
 const sources = require('component/singletons/sources-instance')
+import React from 'react'
 
 module.exports = Marionette.ItemView.extend({
-  template: template,
+  template(props) {
+    /**
+     * Math.random as a key will simulate the non-reconcilation behavior of the default marionette renderer
+     * This is the quickest fix for parity with the old functionality, but we should migrate this since it's doing
+     * some not so great things.
+     */
+    return (
+      <React.Fragment key={Math.random()}>
+        <div className="choice is-all is-available">
+          <span className="choice-text">All Sources</span>
+          <span className="choice-selected fa fa-check" />
+        </div>
+        {props.map(source => {
+          return (
+            <div
+              className={`choice is-specific ${
+                source.available ? 'is-available' : ''
+              }`}
+              data-value={source.id}
+            >
+              <span className="choice-text">
+                {source.available ? (
+                  ''
+                ) : (
+                  <span className="fa fa-exclamation-triangle" />
+                )}
+                {source.local ? (
+                  <span className="fa source-icon fa-home" />
+                ) : (
+                  <span className="fa source-icon fa-cloud" />
+                )}
+                {source.id}
+              </span>
+            </div>
+          )
+        })}
+      </React.Fragment>
+    )
+  },
   tagName: CustomElements.register('query-src'),
   className: 'is-action-list',
   modelEvents: {
