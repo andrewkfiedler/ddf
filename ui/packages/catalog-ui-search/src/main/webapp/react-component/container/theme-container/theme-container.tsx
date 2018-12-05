@@ -102,6 +102,12 @@ const opacity = {
   minimumOpacity: 0.6,
 }
 
+const supports = {
+  supports: {
+    grid: document.createElement('div').style.grid !== undefined,
+  },
+}
+
 type ThemesInterface = {
   dark: ThemeColorInterface
   sea: ThemeColorInterface
@@ -195,6 +201,7 @@ function updateTheme(userTheme: UserTheme) {
     ...spacing(parseFloat(sizingTheme.minimumSpacing)),
     ...dividers(parseFloat(sizingTheme.minimumSpacing)),
     ...opacity,
+    ...supports,
   }
 }
 

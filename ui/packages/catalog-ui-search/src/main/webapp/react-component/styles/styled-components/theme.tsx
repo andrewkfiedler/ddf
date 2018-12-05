@@ -66,6 +66,12 @@ type Opacity = {
   minimumOpacity: number
 }
 
+type Supports = {
+  supports: {
+    grid: boolean
+  }
+}
+
 export type ThemeColorInterface = {
   primaryColor: string
   positiveColor: string
@@ -106,4 +112,5 @@ export type ThemeInterface = SizingInterface &
   ThemeColorInterface &
   ThemeName &
   Helpers &
-  Current
+  Current &
+  Supports

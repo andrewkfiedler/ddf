@@ -64,13 +64,36 @@ const Root = styled.div`
   }};
 `
 
+const WorkspacesItemsRoot = styled.div`
+  ${props =>
+    props.theme.supports.grid
+      ? `
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-gap: ${props.theme.largeSpacing};
+      justify-items: stretch;
+    `
+      : `
+    display: flex;
+    `};
+`
+
 const WorkspaceItemRoot = styled.div`
-  width: 18rem;
+  ${props =>
+    props.theme.supports.grid
+      ? `
+      width: 100%;
+      margin-bottom: 0px;
+      margin-right: 0px;
+    `
+      : `
+      width: 33%;
+      margin-bottom: ${props.theme.largeSpacing};
+      margin-right: ${props.theme.largeSpacing};
+    `}
   height: calc(4.5 * ${props => props.theme.minimumLineSize});
   overflow: hidden;
   display: inline-block;
-  margin-bottom: ${props => props.theme.minimumSpacing};
-  margin-right: ${props => props.theme.largeSpacing};
 `
 
 const ModifiedButton = WorkspaceItemRoot.withComponent(Button)
@@ -99,7 +122,7 @@ const WorkspacesItems = (props: Props) => {
             </div>
           </div>
         </div>
-        <div className="home-items-choices is-list is-inline has-list-highlighting">
+        <WorkspacesItemsRoot className="home-items-choices is-list is-inline has-list-highlighting">
           <ModifiedButton
             buttonType={buttonTypeEnum.neutral}
             fadeUntilHover
@@ -117,7 +140,7 @@ const WorkspacesItems = (props: Props) => {
               </WorkspaceItemRoot>
             )
           })}
-        </div>
+        </WorkspacesItemsRoot>
       </div>
     </Root>
   )

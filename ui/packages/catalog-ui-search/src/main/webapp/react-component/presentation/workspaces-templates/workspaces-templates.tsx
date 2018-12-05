@@ -34,23 +34,25 @@ const Root = styled.div`
       transparentize(0.9, readableColor(props.theme.backgroundAccentContent))};
 
     .home-templates-adhoc {
-        text-align: center;
-        white-space: nowrap;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: nowrap;
 
         .adhoc-search {
             display: inline-block;
             vertical-align: middle;
-            width: calc(100% - ${props =>
-              props.theme.minimumButtonSize} - 2 * ${props =>
-  props.theme.mediumSpacing});
+            width: 100%;
         }
         
         intrigue-property { /* stylelint-disable-line */
             input {
                 text-align: left;
             }
-            padding: ${props => props.theme.minimumSpacing} 0px ${props =>
-  props.theme.minimumSpacing} 0px;
+            padding: 0px;
+            intrigue-input { /* stylelint-disable-line */
+              height: ${props => props.theme.minimumButtonSize};
+            }
         }
 
         .adhoc-go {
