@@ -17,26 +17,14 @@ const ConfigurationEditView = require('components/configuration-edit/configurati
 import styled from '../../../styles/styled-components'
 const $ = require('jquery')
 import getId from '../../uuid'
+import Button from 'atlas/atoms/button'
+import Grid from 'atlas/atoms/grid'
+import Typography from 'atlas/atoms/typography'
 
-const ConfigurationElement = styled.div`
-  display: block;
-  white-space: nowrap;
-  padding: ${props => props.theme.minimumSpacing};
-  margin-left: ${props => props.theme.largeSpacing};
-  > div {
-    padding-left: ${props => props.theme.minimumSpacing};
-    display: inline-block;
-    white-space: normal;
-    word-wrap: break-word;
-    width: 45%;
-    vertical-align: top;
-  }
-
-  > div:last-of-type {
-    text-align: right;
-    width: 10%;
-  }
+const CustomGrid = styled(Grid)`
+  padding-left: ${props => props.theme.largeSpacing};
 `
+
 export type ConfigurationType = {
   id: string
   fpid: string
@@ -93,21 +81,28 @@ class Configuration extends React.Component<Props, State> {
     } = this.props
     const { isEditing } = this.state
     return (
-      <ConfigurationElement>
-        <div>
-          <a
-            href={`#${this.id}`}
-            className="editLink"
-            data-toggle="modal"
-            data-backdrop="static"
-            data-keyboard="false"
-            onClick={() => {
-              onBeforeEdit()
-              this.startEditing()
-            }}
-          >
-            {displayName}
-          </a>
+      <CustomGrid
+        container
+        spacing={16}
+        justify="space-between"
+        alignItems="center"
+      >
+        <Grid item sm={5} xs={12}>
+          <Typography noWrap>
+            <a
+              href={`#${this.id}`}
+              className="editLink"
+              data-toggle="modal"
+              data-backdrop="static"
+              data-keyboard="false"
+              onClick={() => {
+                onBeforeEdit()
+                this.startEditing()
+              }}
+            >
+              {displayName}
+            </a>
+          </Typography>
           <div className="config-modal-container">
             <div
               id={this.id}
@@ -129,15 +124,15 @@ class Configuration extends React.Component<Props, State> {
               ) : null}
             </div>
           </div>
-        </div>
-        <div>{bundle_name}</div>
-        <div>
+        </Grid>
+        <Grid item sm={5} xs={12}>
+          <Typography>{bundle_name}</Typography>
+        </Grid>
+        <Grid item sm={2} xs={12}>
           {fpid ? (
-            <a
-              href="#"
-              className="removeLink glyphicon glyphicon-remove"
-              onClick={e => {
-                e.preventDefault()
+            <Button
+              color="secondary"
+              onClick={() => {
                 var question =
                   'Are you sure you want to remove the configuration: ' +
                   properties['service.pid'] +
@@ -147,10 +142,13 @@ class Configuration extends React.Component<Props, State> {
                   destroy()
                 }
               }}
-            />
+              fullWidth
+            >
+              <span className="glyphicon glyphicon-remove" />
+            </Button>
           ) : null}
-        </div>
-      </ConfigurationElement>
+        </Grid>
+      </CustomGrid>
     )
   }
 }

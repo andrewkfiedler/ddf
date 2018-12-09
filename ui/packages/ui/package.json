@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "logviewer-ui": "*",
+    "atlas": "*",
     "lodash": "4.17.4",
     "backbone": "1.1.2",
     "backbone-relational": "0.8.8",
