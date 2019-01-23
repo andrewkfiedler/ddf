@@ -12,6 +12,16 @@
 /*global define, encodeURI*/
 /* jslint browser:true */
 // #Main Application
+
+import { patchListenTo } from '@connexta/atlas/extensions/backbone'
+import {
+  addOnFirstRender,
+  switchRenderToReact,
+} from '@connexta/atlas/extensions/marionette'
+patchListenTo()
+addOnFirstRender()
+switchRenderToReact({ aggressive: false })
+
 define([
   'underscore',
   'backbone',
