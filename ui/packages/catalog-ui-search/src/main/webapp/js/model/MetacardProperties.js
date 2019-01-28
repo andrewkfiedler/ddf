@@ -46,13 +46,15 @@ module.exports = Backbone.AssociatedModel.extend({
     }, [])
   },
   getGeometries: function(attribute) {
-    return _.filter(this.toJSON(), function(value, key) {
-      return (
-        !properties.isHidden(key) &&
-        (attribute === undefined || attribute === key) &&
-        metacardDefinitions.metacardTypes[key] &&
-        metacardDefinitions.metacardTypes[key].type === 'GEOMETRY'
-      )
-    })
+    return _.flatten(
+      _.filter(this.toJSON(), function(value, key) {
+        return (
+          !properties.isHidden(key) &&
+          (attribute === undefined || attribute === key) &&
+          metacardDefinitions.metacardTypes[key] &&
+          metacardDefinitions.metacardTypes[key].type === 'GEOMETRY'
+        )
+      })
+    )
   },
 })

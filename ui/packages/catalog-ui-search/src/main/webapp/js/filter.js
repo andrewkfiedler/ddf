@@ -322,9 +322,13 @@ function matchesFilter(metacard, filter) {
               metacardDefinitions.metacardTypes[property].type === 'GEOMETRY'
             )
           })
-          .map(function(property) {
+          .reduce((values, property) => {
+            values = values.concat(_.flatten([metacard.properties[property]]))
+            return values
+          }, [])
+          .map(function(value) {
             return new Terraformer.Primitive(
-              wkx.Geometry.parse(metacard.properties[property]).toGeoJSON()
+              wkx.Geometry.parse(value).toGeoJSON()
             )
           })
         break
