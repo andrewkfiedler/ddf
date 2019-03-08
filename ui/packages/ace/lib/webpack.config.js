@@ -1,5 +1,6 @@
 const path = require('path')
 const exec = require('child_process').execSync
+const fs = require('fs')
 
 const glob = require('glob')
 
@@ -59,7 +60,9 @@ const base = ({ alias = {}, env }) => ({
     new HtmlWebpackPlugin({
       title: 'My App',
       filename: 'index.html',
-      template: resolve('src/main/webapp/index.html'),
+      template: fs.existsSync(resolve('src/main/webapp/index.html'))
+        ? resolve('src/main/webapp/index.html')
+        : resolve('src/main/webapp/index.js'),
     }),
   ],
   externals: {
@@ -167,6 +170,12 @@ const base = ({ alias = {}, env }) => ({
           },
         ],
         exclude: /node_modules/,
+      },
+      {
+        test: /\.(html)$/,
+        use: {
+          loader: 'html-loader',
+        },
       },
     ],
   },
