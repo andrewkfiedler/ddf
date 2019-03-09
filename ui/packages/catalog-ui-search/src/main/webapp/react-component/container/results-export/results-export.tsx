@@ -141,7 +141,7 @@ class ResultsExport extends React.Component<Props, State> {
       return
     }
 
-    let response = null
+    let response
 
     if (this.props.transformer) {
       const cql = getResultSetCql(
