@@ -137,7 +137,7 @@ class ResultsExport extends React.Component<Props, State> {
       return
     }
 
-    let response = null
+    let response
 
     if (this.state.selectedResults.length > 1) {
       const cql = getResultSetCql(
