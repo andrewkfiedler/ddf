@@ -14,21 +14,23 @@ import sinon from 'sinon'
 import React from 'react';
 
 describe('Test <MapSettings> component', () => {
-  let xhr = undefined
   let testTarget = undefined
 
-  before(function () {
-    xhr = sinon.useFakeXMLHttpRequest()
-    let requests = []
-    xhr.onCreate = (req) => requests.push(req)
-    testTarget = require('./map-settings')
+  beforeEach(function () {
+    this.xhr = sinon.useFakeXMLHttpRequest()
+    this.requests = []
+    this.xhr.onCreate = function(xhr) {
+      this.requests.push(xhr)
+    }.bind(this)
+    this.testTarget = require('./map-settings')
   });
 
-  after(function () {
-    xhr.restore();
+  afterEach(function () {
+    this.xhr.restore()
+    this.testTarget = undefined
   })
 
   it('Test <MapSettings> default rendering', () => {
-    expect(testTarget.selected).to.equal('mgrs')
+    expect(this.testTarget.selected).to.equal('mgrs')
   })
 })
