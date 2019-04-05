@@ -16,14 +16,37 @@
 const Marionette = require('marionette')
 const _ = require('underscore')
 const $ = require('jquery')
-const template = require('./result-filter.hbs')
 const CustomElements = require('../../js/CustomElements.js')
 const user = require('../singletons/user-instance.js')
 const FilterBuilderView = require('../filter-builder/filter-builder.view.js')
 const cql = require('../../js/cql.js')
+import * as React from 'react'
+import MarionetteRegionContainer from '../../react-component/container/marionette-region-container'
+
+const CustomFilterBuilderView = FilterBuilderView.extend({
+  onBeforeShow() {
+    FilterBuilderView.prototype.onBeforeShow.call(this)
+    this.turnOnEditing()
+    this.turnOffNesting()
+  },
+})
 
 module.exports = Marionette.LayoutView.extend({
-  template: template,
+  template() {
+    return (
+      <React.Fragment>
+        <MarionetteRegionContainer
+          className="editor-properties"
+          view={this.view}
+        />
+        <div className="editor-properties" />
+        <div className="editor-footer">
+          <button className="footer-remove is-negative">Remove Filter</button>
+          <button className="footer-save is-positive">Save Filter</button>
+        </div>
+      </React.Fragment>
+    )
+  },
   tagName: CustomElements.register('result-filter'),
   modelEvents: {
     change: 'render',
@@ -32,18 +55,8 @@ module.exports = Marionette.LayoutView.extend({
     'click > .editor-footer .footer-remove': 'removeFilter',
     'click > .editor-footer .footer-save': 'saveFilter',
   },
-  ui: {},
-  regions: {
-    editorProperties: '.editor-properties',
-  },
-  initialize: function() {},
-  getResultFilter: function() {
-    return user
-      .get('user')
-      .get('preferences')
-      .get('resultFilter')
-  },
-  onRender: function() {
+  initialize: function() {
+    this.handleFilter()
     var resultFilter = this.getResultFilter()
     let filter
     if (resultFilter) {
@@ -55,18 +68,19 @@ module.exports = Marionette.LayoutView.extend({
         type: 'ILIKE',
       }
     }
-    this.editorProperties.show(
-      new FilterBuilderView({
-        filter,
-        isResultFilter: true,
-      })
-    )
-    this.editorProperties.currentView.turnOnEditing()
-    this.editorProperties.currentView.turnOffNesting()
-    this.handleFilter()
+    this.view = new CustomFilterBuilderView({
+      filter,
+      isResultFilter: true,
+    })
+  },
+  getResultFilter: function() {
+    return user
+      .get('user')
+      .get('preferences')
+      .get('resultFilter')
   },
   getFilter: function() {
-    return this.editorProperties.currentView.transformToCql()
+    return this.view.transformToCql()
   },
   removeFilter: function() {
     user
