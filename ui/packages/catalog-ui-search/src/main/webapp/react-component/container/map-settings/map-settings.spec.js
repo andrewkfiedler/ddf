@@ -11,21 +11,21 @@
  **/
 import { expect } from 'chai'
 import sinon from 'sinon'
-import React from 'react';
+import React from 'react'
 
 describe('Test <MapSettings> component', () => {
   let testTarget = undefined
 
-  beforeEach(function () {
+  beforeEach(function() {
     this.xhr = sinon.useFakeXMLHttpRequest()
     this.requests = []
     this.xhr.onCreate = function(xhr) {
       this.requests.push(xhr)
     }.bind(this)
     this.testTarget = require('./map-settings')
-  });
+  })
 
-  afterEach(function () {
+  afterEach(function() {
     this.xhr.restore()
     this.testTarget = undefined
   })
