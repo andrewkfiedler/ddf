@@ -15,7 +15,6 @@ import { shallow, mount } from 'enzyme'
 import { testComponent as MapSettings } from './map-settings'
 
 describe('Test <MapSettings> component', () => {
-
   it('Test <MapSettings> default rendering', () => {
     const wrapper = mount(<MapSettings />)
     expect(wrapper.contains('Settings')).to.equal(true)
