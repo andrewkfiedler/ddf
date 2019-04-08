@@ -11,7 +11,7 @@
  **/
 import { expect } from 'chai'
 import React from 'react'
-import { shallow, mount } from 'enzyme'
+import { mount } from 'enzyme'
 import { testComponent as MapSettings } from './map-settings'
 
 describe('Test <MapSettings> component', () => {
