@@ -11,4 +11,8 @@ module.exports = url => {
     throw new Error(`Unknown url '${url}' for mock api.`)
   }
   return data
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 6cbb6a2d9c6db8c4d0411ff5ddfceb47394ff4ad
