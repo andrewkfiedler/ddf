@@ -67,3 +67,5 @@ class MapSettings extends React.Component<{}, State> {
 }
 
 export default hot(module)(MapSettings)
+export const testComponent = MapSettings
+

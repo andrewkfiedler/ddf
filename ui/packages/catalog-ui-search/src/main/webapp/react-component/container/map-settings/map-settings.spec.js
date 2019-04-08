@@ -10,27 +10,14 @@
  *
  **/
 import { expect } from 'chai'
-import sinon from 'sinon'
 import React from 'react'
+import { shallow, mount } from 'enzyme'
+import { testComponent as MapSettings } from './map-settings'
 
 describe('Test <MapSettings> component', () => {
-  let testTarget = undefined
-
-  beforeEach(function() {
-    this.xhr = sinon.useFakeXMLHttpRequest()
-    this.requests = []
-    this.xhr.onCreate = function(xhr) {
-      this.requests.push(xhr)
-    }.bind(this)
-    this.testTarget = require('./map-settings')
-  })
-
-  afterEach(function() {
-    this.xhr.restore()
-    this.testTarget = undefined
-  })
 
   it('Test <MapSettings> default rendering', () => {
-    expect(this.testTarget.selected).to.equal('mgrs')
+    const wrapper = mount(<MapSettings />)
+    expect(wrapper.contains('Settings')).to.equal(true)
   })
 })
