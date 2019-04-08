@@ -11,6 +11,17 @@
  **/
 /*global require, window */
 /*jslint nomen:false, -W064 */
+if (process.env.NODE_ENV === 'test') {
+  const $ = require('jquery')
+  const api = require('./mock-api')
+  const httpRequest = ({ url }) => {
+    return Promise.resolve(api(url))
+  }
+  $.get = url => httpRequest({ url })
+  $.post = httpRequest
+  $.ajax = httpRequest
+}
+
 ;(function injectStyles() {
   if (process.env.NODE_ENV !== 'production') {
     require('../dev/styles/styles.less') // include styles for dev guide components
