@@ -15,14 +15,18 @@ import { mount } from 'enzyme'
 import { testComponent as MapSettings } from './map-settings'
 
 describe('Test <MapSettings> container component', () => {
-  it('Test <MapSettings> selected coordinates system is provided', () => {
-    const wrapper = mount(<MapSettings selected="mgrs" />)
-    expect(wrapper.contains('Settings')).to.equal(true)
-    expect(wrapper.props().selected).to.equal('mgrs')
-  })
-  it('Test <MapSettings> no coordinate system selection specified', () => {
+  it('Test <MapSettings> no choice is selected', () => {
     const wrapper = mount(<MapSettings />)
-    expect(wrapper.contains('Settings')).to.equal(true)
-    expect(wrapper.props().selected).to.be.undefined
+    expect(wrapper.childAt(0).props().children[0].props.value).to.be.undefined
+    expect(wrapper.childAt(0).props().children[0].props.options[0].value).to.be.equals('degrees')
+    expect(wrapper.childAt(0).props().children[0].props.options[1].value).to.be.equals('decimal')
+    expect(wrapper.childAt(0).props().children[0].props.options[2].value).to.be.equals('mgrs')
+    expect(wrapper.childAt(0).props().children[0].props.options[3].value).to.be.equals('utm')
+    wrapper.unmount()
+  })
+  it('Test <MapSettings> MGRS is selected', () => {
+    const wrapper = mount(<MapSettings selected='mgrs'/>)
+    expect(wrapper.childAt(0).props().children[0].props.value).to.be.equal('mgrs')
+    wrapper.unmount()
   })
 })
