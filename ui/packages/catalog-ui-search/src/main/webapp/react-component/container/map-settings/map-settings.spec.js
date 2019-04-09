@@ -15,8 +15,14 @@ import { mount } from 'enzyme'
 import { testComponent as MapSettings } from './map-settings'
 
 describe('Test <MapSettings> component', () => {
-  it('Test <MapSettings> default rendering', () => {
+  it('Test <MapSettings> selected coordinates system is provided', () => {
+    const wrapper = mount(<MapSettings selected="mgrs" />)
+    expect(wrapper.contains('Settings')).to.equal(true)
+    expect(wrapper.props().selected).to.equal('mgrs')
+  })
+  it('Test <MapSettings> no coordinate system selection specified', () => {
     const wrapper = mount(<MapSettings />)
     expect(wrapper.contains('Settings')).to.equal(true)
+    expect(wrapper.props().selected).to.be.undefined
   })
 })
