@@ -176,7 +176,6 @@ var properties = {
 }
 
 if (process.env.NODE_ENV === 'test') {
-<<<<<<< HEAD
   properties.init = function() {
     const api = require('./mock-api')
     const data = api('./internal/config')
@@ -190,21 +189,6 @@ if (process.env.NODE_ENV === 'test') {
     this.handleExperimental()
     this.handleUpload()
     this.handleListTemplates()
-=======
-  properties.init = function () {
-    const api = require('./mock-api');
-    const data = api('./internal/config');
-    const uiConfig = api('./internal/platform/config/ui');
-    // use this function to initialize variables that rely on others
-    var props = this;
-    props = _.extend(props, data);
-    props.ui = uiConfig;
-    this.handleEditing();
-    this.handleFeedback();
-    this.handleExperimental();
-    this.handleUpload();
-    this.handleListTemplates();
->>>>>>> 6cbb6a2d9c6db8c4d0411ff5ddfceb47394ff4ad
     return props
   }
 }
