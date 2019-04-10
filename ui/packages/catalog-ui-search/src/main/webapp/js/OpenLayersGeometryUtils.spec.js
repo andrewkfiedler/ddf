@@ -11,8 +11,26 @@
  **/
 import { expect } from 'chai'
 import sinon from 'sinon'
+import {
+  mock as mockJquery,
+  unmock as unmockJquery,
+} from './mock-api/mock-jquery'
+import {
+  mock as mockProperties,
+  unmock as unmockProperties,
+} from './mock-api/mock-properties'
+const properties = require('./properties')
 
 describe('Common', () => {
+  before(() => {
+    mockJquery()
+    mockProperties()
+    properties.init()
+  })
+  after(() => {
+    unmockJquery()
+    unmockProperties()
+  })
   describe('wrapCoordinatesFromGeometry', () => {
     const olUtils = require('./OpenLayersGeometryUtils')
     class MockGeometry {

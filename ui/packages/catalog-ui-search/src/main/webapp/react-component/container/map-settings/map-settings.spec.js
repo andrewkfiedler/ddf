@@ -12,9 +12,28 @@
 import { expect } from 'chai'
 import React from 'react'
 import { mount } from 'enzyme'
-import { testComponent as MapSettings } from './map-settings'
+import {
+  mock as mockJquery,
+  unmock as unmockJquery,
+} from '../../../js/mock-api/mock-jquery'
+import {
+  mock as mockProperties,
+  unmock as unmockProperties,
+} from '../../../js/mock-api/mock-properties'
+const properties = require('../../../js/properties')
+let MapSettings
 
 describe('Test <MapSettings> container component', () => {
+  before(() => {
+    mockJquery()
+    mockProperties()
+    properties.init()
+    MapSettings = require('./map-settings').testComponent
+  })
+  after(() => {
+    unmockJquery()
+    unmockProperties()
+  })
   it('Test <MapSettings> selected coordinates system is provided', () => {
     const wrapper = mount(<MapSettings selected="mgrs" />)
     expect(wrapper.contains('Settings')).to.equal(true)

@@ -15,6 +15,7 @@
 const $ = require('jquery')
 const app = require('./application.js')
 const properties = require('./properties.js')
+properties.init()
 const store = require('./store.js')
 const user = require('../component/singletons/user-instance.js')
 require('./MediaQueries.js')
@@ -26,11 +27,10 @@ require('./SessionTimeout.js')
 var workspaces = store.get('workspaces')
 
 function getWorkspacesOwnedByUser() {
-  return workspaces.filter(
-    workspace =>
-      user.isGuest()
-        ? workspace.get('localStorage') === true
-        : workspace.get('metacard.owner') === user.get('user').get('email')
+  return workspaces.filter(workspace =>
+    user.isGuest()
+      ? workspace.get('localStorage') === true
+      : workspace.get('metacard.owner') === user.get('user').get('email')
   )
 }
 
