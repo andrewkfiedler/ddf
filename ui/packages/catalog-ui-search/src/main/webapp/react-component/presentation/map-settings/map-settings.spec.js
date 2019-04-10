@@ -18,15 +18,25 @@ describe('Test <MapSettings> container component', () => {
   it('Test <MapSettings> no choice is selected', () => {
     const wrapper = mount(<MapSettings />)
     expect(wrapper.childAt(0).props().children[0].props.value).to.be.undefined
-    expect(wrapper.childAt(0).props().children[0].props.options[0].value).to.be.equals('degrees')
-    expect(wrapper.childAt(0).props().children[0].props.options[1].value).to.be.equals('decimal')
-    expect(wrapper.childAt(0).props().children[0].props.options[2].value).to.be.equals('mgrs')
-    expect(wrapper.childAt(0).props().children[0].props.options[3].value).to.be.equals('utm')
+    expect(
+      wrapper.childAt(0).props().children[0].props.options[0].value
+    ).to.be.equals('degrees')
+    expect(
+      wrapper.childAt(0).props().children[0].props.options[1].value
+    ).to.be.equals('decimal')
+    expect(
+      wrapper.childAt(0).props().children[0].props.options[2].value
+    ).to.be.equals('mgrs')
+    expect(
+      wrapper.childAt(0).props().children[0].props.options[3].value
+    ).to.be.equals('utm')
     wrapper.unmount()
   })
   it('Test <MapSettings> MGRS is selected', () => {
-    const wrapper = mount(<MapSettings selected='mgrs'/>)
-    expect(wrapper.childAt(0).props().children[0].props.value).to.be.equal('mgrs')
+    const wrapper = mount(<MapSettings selected="mgrs" />)
+    expect(wrapper.childAt(0).props().children[0].props.value).to.be.equal(
+      'mgrs'
+    )
     wrapper.unmount()
   })
 })
