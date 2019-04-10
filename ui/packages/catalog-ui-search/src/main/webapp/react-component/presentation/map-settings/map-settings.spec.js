@@ -15,19 +15,17 @@ import { mount } from 'enzyme'
 import {
   mock as mockJquery,
   unmock as unmockJquery,
-} from '../../../js/mock-api/mock-jquery'
+} from '../../../test/mock-api/mock-jquery'
 import {
   mock as mockProperties,
   unmock as unmockProperties,
-} from '../../../js/mock-api/mock-properties'
-const properties = require('../../../js/properties')
+} from '../../../test/mock-api/mock-properties'
 let MapSettings
 
 describe('Test <MapSettings> container component', () => {
   before(() => {
     mockJquery()
     mockProperties()
-    properties.init()
     MapSettings = require('./map-settings').testComponent
   })
   after(() => {

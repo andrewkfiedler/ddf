@@ -1,4 +1,4 @@
-const User = require('../model/User')
+const User = require('../../js/model/User')
 
 const mockDataMap = {
   './internal/metacardtype': require('./metacardtype.json'),

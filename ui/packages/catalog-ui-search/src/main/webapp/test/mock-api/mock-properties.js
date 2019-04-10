@@ -1,4 +1,4 @@
-const properties = require('../properties')
+const properties = require('../../js/properties')
 const api = require('./index')
 const oldInit = properties.init
 
@@ -16,6 +16,7 @@ const mock = () => {
     this.handleUpload()
     this.handleListTemplates()
   }
+  properties.init()
 }
 
 const unmock = () => {
