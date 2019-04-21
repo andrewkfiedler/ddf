@@ -298,6 +298,16 @@
     html-react-parser "0.6.1"
     styled-components "3.5.0-0"
 
+"@connexta/atlas@0.0.34":
+  version "0.0.34"
+  resolved "https://registry.yarnpkg.com/@connexta/atlas/-/atlas-0.0.34.tgz#dc051d8277476a8d133a69b8ffcd04e346a89089"
+  integrity sha512-sVhsjT9jdXgQ8H02TWnLnEvOP/aAj+hKdLpcX2npJaWRPZ1p/kaV3Eexyt1RQ1PoB2+Daq90M0+x6W85sUo1Xg==
+  dependencies:
+    "@material-ui/core" "3.9.0"
+    "@material-ui/icons" "3.0.2"
+    html-react-parser "0.6.1"
+    styled-components "3.5.0-0"
+
 "@connexta/eslint-plugin-connexta@git://github.com/connexta/eslint-plugin-connexta.git#v0.0.2":
   version "0.0.0"
   resolved "git://github.com/connexta/eslint-plugin-connexta.git#5ced79272cacd20f95b5217f19c36b7edfc337ec"
@@ -4942,6 +4952,18 @@ d3-queue@1:
 d3-queue@2:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/d3-queue/-/d3-queue-2.0.3.tgz#07fbda3acae5358a9c5299aaf880adf0953ed2c2"
+
+d3-time-format@2.1.3:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/d3-time-format/-/d3-time-format-2.1.3.tgz#ae06f8e0126a9d60d6364eac5b1533ae1bac826b"
+  integrity sha512-6k0a2rZryzGm5Ihx+aFMuO1GgelgIz+7HhB4PH4OEndD5q2zGn1mDfRdNrulspOfR6JXkb2sThhDK41CSK85QA==
+  dependencies:
+    d3-time "1"
+
+d3-time@1, d3-time@1.0.11:
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/d3-time/-/d3-time-1.0.11.tgz#1d831a3e25cd189eb256c17770a666368762bbce"
+  integrity sha512-Z3wpvhPLW4vEScGeIMUckDW7+3hWKOQfAWg/U7PlWBnQmeKQ00gCUsTtWSYulrKNA7ta8hJ+xXc6MHrMuITwEw==
 
 d3@3, d3@^3.5.12:
   version "3.5.17"

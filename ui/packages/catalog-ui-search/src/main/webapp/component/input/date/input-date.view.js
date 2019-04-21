@@ -23,6 +23,14 @@ const InputView = require('../input.view')
 const Common = require('../../../js/Common.js')
 const user = require('../../singletons/user-instance.js')
 require('eonasdan-bootstrap-datetimepicker')
+import * as React from 'react'
+import Dropdown from '../../../react-component/presentation/dropdown'
+import styled from '../../../react-component/styles/styled-components'
+import {
+  Button,
+  buttonTypeEnum,
+} from '../../../react-component/presentation/button'
+import Compound from './timeline'
 
 function getDateFormat() {
   return user
@@ -38,8 +46,49 @@ function getTimeZone() {
     .get('timeZone')
 }
 
+const CustomDropdown = styled(Dropdown)`
+  display: inline-flex;
+  vertical-align: top;
+  width: ${props => props.theme.minimumButtonSize};
+  height: ${props => props.theme.minimumButtonSize};
+  align-items: center;
+  font-size: ${props => props.theme.largeFontSize};
+  justify-content: center;
+  background: ;
+`
+
 module.exports = InputView.extend({
-  template: template,
+  template(props) {
+    const { property, humanReadableDate } = props
+    return (
+      <React.Fragment>
+        <div className="if-editing">
+          <div className="input-group date">
+            <input type="text" placeholder={property.placeholder} />
+            <span className="input-group-addon">
+              <span className="glyphicon glyphicon-calendar" />
+            </span>
+            <div className="is-divider is-inline" />
+            <CustomDropdown
+              content={context => {
+                return (
+                  <React.Fragment>
+                    <Compound mode="single" />
+                    <Compound mode="single" normal={true} />
+                  </React.Fragment>
+                )
+              }}
+            >
+              <Button text="T" buttonType={buttonTypeEnum.primary} />
+            </CustomDropdown>
+          </div>
+        </div>
+        <div className="if-viewing">
+          <label>{humanReadableDate}</label>
+        </div>
+      </React.Fragment>
+    )
+  },
   events: {
     'dp.show .input-group.date': 'handleOpen',
     'dp.hide .input-group.date': 'removeResizeHandler',
