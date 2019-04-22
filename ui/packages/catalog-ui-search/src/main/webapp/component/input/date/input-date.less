@@ -2,6 +2,9 @@
   .input-group {
     margin: 0px;
     padding: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   input {
@@ -28,9 +31,12 @@
     color: contrast(@primary-color) !important;
     border: none;
     font-size: @largeFontSize;
-    width: @minimumButtonSize;
+    min-width: @minimumButtonSize;
     height: @minimumButtonSize;
     padding: 0px;
     text-align: center;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
   }
 }

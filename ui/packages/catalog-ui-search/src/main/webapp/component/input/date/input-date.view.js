@@ -66,15 +66,25 @@ module.exports = InputView.extend({
           <div className="input-group date">
             <input type="text" placeholder={property.placeholder} />
             <span className="input-group-addon">
-              <span className="glyphicon glyphicon-calendar" />
+              <span className="fa fa-calendar" />
             </span>
             <div className="is-divider is-inline" />
             <CustomDropdown
               content={context => {
                 return (
                   <React.Fragment>
-                    <Compound mode="single" />
-                    <Compound mode="single" normal={true} />
+                    <Compound
+                      model={this.model}
+                      mode="single"
+                      value={this.model.getValue()}
+                      onDone={value => {
+                        this.handleTimelineDone(value)
+                        context.deepCloseAndRefocus()
+                      }}
+                      onCancel={() => {
+                        context.deepCloseAndRefocus()
+                      }}
+                    />
                   </React.Fragment>
                 )
               }}
@@ -140,6 +150,12 @@ module.exports = InputView.extend({
   },
   handleReadOnly: function() {
     this.$el.toggleClass('is-readOnly', this.model.isReadOnly())
+  },
+  handleTimelineDone(value) {
+    this.$el
+      .find('.input-group.date')
+      .data('DateTimePicker')
+      .date(value)
   },
   handleValue: function() {
     this.$el
