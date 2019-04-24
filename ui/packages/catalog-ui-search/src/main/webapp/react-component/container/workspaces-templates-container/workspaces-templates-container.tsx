@@ -25,6 +25,7 @@ interface Props {
 interface State {
   value: string
   placeholder: string
+  key: number
 }
 
 class WorkspacesTemplatesContainer extends React.Component<Props, State> {
@@ -33,11 +34,19 @@ class WorkspacesTemplatesContainer extends React.Component<Props, State> {
     this.state = {
       placeholder: 'Search ' + properties.branding + ' ' + properties.product,
       value: '',
+      key: Math.random(),
     }
   }
   startAdhocSearch() {
+    if (this.state.value === '') {
+      return
+    }
     this.prepForCreateNewWorkspace()
     store.get('workspaces').createAdhocWorkspace(this.state.value)
+    this.setState({
+      value: '',
+      key: Math.random(),
+    })
   }
   onChange(value: string) {
     this.setState({
@@ -59,6 +68,7 @@ class WorkspacesTemplatesContainer extends React.Component<Props, State> {
   render() {
     return (
       <WorkspacesTemplates
+        key={this.state.key}
         startAdhocSearch={this.startAdhocSearch.bind(this)}
         onChange={this.onChange.bind(this)}
         value={this.state.value}
