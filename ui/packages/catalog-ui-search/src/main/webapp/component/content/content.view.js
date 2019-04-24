@@ -34,7 +34,6 @@ const GoldenLayoutView = require('../golden-layout/golden-layout.view.js')
 const LoadingCompanionView = require('../loading-companion/loading-companion.view.js')
 
 import { ChangeBackground } from '../../react-component/styles/mixins/change-background'
-import MultiSelectActions from '../../react-component/container/multi-select-actions'
 import styled from '../../react-component/styles/styled-components'
 
 const ContentLeft = styled.div`
@@ -67,7 +66,7 @@ const Visualizations = styled.div`
   ${props => {
     return ChangeBackground(props.theme.backgroundContent)
   }};
-  height: calc(100% - ${props => props.theme.minimumButtonSize});
+  height: 100%;
 `
 
 const Root = styled.div`
@@ -83,7 +82,6 @@ var ContentView = Marionette.LayoutView.extend({
       <Root>
         <ContentLeft className="content-left" />
         <ContentRight>
-          <MultiSelectActions selectionInterface={this.selectionInterface} />
           <Visualizations className="content-right" />
         </ContentRight>
       </Root>

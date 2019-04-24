@@ -18,7 +18,6 @@ var _merge = require('lodash/merge')
 var _debounce = require('lodash/debounce')
 var $ = require('jquery')
 var wreqr = require('../../js/wreqr.js')
-var template = require('./golden-layout.hbs')
 var Marionette = require('marionette')
 var CustomElements = require('../../js/CustomElements.js')
 var GoldenLayout = require('golden-layout')
@@ -35,6 +34,8 @@ var user = require('../singletons/user-instance.js')
 var VisualizationDropdown = require('../dropdown/visualization-selector/dropdown.visualization-selector.view.js')
 var DropdownModel = require('../dropdown/dropdown.js')
 const sanitize = require('sanitize-html')
+import * as React from 'react'
+import MultiSelectActions from '../../react-component/container/multi-select-actions'
 
 const treeMap = (obj, fn, path = []) => {
   if (Array.isArray(obj)) {
@@ -200,13 +201,28 @@ function removeEphemeralState(config) {
 
 module.exports = Marionette.LayoutView.extend({
   tagName: CustomElements.register('golden-layout'),
-  template: template,
+  template() {
+    return (
+      <React.Fragment>
+        <div className="golden-layout-toolbar">
+          <MultiSelectActions
+            selectionInterface={this.options.selectionInterface}
+          />
+          <div
+            className="to-add"
+            title="Add visualization"
+            data-help="Add a new visualization tab to the current view. Using a variety of visualizations can help when looking at results."
+          />
+        </div>
+        <div className="golden-layout-container" />
+      </React.Fragment>
+    )
+  },
   className: 'is-minimised',
   events: {
     'click > .golden-layout-toolbar .to-toggle-size': 'handleToggleSize',
   },
   regions: {
-    toolbar: '> .golden-layout-toolbar',
     widgetDropdown: '> .golden-layout-toolbar .to-add',
   },
   initialize: function(options) {
