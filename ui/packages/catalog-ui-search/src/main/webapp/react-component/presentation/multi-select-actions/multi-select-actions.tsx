@@ -13,7 +13,6 @@ import { hot } from 'react-hot-loader'
 import * as React from 'react'
 import { Button, buttonTypeEnum } from '../button'
 import styled from '../../styles/styled-components'
-import { transparentize, readableColor } from 'polished'
 import plugin from 'plugins/multi-select-actions'
 
 type Props = {
@@ -21,26 +20,9 @@ type Props = {
   isDisabled: boolean
 }
 
-const Root = styled.div`
-  border-left: 1px solid
-    ${props =>
-      transparentize(0.9, readableColor(props.theme.backgroundContent))};
-  display: inline-block;
-`
-
-const ContextBar = styled.div`
-  background-color: rgba(0, 0, 0, 0.1);
-`
-
 const MultiSelectButton = styled(Button)`
-  min-width: calc(2.5 * ${props => props.theme.minimumButtonSize});
-  padding: 0px 5px 0px 5px;
+  padding: 0px ${props => props.theme.minimumSpacing};
 `
-
-const disabledStyle = {
-  cursor: 'not-allowed',
-  opacity: 0.3,
-}
 
 type MultiSelectActionProps = {
   isDisabled: Boolean
@@ -52,23 +34,22 @@ type MultiSelectActionProps = {
 }
 
 export const MultiSelectAction = (props: MultiSelectActionProps) => (
-  <Root>
-    <MultiSelectButton
-      buttonType={buttonTypeEnum.neutral}
-      style={props.isDisabled ? disabledStyle : {}}
-      onClick={
-        !props.isDisabled
-          ? props.onClick
-          : () => {
-              return null
-            }
-      }
-      title={props.isDisabled ? props.disabledTitle : props.enabledTitle}
-    >
-      <span style={{ paddingRight: '5px' }} className={props.icon} />
-      <span>{props.text}</span>
-    </MultiSelectButton>
-  </Root>
+  <MultiSelectButton
+    buttonType={buttonTypeEnum.neutral}
+    disabled={props.isDisabled ? true : false}
+    onClick={
+      !props.isDisabled
+        ? props.onClick
+        : () => {
+            return null
+          }
+    }
+    fadeUntilHover
+    title={props.isDisabled ? props.disabledTitle : props.enabledTitle}
+  >
+    <span style={{ paddingRight: '5px' }} className={props.icon} />
+    <span>{props.text}</span>
+  </MultiSelectButton>
 )
 
 const Export = (props: Props) => (
@@ -86,11 +67,11 @@ const buttons = plugin([Export])
 
 const render = (props: Props) => {
   return (
-    <ContextBar>
+    <div>
       {buttons.map((Component: any, i: number) => (
         <Component key={i} {...props} />
       ))}
-    </ContextBar>
+    </div>
   )
 }
 

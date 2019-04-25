@@ -14,6 +14,11 @@
  **/
 import React from 'react'
 import styled from '../../styles/styled-components'
+import { Button, buttonTypeEnum } from '../button'
+import { hot } from 'react-hot-loader'
+
+const EnterKeyCode = 13
+const SpaceKeyCode = 32
 
 const CustomElement = styled.div`
   height: 100%;
@@ -21,18 +26,17 @@ const CustomElement = styled.div`
   display: block;
 `
 
-const Visualization = styled.div`
-  cursor: pointer;
-  opacity: ${props => props.theme.minimumOpacity};
-  padding: ${props => props.theme.largeSpacing};
-  :hover {
-    opacity: 1;
-  }
-  white-space: nowrap;
+const Visualization = styled(Button)`
+  width: 100%;
+  padding: 0px ${props => props.theme.largeSpacing};
   cursor: move;
   cursor: grab;
   cursor: -moz-grab;
   cursor: -webkit-grab;
+  > span:first-of-type {
+    min-width: ${props => props.theme.minimumButtonSize};
+  }
+  display: flex;
 `
 
 const VisualizationIcon = styled.div`
@@ -104,28 +108,32 @@ class VisualizationSelector extends React.Component {
   dragSources = []
   constructor(props) {
     super(props)
-    this.openlayers = React.createRef()
-    this.cesium = React.createRef()
-    this.inspector = React.createRef()
-    this.histogram = React.createRef()
-    this.table = React.createRef()
+    this.root = React.createRef()
   }
   render() {
     return (
-      <CustomElement onClick={this.handleChoice.bind(this)}>
+      <CustomElement innerRef={this.root} className="composed-menu">
         {Object.values(configs).map(
           ({ title, icon, componentName }, index) => (
             <Visualization
+              onClick={this.handleChoice}
               key={index.toString()}
-              innerRef={x => {
-                this[componentName] = x
+              innerRef={this[componentName]}
+              onMouseDown={() => {
+                this.handleMouseDown(componentName)
               }}
-              onMouseDown={this.handleMouseDown.bind(this, componentName)}
-              onMouseUp={this.handleMouseUp.bind(this, componentName)}
-            >
-              <VisualizationIcon className={icon} />
-              <VisualizationText>{title}</VisualizationText>
-            </Visualization>
+              onMouseUp={() => {
+                this.handleMouseUp(componentName)
+              }}
+              onKeyDown={e => {
+                this.handleKeyDown(e, componentName)
+              }}
+              buttonType={buttonTypeEnum.neutral}
+              fadeUntilHover
+              icon={icon}
+              text={title}
+              data-component={componentName}
+            />
           ),
           this
         )}
@@ -135,14 +143,18 @@ class VisualizationSelector extends React.Component {
 
   componentDidMount() {
     this.dragSources = []
-    this.dragSources = Object.keys(configs).map(key =>
-      this.props.goldenLayout.createDragSource(this[key], configs[key])
-    )
+    this.dragSources = Object.keys(configs).map(key => {
+      return this.props.goldenLayout.createDragSource(
+        this.root.current.querySelector(`[data-component=${key}]`),
+        configs[key]
+      )
+    })
     this.listenToDragSources()
   }
   listenToDragStart(dragSource) {
     dragSource._dragListener.on('dragStart', () => {
       this.interimState = false
+      this.props.onClose()
     })
   }
   listenToDragStop(dragSource) {
@@ -157,26 +169,41 @@ class VisualizationSelector extends React.Component {
       this.listenToDragStop(dragSource)
     })
   }
-  handleChoice() {
+  handleChoice = () => {
     this.props.onClose()
   }
-  handleMouseDown(event, choice) {
+  handleKeyDown = (event, choice) => {
+    let code = event.keyCode
+    if (event.charCode && code == 0) code = event.charCode
+    if (
+      event.target === event.currentTarget &&
+      (code === SpaceKeyCode || code === EnterKeyCode)
+    ) {
+      event.preventDefault()
+      event.stopPropagation()
+      this.addChoice(choice)
+    }
+  }
+  addChoice = choice => {
+    if (this.props.goldenLayout.root.contentItems.length === 0) {
+      this.props.goldenLayout.root.addChild({
+        type: 'column',
+        content: [configs[choice]],
+      })
+    } else {
+      this.props.goldenLayout.root.contentItems[0].addChild(configs[choice])
+    }
+    this.handleChoice()
+  }
+  handleMouseDown = choice => {
     unMaximize(this.props.goldenLayout.root)
     this.interimState = true
-    this.interimChoice = choice
   }
-  handleMouseUp(choice) {
+  handleMouseUp = choice => {
     if (this.interimState) {
-      if (this.props.goldenLayout.root.contentItems.length === 0) {
-        this.props.goldenLayout.root.addChild({
-          type: 'column',
-          content: [configs[choice]],
-        })
-      } else {
-        this.props.goldenLayout.root.contentItems[0].addChild(configs[choice])
-      }
+      this.addChoice(choice)
     }
     this.interimState = false
   }
 }
-export default VisualizationSelector
+export default hot(module)(VisualizationSelector)

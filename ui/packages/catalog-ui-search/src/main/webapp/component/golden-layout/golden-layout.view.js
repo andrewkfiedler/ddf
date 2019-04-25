@@ -31,11 +31,21 @@ var LowBandwidthMapView = require('../visualization/low-bandwidth-map/low-bandwi
 var Common = require('../../js/Common.js')
 var store = require('../../js/store.js')
 var user = require('../singletons/user-instance.js')
-var VisualizationDropdown = require('../dropdown/visualization-selector/dropdown.visualization-selector.view.js')
-var DropdownModel = require('../dropdown/dropdown.js')
+import VisualizationSelector from '../../react-component/presentation/visualization-selector/visualization-selector'
+import Dropdown from '../../react-component/presentation/dropdown'
+import {
+  Button,
+  buttonTypeEnum,
+} from '../../react-component/presentation/button'
+import NavigationBehavior from '../../react-component/presentation/navigation-behavior'
 const sanitize = require('sanitize-html')
 import * as React from 'react'
 import MultiSelectActions from '../../react-component/container/multi-select-actions'
+import styled from '../../react-component/styles/styled-components'
+
+const CustomButton = styled(Button)`
+  padding: 0px ${props => props.theme.minimumSpacing};
+`
 
 const treeMap = (obj, fn, path = []) => {
   if (Array.isArray(obj)) {
@@ -208,11 +218,27 @@ module.exports = Marionette.LayoutView.extend({
           <MultiSelectActions
             selectionInterface={this.options.selectionInterface}
           />
-          <div
-            className="to-add"
-            title="Add visualization"
-            data-help="Add a new visualization tab to the current view. Using a variety of visualizations can help when looking at results."
-          />
+          <Dropdown
+            content={context => {
+              return (
+                <NavigationBehavior>
+                  <VisualizationSelector
+                    onClose={() => {
+                      context.deepCloseAndRefocus()
+                    }}
+                    goldenLayout={this.goldenLayout}
+                  />
+                </NavigationBehavior>
+              )
+            }}
+          >
+            <CustomButton
+              text="Add Visual"
+              icon="fa fa-television"
+              buttonType={buttonTypeEnum.neutral}
+              fadeUntilHover
+            />
+          </Dropdown>
         </div>
         <div className="golden-layout-container" />
       </React.Fragment>
@@ -221,9 +247,6 @@ module.exports = Marionette.LayoutView.extend({
   className: 'is-minimised',
   events: {
     'click > .golden-layout-toolbar .to-toggle-size': 'handleToggleSize',
-  },
-  regions: {
-    widgetDropdown: '> .golden-layout-toolbar .to-add',
   },
   initialize: function(options) {
     this.options.selectionInterface = options.selectionInterface || store
@@ -244,14 +267,6 @@ module.exports = Marionette.LayoutView.extend({
   },
   updateSize: function() {
     this.goldenLayout.updateSize()
-  },
-  showWidgetDropdown: function() {
-    this.widgetDropdown.show(
-      new VisualizationDropdown({
-        model: new DropdownModel(),
-        goldenLayout: this.goldenLayout,
-      })
-    )
   },
   showGoldenLayout: function() {
     this.goldenLayout = new GoldenLayout(
@@ -346,7 +361,6 @@ module.exports = Marionette.LayoutView.extend({
   },
   onRender: function() {
     this.showGoldenLayout()
-    this.showWidgetDropdown()
     this.setupListeners()
   },
   handleToggleSize: function() {
