@@ -137,14 +137,14 @@ const ResultSelector = Marionette.LayoutView.extend({
     'click > .resultSelector-new .merge': 'mergeNewResults',
     'click > .resultSelector-new .ignore': 'ignoreNewResults',
   },
-  behaviors() {
-    return {
-      selection: {
-        selectionInterface: this.options.selectionInterface,
-        selectionSelector: `${CustomElements.getNamespace()}result-item`,
-      },
-    }
-  },
+  // behaviors() {
+  //   return {
+  //     selection: {
+  //       selectionInterface: this.options.selectionInterface,
+  //       selectionSelector: `[data-customelement=intrigue-result-item]`,
+  //     },
+  //   }
+  // },
   regions: {
     resultDisplay: '.menu-resultDisplay',
     resultFilter: '.menu-resultFilter',
