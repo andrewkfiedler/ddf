@@ -18,15 +18,10 @@ import styled from 'styled-components'
 import ResultItem from './result-item'
 import { useSelection } from '../../hooks'
 
-const SHOW_MORE_LENGTH = 2
-
 type Props = {
   results: any[]
   selectionInterface: any
   className?: string
-  showingResultsForFields: any[]
-  didYouMeanFields: any[]
-  userSpellcheckIsOn: boolean
   model: any
 }
 
@@ -58,34 +53,7 @@ const ResultGroup = styled.div`
   }
 `
 
-const ShowingResultsForContainer = styled.div`
-  padding: 0.15rem;
-  text-align: center;
-  font-size: 0.75rem;
-  border: none !important;
-`
-
-const ShowMore = styled.a`
-  padding: 0.15rem;
-  font-size: 0.75rem;
-`
-
-const DidYouMeanContainer = styled.div`
-  text-align: center;
-  border: none !important;
-`
-
-const ResendQuery = styled.a`
-  padding: 0.15rem;
-  text-align: center;
-  font-size: 0.75rem;
-  text-decoration: none;
-  width: 100%;
-`
-
 type State = {
-  expandShowingResultForText: boolean
-  expandDidYouMeanFieldText: boolean
   handleClick: any
   handleMouseDown: any
 }
@@ -95,145 +63,25 @@ class ResultItems extends React.Component<Props, State> {
     super(props)
 
     this.state = {
-      expandShowingResultForText: false,
-      expandDidYouMeanFieldText: false,
       ...useSelection({
         selectionInterface: props.selectionInterface,
       }),
     }
   }
 
-  createShowResultText(showingResultsForFields: any[]) {
-    let showingResultsFor = 'Showing Results for '
-    if (
-      showingResultsForFields !== undefined &&
-      showingResultsForFields !== null &&
-      showingResultsForFields.length > 0
-    ) {
-      if (
-        !this.state.expandShowingResultForText &&
-        showingResultsForFields.length > 2
-      ) {
-        showingResultsFor += this.createCondensedResultsForText(
-          showingResultsForFields
-        )
-        return showingResultsFor
-      }
-
-      showingResultsFor += this.createExpandedResultsForText(
-        showingResultsForFields
-      )
-      return showingResultsFor
-    }
-    return null
-  }
-
-  createDidYouMeanText(didYouMeanFields: any[]) {
-    let didYouMean = 'Did you mean '
-    if (
-      didYouMeanFields !== undefined &&
-      didYouMeanFields !== null &&
-      didYouMeanFields.length > 0
-    ) {
-      if (
-        !this.state.expandDidYouMeanFieldText &&
-        didYouMeanFields.length > 2
-      ) {
-        didYouMean += this.createCondensedResultsForText(didYouMeanFields)
-        return didYouMean
-      }
-      didYouMean += this.createExpandedResultsForText(didYouMeanFields)
-      return didYouMean
-    }
-    return null
-  }
-
-  createCondensedResultsForText(showingResultsForFields: any[]) {
-    const copyQuery = [...showingResultsForFields]
-    copyQuery.splice(0, copyQuery.length - SHOW_MORE_LENGTH)
-    return copyQuery.join(', ')
-  }
-
-  createExpandedResultsForText(showingResultsForFields: any[]) {
-    return showingResultsForFields.join(', ')
-  }
-
-  rerunQuery(model: any) {
-    model.set('spellcheck', false)
-    model.startSearchFromFirstPage()
-    model.set('spellcheck', true)
-  }
-
   render() {
-    const {
-      results,
-      className,
-      selectionInterface,
-      showingResultsForFields,
-      didYouMeanFields,
-      model,
-    } = this.props
+    const { results, className, selectionInterface } = this.props
     if (results.length === 0) {
       return (
         <ResultItemCollection className={className}>
           <div className="result-item-collection-empty">No Results Found</div>
         </ResultItemCollection>
       )
-    } else if (model.get('spellcheck')) {
-      const showingResultsFor = this.createShowResultText(
-        showingResultsForFields
-      )
-      const didYouMean = this.createDidYouMeanText(didYouMeanFields)
-
+    } else {
       return (
         <ResultItemCollection
           className={`${className} is-list has-list-highlighting`}
         >
-          {showingResultsFor !== null && (
-            <ShowingResultsForContainer>
-              {showingResultsFor}
-              {showingResultsForFields !== null &&
-                showingResultsForFields !== undefined &&
-                showingResultsForFields.length > 2 && (
-                  <ShowMore
-                    onClick={() => {
-                      this.setState({
-                        expandShowingResultForText: !this.state
-                          .expandShowingResultForText,
-                      })
-                    }}
-                  >
-                    {this.state.expandShowingResultForText ? 'less' : 'more'}
-                  </ShowMore>
-                )}
-            </ShowingResultsForContainer>
-          )}
-          {didYouMean !== null && (
-            <DidYouMeanContainer>
-              <ResendQuery
-                onClick={() => {
-                  this.rerunQuery(model)
-                }}
-              >
-                {didYouMean}
-              </ResendQuery>
-              {didYouMeanFields !== null &&
-                didYouMeanFields !== undefined &&
-                didYouMeanFields.length > 2 && (
-                  <ShowMore
-                    onClick={() => {
-                      this.setState({
-                        expandDidYouMeanFieldText: !this.state
-                          .expandDidYouMeanFieldText,
-                      })
-                    }}
-                  >
-                    {this.state.expandDidYouMeanFieldText ? 'less' : 'more'}
-                  </ShowMore>
-                )}
-            </DidYouMeanContainer>
-          )}
-
           {results.map(result => {
             if (result.duplicates) {
               const amount = result.duplicates.length + 1
@@ -279,61 +127,7 @@ class ResultItems extends React.Component<Props, State> {
           })}
         </ResultItemCollection>
       )
-    } else {
-      return this.createResultItemCollectionView()
     }
-  }
-
-  createResultItemCollectionView() {
-    const { results, selectionInterface, className } = this.props
-
-    return (
-      <ResultItemCollection
-        className={`${className} is-list has-list-highlighting`}
-      >
-        {results.map(result => {
-          if (result.duplicates) {
-            const amount = result.duplicates.length + 1
-            return (
-              <ResultGroup key={result.id}>
-                <div className="group-representation">{amount} duplicates</div>
-                <div className="group-results global-bracket is-left">
-                  <ResultItemCollection className="is-list has-list-highlighting">
-                    <ResultItem
-                      model={result}
-                      selectionInterface={selectionInterface}
-                      onClick={this.state.handleClick}
-                      onMouseDown={this.state.handleMouseDown}
-                    />
-                    {result.duplicates.map((duplicate: any) => {
-                      return (
-                        <ResultItem
-                          key={duplicate.id}
-                          model={duplicate}
-                          selectionInterface={selectionInterface}
-                          onClick={this.state.handleClick}
-                          onMouseDown={this.state.handleMouseDown}
-                        />
-                      )
-                    })}
-                  </ResultItemCollection>
-                </div>
-              </ResultGroup>
-            )
-          } else {
-            return (
-              <ResultItem
-                key={result.id}
-                model={result}
-                selectionInterface={selectionInterface}
-                onClick={this.state.handleClick}
-                onMouseDown={this.state.handleMouseDown}
-              />
-            )
-          }
-        })}
-      </ResultItemCollection>
-    )
   }
 }
 
