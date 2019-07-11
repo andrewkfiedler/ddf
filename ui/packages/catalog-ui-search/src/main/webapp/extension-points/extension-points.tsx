@@ -21,6 +21,7 @@ import { providers, Props as ProviderProps } from './providers'
 import visualizations from './visualizations'
 import queryForms from './query-forms'
 import navigationRight from './navigation-right'
+import resultItem from './result-item'
 
 export type ExtensionPointsType = {
   routes: {}
@@ -30,6 +31,10 @@ export type ExtensionPointsType = {
   visualizations: any[]
   queryForms: any[]
   navigationRight: any[]
+  resultItem: {
+    extensions: SFC<Props>
+    buttonExtensions: SFC<Props>
+  }
 }
 
 const ExtensionPoints: ExtensionPointsType = {
@@ -40,6 +45,7 @@ const ExtensionPoints: ExtensionPointsType = {
   visualizations,
   queryForms,
   navigationRight,
+  resultItem,
 }
 
 export default ExtensionPoints
