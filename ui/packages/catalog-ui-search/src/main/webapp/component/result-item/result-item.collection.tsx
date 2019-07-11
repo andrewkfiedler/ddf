@@ -13,10 +13,10 @@
  *
  **/
 import * as React from 'react'
-const childView = require('./result-item.view')
 import { hot } from 'react-hot-loader'
-import MarionetteRegionContainer from '../../react-component/container/marionette-region-container'
 import styled from '../../react-component/styles/styled-components'
+import ResultItem from './result-item'
+import { useSelection } from '../../hooks'
 
 const SHOW_MORE_LENGTH = 2
 
@@ -86,6 +86,8 @@ const ResendQuery = styled.a`
 type State = {
   expandShowingResultForText: boolean
   expandDidYouMeanFieldText: boolean
+  handleClick: any
+  handleMouseDown: any
 }
 
 class ResultItems extends React.Component<Props, State> {
@@ -95,6 +97,9 @@ class ResultItems extends React.Component<Props, State> {
     this.state = {
       expandShowingResultForText: false,
       expandDidYouMeanFieldText: false,
+      ...useSelection({
+        selectionInterface: props.selectionInterface,
+      }),
     }
   }
 
@@ -239,24 +244,20 @@ class ResultItems extends React.Component<Props, State> {
                   </div>
                   <div className="group-results global-bracket is-left">
                     <ResultItemCollection className="is-list has-list-highlighting">
-                      <MarionetteRegionContainer
-                        view={childView}
-                        viewOptions={{
-                          selectionInterface,
-                          model: result,
-                        }}
-                        replaceElement
+                      <ResultItem
+                        model={result}
+                        selectionInterface={selectionInterface}
+                        onClick={this.state.handleClick}
+                        onMouseDown={this.state.handleMouseDown}
                       />
                       {result.duplicates.map((duplicate: any) => {
                         return (
-                          <MarionetteRegionContainer
+                          <ResultItem
                             key={duplicate.id}
-                            view={childView}
-                            viewOptions={{
-                              selectionInterface,
-                              model: duplicate,
-                            }}
-                            replaceElement
+                            model={duplicate}
+                            selectionInterface={selectionInterface}
+                            onClick={this.state.handleClick}
+                            onMouseDown={this.state.handleMouseDown}
                           />
                         )
                       })}
@@ -266,14 +267,12 @@ class ResultItems extends React.Component<Props, State> {
               )
             } else {
               return (
-                <MarionetteRegionContainer
+                <ResultItem
                   key={result.id}
-                  view={childView}
-                  viewOptions={{
-                    selectionInterface,
-                    model: result,
-                  }}
-                  replaceElement
+                  model={result}
+                  selectionInterface={selectionInterface}
+                  onClick={this.state.handleClick}
+                  onMouseDown={this.state.handleMouseDown}
                 />
               )
             }
@@ -300,24 +299,20 @@ class ResultItems extends React.Component<Props, State> {
                 <div className="group-representation">{amount} duplicates</div>
                 <div className="group-results global-bracket is-left">
                   <ResultItemCollection className="is-list has-list-highlighting">
-                    <MarionetteRegionContainer
-                      view={childView}
-                      viewOptions={{
-                        selectionInterface,
-                        model: result,
-                      }}
-                      replaceElement
+                    <ResultItem
+                      model={result}
+                      selectionInterface={selectionInterface}
+                      onClick={this.state.handleClick}
+                      onMouseDown={this.state.handleMouseDown}
                     />
                     {result.duplicates.map((duplicate: any) => {
                       return (
-                        <MarionetteRegionContainer
+                        <ResultItem
                           key={duplicate.id}
-                          view={childView}
-                          viewOptions={{
-                            selectionInterface,
-                            model: duplicate,
-                          }}
-                          replaceElement
+                          model={duplicate}
+                          selectionInterface={selectionInterface}
+                          onClick={this.state.handleClick}
+                          onMouseDown={this.state.handleMouseDown}
                         />
                       )
                     })}
@@ -327,14 +322,12 @@ class ResultItems extends React.Component<Props, State> {
             )
           } else {
             return (
-              <MarionetteRegionContainer
+              <ResultItem
                 key={result.id}
-                view={childView}
-                viewOptions={{
-                  selectionInterface,
-                  model: result,
-                }}
-                replaceElement
+                model={result}
+                selectionInterface={selectionInterface}
+                onClick={this.state.handleClick}
+                onMouseDown={this.state.handleMouseDown}
               />
             )
           }
