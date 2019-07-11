@@ -28,7 +28,7 @@ const ResultStatusView = require('../result-status/result-status.view.js')
 require('../../behaviors/selection.behavior.js')
 import MarionetteRegionContainer from '../../react-component/container/marionette-region-container'
 import ResultItemCollection from '../result-item/result-item.collection'
-
+import Spellcheck from '../spellcheck/index'
 const {
   SelectAllToggle,
 } = require('../selection-checkbox/selection-checkbox.view.js')
@@ -109,16 +109,20 @@ const ResultSelector = Marionette.LayoutView.extend({
           <div className="searching-bit" />
           <div className="searching-bit" />
         </div>
-        <ResultItemCollection
-          className="resultSelector-list"
+        <Spellcheck
           key={Math.random()}
-          results={collapsedResults}
-          selectionInterface={this.options.selectionInterface}
           showingResultsForFields={this.model
             .get('result')
             .get('showingResultsForFields')}
           didYouMeanFields={this.model.get('result').get('didYouMeanFields')}
           model={this.model}
+          results={collapsedResults}
+        />
+        <ResultItemCollection
+          className="resultSelector-list"
+          key={Math.random()}
+          results={collapsedResults}
+          selectionInterface={this.options.selectionInterface}
         />
         <MarionetteRegionContainer
           key={Math.random()}
@@ -128,6 +132,7 @@ const ResultSelector = Marionette.LayoutView.extend({
             model: collapsedResults,
             selectionInterface: this.options.selectionInterface,
           }}
+          replaceElement
         />
       </React.Fragment>
     )

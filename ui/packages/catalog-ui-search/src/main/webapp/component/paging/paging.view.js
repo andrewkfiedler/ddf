@@ -20,7 +20,6 @@ const _debounce = require('lodash/debounce')
 import Paging from './paging'
 
 module.exports = Marionette.ItemView.extend({
-  tagName: CustomElements.register('paging'),
   template() {
     const currentQuery = this.getQuery()
     const serverPageIndex = currentQuery.get('serverPageIndex')

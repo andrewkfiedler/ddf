@@ -1,8 +1,10 @@
 @{customElementNamespace}result-selector {
   position: relative;
-  .customElement;
+  width: 100%;
+  height: 100%;
   padding: 0px @minimumSpacing;
-
+  display: flex;
+  flex-direction: column;
   .resultSelector-status,
   .paging .status {
     text-align: center;
@@ -15,8 +17,8 @@
 
   .resultSelector-list {
     overflow: auto;
-    height: ~'calc(100% - 2*@{minimumButtonSize} - @{minimumLineSize})';
     position: relative;
+    flex-grow: 1;
   }
 
   .resultSelector-menu {
