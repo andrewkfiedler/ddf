@@ -12,4 +12,8 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-module.exports = v => v
+
+export default {
+  extensions: () => null,
+  buttonExtensions: () => null,
+}

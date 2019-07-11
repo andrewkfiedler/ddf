@@ -41,7 +41,6 @@ const sources = require('../singletons/sources-instance.js')
 const HoverPreviewDropdown = require('../dropdown/hover-preview/dropdown.hover-preview.view.js')
 const ResultAddView = require('../result-add/result-add.view.js')
 const PopoutView = require('../dropdown/popout/dropdown.popout.view.js')
-const CustomElements = require('../../js/CustomElements.js')
 
 require('../../behaviors/button.behavior.js')
 require('../../behaviors/dropdown.behavior.js')
@@ -50,7 +49,9 @@ const ResultLinkView = require('../result-link/result-link.view.js')
 const {
   SelectItemToggle,
 } = require('../selection-checkbox/selection-checkbox.view.js')
-const plugin = require('plugins/result-item')
+import ExtensionPoints from '../../extension-points'
+const NormalExtensions = ExtensionPoints.resultItem.extensions
+const ButtonExtensions = ExtensionPoints.resultItem.buttonExtensions
 
 const LIST_DISPLAY_TYPE = 'List'
 const GRID_DISPLAY_TYPE = 'Grid'
@@ -93,8 +94,6 @@ type Props = {
   model: any
   onClick: any
   onMouseDown: any
-  getExtensions?: any
-  getButtonExtensions?: any
 }
 
 const defaultExtension = () => {
@@ -388,14 +387,7 @@ const mapStuffToState = ({
 }
 
 const ResultItem = (props: Props) => {
-  const {
-    model,
-    selectionInterface,
-    getExtensions = defaultExtension,
-    getButtonExtensions = defaultExtension,
-    onClick,
-    onMouseDown,
-  } = props
+  const { model, selectionInterface, onClick, onMouseDown } = props
   const data = addConfiguredResultProperties(massageResult(model))
   const displayAsGrid = getResultDisplayType() === GRID_DISPLAY_TYPE
   const renderThumbnail = displayAsGrid && data.metacard.properties.thumbnail
@@ -569,7 +561,7 @@ const ResultItem = (props: Props) => {
               ''
             )}
           </div>
-          {getExtensions()}
+          <NormalExtensions />
           <Divider />
           <Footer className="content-footer">
             <MarionetteRegionContainer
@@ -602,7 +594,9 @@ const ResultItem = (props: Props) => {
                 ''
               )}
             </div>
-            <div className="result-extension">{getButtonExtensions()}</div>
+            <div className="result-extension">
+              <ButtonExtensions />
+            </div>
             <button
               className="result-download fa fa-download is-button is-neutral"
               title="Downloads the associated resource directly to your machine."
