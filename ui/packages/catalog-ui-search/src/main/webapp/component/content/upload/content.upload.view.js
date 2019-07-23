@@ -17,6 +17,7 @@ const ContentView = require('../content.view')
 const uploadInstance = require('../../upload/upload.js')
 const ResultSelectorView = require('../../result-selector/result-selector.view.js')
 const VisualizationView = require('../../golden-layout/golden-layout.view.js')
+import ResultSelector from '../../result-selector/result-selector'
 
 module.exports = ContentView.extend({
   className: 'is-upload',

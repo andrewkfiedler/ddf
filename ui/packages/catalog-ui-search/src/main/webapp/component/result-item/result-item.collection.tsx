@@ -17,12 +17,13 @@ import { hot } from 'react-hot-loader'
 import styled from 'styled-components'
 import ResultItem from './result-item'
 import { useSelection } from '../../hooks'
+import { useBackbone } from '../../hooks/index'
 
 type Props = {
   results: any[]
+  model: any
   selectionInterface: any
   className?: string
-  model: any
 }
 
 const ResultItemCollection = styled.div`
@@ -53,81 +54,82 @@ const ResultGroup = styled.div`
   }
 `
 
-type State = {
-  handleClick: any
-  handleMouseDown: any
-}
-
-class ResultItems extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props)
-
-    this.state = {
-      ...useSelection({
-        selectionInterface: props.selectionInterface,
-      }),
-    }
+const ResultItems = (props: Props) => {
+  const { results, className, selectionInterface, model } = props
+  const { listenTo } = useBackbone()
+  const [isSearching, setIsSearching] = React.useState(model
+    .get('result')
+    .isSearching() as boolean)
+  React.useEffect(() => {
+    listenTo(model.get('result'), 'sync request error', () => {
+      setIsSearching(model.get('result').isSearching())
+    })
+  }, [])
+  const { handleClick, handleMouseDown } = {
+    ...useSelection({
+      selectionInterface: selectionInterface,
+    }),
   }
-
-  render() {
-    const { results, className, selectionInterface } = this.props
-    if (results.length === 0) {
-      return (
-        <ResultItemCollection className={className}>
-          <div className="result-item-collection-empty">No Results Found</div>
-        </ResultItemCollection>
-      )
-    } else {
-      return (
-        <ResultItemCollection
-          className={`${className} is-list has-list-highlighting`}
-        >
-          {results.map(result => {
-            if (result.duplicates) {
-              const amount = result.duplicates.length + 1
-              return (
-                <ResultGroup key={result.id}>
-                  <div className="group-representation">
-                    {amount} duplicates
-                  </div>
-                  <div className="group-results global-bracket is-left">
-                    <ResultItemCollection className="is-list has-list-highlighting">
-                      <ResultItem
-                        model={result}
-                        selectionInterface={selectionInterface}
-                        onClick={this.state.handleClick}
-                        onMouseDown={this.state.handleMouseDown}
-                      />
-                      {result.duplicates.map((duplicate: any) => {
-                        return (
-                          <ResultItem
-                            key={duplicate.id}
-                            model={duplicate}
-                            selectionInterface={selectionInterface}
-                            onClick={this.state.handleClick}
-                            onMouseDown={this.state.handleMouseDown}
-                          />
-                        )
-                      })}
-                    </ResultItemCollection>
-                  </div>
-                </ResultGroup>
-              )
-            } else {
-              return (
-                <ResultItem
-                  key={result.id}
-                  model={result}
-                  selectionInterface={selectionInterface}
-                  onClick={this.state.handleClick}
-                  onMouseDown={this.state.handleMouseDown}
-                />
-              )
-            }
-          })}
-        </ResultItemCollection>
-      )
-    }
+  if (isSearching) {
+    return (
+      <ResultItemCollection className={className}>
+        <div className="result-item-collection-empty">No Results Found Yet</div>
+      </ResultItemCollection>
+    )
+  } else if (results.length === 0) {
+    return (
+      <ResultItemCollection className={className}>
+        <div className="result-item-collection-empty">No Results Found</div>
+      </ResultItemCollection>
+    )
+  } else {
+    return (
+      <ResultItemCollection
+        className={`${className} is-list has-list-highlighting`}
+      >
+        {results.map(result => {
+          if (result.duplicates) {
+            const amount = result.duplicates.length + 1
+            return (
+              <ResultGroup key={result.id}>
+                <div className="group-representation">{amount} duplicates</div>
+                <div className="group-results global-bracket is-left">
+                  <ResultItemCollection className="is-list has-list-highlighting">
+                    <ResultItem
+                      model={result}
+                      selectionInterface={selectionInterface}
+                      onClick={handleClick}
+                      onMouseDown={handleMouseDown}
+                    />
+                    {result.duplicates.map((duplicate: any) => {
+                      return (
+                        <ResultItem
+                          key={duplicate.id}
+                          model={duplicate}
+                          selectionInterface={selectionInterface}
+                          onClick={handleClick}
+                          onMouseDown={handleMouseDown}
+                        />
+                      )
+                    })}
+                  </ResultItemCollection>
+                </div>
+              </ResultGroup>
+            )
+          } else {
+            return (
+              <ResultItem
+                key={result.id}
+                model={result}
+                selectionInterface={selectionInterface}
+                onClick={handleClick}
+                onMouseDown={handleMouseDown}
+              />
+            )
+          }
+        })}
+      </ResultItemCollection>
+    )
   }
 }
 

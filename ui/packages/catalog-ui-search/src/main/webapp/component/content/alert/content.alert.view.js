@@ -16,6 +16,7 @@
 const ContentView = require('../content.view')
 const alertInstance = require('../../alert/alert.js')
 const ResultSelectorView = require('../../result-selector/result-selector.view.js')
+import ResultSelector from '../../result-selector/result-selector'
 const VisualizationView = require('../../golden-layout/golden-layout.view.js')
 
 module.exports = ContentView.extend({

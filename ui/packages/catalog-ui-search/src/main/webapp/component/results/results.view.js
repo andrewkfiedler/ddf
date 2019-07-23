@@ -12,7 +12,9 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-
+import * as React from 'react'
+import ResultSelector from '../result-selector/result-selector'
+import MarionetteRegionContainer from '../../react-component/container/marionette-region-container'
 const Marionette = require('marionette')
 const resultsTemplate = require('./results.hbs')
 const CustomElements = require('../../js/CustomElements.js')
@@ -22,85 +24,82 @@ const store = require('../../js/store.js')
 const ResultSelectorView = require('../result-selector/result-selector.view.js')
 const WorkspaceExploreView = require('../workspace-explore/workspace-explore.view.js')
 
-let selectedQueryId
-
+let lastQueryId
 const ResultsView = Marionette.LayoutView.extend({
   setDefaultModel() {
     this.model = store.getCurrentQueries()
   },
-  template: resultsTemplate,
-  tagName: CustomElements.register('results'),
-  regions: {
-    resultsEmpty: '.results-empty',
-    resultsSelect: '.results-select',
-    resultsList: '.results-list',
+  template() {
+    const queryId = this._resultsSelectDropdownView.model.get('value')
+    return (
+      <React.Fragment>
+        <div className="results-empty">
+          <MarionetteRegionContainer view={new WorkspaceExploreView()} />
+        </div>
+        <div className="results-select">
+          <MarionetteRegionContainer view={this._resultsSelectDropdownView} />
+        </div>
+        <div className="results-list">
+          {queryId ? (
+            <ResultSelector
+              key={queryId}
+              model={store.getCurrentQueries().get(queryId)}
+              selectionInterface={this.options.selectionInterface}
+            />
+          ) : (
+            <React.Fragment />
+          )}
+        </div>
+      </React.Fragment>
+    )
   },
+  tagName: CustomElements.register('results'),
   initialize(options) {
     if (options.model === undefined) {
       this.setDefaultModel()
     }
+    this._resultsSelectDropdownView = new QuerySelectDropdown({
+      model: new DropdownModel({
+        value: this.getPreselectedQuery(),
+      }),
+      dropdownCompanionBehaviors: {
+        navigation: {},
+      },
+    })
+    this.listenTo(this._resultsSelectDropdownView.model, 'change:value', () => {
+      store.setCurrentQuery(
+        store
+          .getCurrentQueries()
+          .get(this._resultsSelectDropdownView.model.get('value'))
+      )
+    })
+  },
+  onFirstRender() {
+    this.listenTo(store.get('content'), 'change:currentQuery', () => {
+      if (
+        store.getCurrentQuery() &&
+        store.getCurrentQuery().id !== lastQueryId
+      ) {
+        lastQueryId = store.getCurrentQuery().id
+        this.render()
+      }
+    })
+    this.listenTo(this.model, 'add remove update', this.handleEmptyQueries)
+    this.handleEmptyQueries()
   },
   getPreselectedQuery() {
     if (this.model.length === 1) {
       return this.model.first().id
-    } else if (this.model.get(store.getCurrentQuery())) {
-      return store.getCurrentQuery().id
-    } else if (this.model.get(selectedQueryId)) {
-      return selectedQueryId
+    } else if (this.model.get(lastQueryId)) {
+      return lastQueryId
     } else {
       return undefined
-    }
-  },
-  onBeforeShow() {
-    this._resultsSelectDropdownModel = new DropdownModel({
-      value: this.getPreselectedQuery(),
-    })
-    this.resultsSelect.show(
-      new QuerySelectDropdown({
-        model: this._resultsSelectDropdownModel,
-        dropdownCompanionBehaviors: {
-          navigation: {},
-        },
-      })
-    )
-    this.listenTo(
-      this._resultsSelectDropdownModel,
-      'change:value',
-      this.updateResultsList
-    )
-    this.listenTo(
-      store.get('content'),
-      'change:currentQuery',
-      this.handleCurrentQuery
-    )
-    this.resultsEmpty.show(new WorkspaceExploreView())
-    this.updateResultsList()
-    this.handleEmptyQueries()
-    this.listenTo(this.model, 'add', this.handleEmptyQueries)
-    this.listenTo(this.model, 'remove', this.handleEmptyQueries)
-    this.listenTo(this.model, 'update', this.handleEmptyQueries)
-  },
-  handleCurrentQuery() {
-    this._resultsSelectDropdownModel.set('value', store.getCurrentQuery().id)
-  },
-  updateResultsList() {
-    const queryId = this._resultsSelectDropdownModel.get('value')
-    if (queryId) {
-      selectedQueryId = queryId
-      this.resultsList.show(
-        new ResultSelectorView({
-          model: store.getCurrentQueries().get(queryId),
-          selectionInterface: this.options.selectionInterface,
-        })
-      )
-    } else {
-      this.resultsList.empty()
     }
   },
   handleEmptyQueries() {
     this.$el.toggleClass('is-empty', this.model.isEmpty())
     if (this.model.length === 1) {
-      this._resultsSelectDropdownModel.set('value', this.model.first().id)
+      this._resultsSelectDropdownView.model.set('value', this.model.first().id)
     }
   },
 })
