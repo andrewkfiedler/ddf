@@ -96,10 +96,6 @@ type Props = {
   onMouseDown: any
 }
 
-const defaultExtension = () => {
-  return null
-}
-
 const isGrid = () => {
   switch (getResultDisplayType()) {
     case LIST_DISPLAY_TYPE:

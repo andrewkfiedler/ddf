@@ -12,8 +12,10 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-
+import * as React from 'react'
 import ListCreate from '../list-create/list-create.js'
+import ResultSelector from '../result-selector/result-selector'
+import MarionetteRegionContainer from '../../react-component/container/marionette-region-container'
 const Marionette = require('marionette')
 const CustomElements = require('../../js/CustomElements.js')
 const template = require('./workspace-lists.hbs')
@@ -21,93 +23,131 @@ const store = require('../../js/store.js')
 const ListSelectorView = require('../dropdown/list-select/dropdown.list-select.view.js')
 const DropdownModel = require('../dropdown/dropdown.js')
 const ResultSelectorView = require('../result-selector/result-selector.view.js')
+
 const $ = require('jquery')
 const PopoutView = require('../dropdown/popout/dropdown.popout.view.js')
 
-let selectedListId
+const triggerSearch = () => {
+  $('.content-adhoc')
+    .mousedown()
+    .click()
+}
 
+let lastListId
+const triggerDelete = () => {
+  const model = store.getCurrentWorkspace().get('lists')
+  model.remove(model.get(lastListId))
+}
 module.exports = Marionette.LayoutView.extend({
   setDefaultModel() {
     this.model = store.getCurrentWorkspace().get('lists')
   },
-  template,
+  template() {
+    const listId = this._listSelectDropdownView.model.get('value')
+    lastListId = listId
+    return (
+      <React.Fragment>
+        <div align="center" className="lists-empty">
+          <div className="is-header">
+            You don't have any lists.{' '}
+            <button
+              className="quick-search is-primary in-text"
+              onClick={triggerSearch}
+            >
+              Search
+            </button>
+            for something and add it to a list or create a
+            <div className="quick-create is-primary in-text composed-button">
+              <MarionetteRegionContainer view={this._listCreateQuickView} />
+            </div>
+            .
+          </div>
+        </div>
+        <div className="list-select">
+          <MarionetteRegionContainer view={this._listSelectDropdownView} />
+        </div>
+        <div className="list-empty">
+          <div className="is-header">
+            Your list is empty.{' '}
+            <button
+              className="quick-search is-primary in-text"
+              onClick={triggerSearch}
+            >
+              Search
+            </button>{' '}
+            for something and add it to the list, or{' '}
+            <button
+              className="quick-delete is-negative in-text"
+              onClick={triggerDelete}
+            >
+              delete
+            </button>{' '}
+            this list.
+          </div>
+        </div>
+        <div className="list-results">
+          {listId && !this.model.get(listId).isEmpty() ? (
+            <ResultSelector
+              key={listId}
+              model={this.model.get(listId).get('query')}
+              selectionInterface={this.options.selectionInterface}
+              tieredSearchIds={this.model.get(listId).get('list.bookmarks')}
+            />
+          ) : (
+            <React.Fragment />
+          )}
+        </div>
+      </React.Fragment>
+    )
+  },
   tagName: CustomElements.register('workspace-lists'),
-  regions: {
-    listSelect: '> .list-select',
-    listEmpty: '.list-empty',
-    listResults: '.list-results',
-    listQuickCreate: '> .lists-empty .quick-create',
-  },
-  events: {
-    'click > .list-empty .quick-search': 'triggerSearch',
-    'click > .lists-empty .quick-search': 'triggerSearch',
-    'click > .list-empty .quick-delete': 'triggerDelete',
-  },
   initialize(options) {
     if (options.model === undefined) {
       this.setDefaultModel()
     }
-  },
-  onBeforeShow() {
-    if (store.getCurrentWorkspace()) {
-      this.setupWorkspaceListSelect()
-    }
-    this.setupQuickCreateList()
-  },
-  setupQuickCreateList() {
-    this.listQuickCreate.show(
-      PopoutView.createSimpleDropdown({
-        componentToShow: ListCreate,
-        modelForComponent: this.model,
-        label: 'new list',
-        options: {
-          withBookmarks: false,
-        },
-      })
+    this._listCreateQuickView = PopoutView.createSimpleDropdown({
+      componentToShow: ListCreate,
+      modelForComponent: this.model,
+      label: 'new list',
+      options: {
+        withBookmarks: false,
+      },
+    })
+    this._listSelectDropdownView = new ListSelectorView({
+      model: new DropdownModel({
+        value: this.getPreselectedList(),
+      }),
+      workspaceLists: this.model,
+      dropdownCompanionBehaviors: {
+        navigation: {},
+      },
+    })
+    this.listenTo(this._listSelectDropdownView.model, 'change:value', () => {
+      this.render()
+    })
+    this.listenTo(
+      this.model,
+      'remove update change:list.bookmarks add',
+      this.render
     )
+    this.listenTo(this.model, 'add', this.handleAdd)
   },
   getPreselectedList() {
     if (this.model.length === 1) {
       return this.model.first().id
-    } else if (this.model.get(selectedListId)) {
-      return selectedListId
+    } else if (this.model.get(lastListId)) {
+      return lastListId
     } else {
       return undefined
     }
   },
-  setupWorkspaceListSelect() {
-    this.listSelect.show(
-      new ListSelectorView({
-        model: new DropdownModel({
-          value: this.getPreselectedList(),
-        }),
-        workspaceLists: this.model,
-        dropdownCompanionBehaviors: {
-          navigation: {},
-        },
-      })
-    )
-    this.listenTo(
-      this.listSelect.currentView.model,
-      'change:value',
-      this.handleUpdates
-    )
-    this.listenTo(
-      this.model,
-      'remove update change:list.bookmarks add',
-      this.handleUpdates
-    )
-    this.listenTo(this.model, 'add', this.handleAdd)
-    this.handleUpdates()
-  },
   handleAdd(newList, lists, options) {
     if (options.preventSwitch !== true) {
-      this.listSelect.currentView.model.set('value', newList.id)
-      this.listSelect.currentView.model.close()
+      this._listSelectDropdownView.model.set('value', newList.id)
+      this._listSelectDropdownView.model.close()
     }
   },
-  handleUpdates(newList, lists, options) {
-    this.updateResultsList()
+  onRender() {
     this.handleEmptyLists()
     this.handleEmptyList()
     this.handleSelection()
@@ -115,56 +155,21 @@ module.exports = Marionette.LayoutView.extend({
   handleSelection() {
     this.$el.toggleClass(
       'has-selection',
-      this.model.get(this.listSelect.currentView.model.get('value')) !==
+      this.model.get(this._listSelectDropdownView.model.get('value')) !==
         undefined
     )
   },
   handleEmptyLists() {
     this.$el.toggleClass('is-empty-lists', this.model.isEmpty())
     if (this.model.length === 1) {
-      this.listSelect.currentView.model.set('value', this.model.first().id)
+      this._listSelectDropdownView.model.set('value', this.model.first().id)
     }
   },
   handleEmptyList() {
-    if (
-      this.model.get(selectedListId) &&
-      this.model.get(selectedListId).isEmpty()
-    ) {
+    if (this.model.get(lastListId) && this.model.get(lastListId).isEmpty()) {
       this.$el.addClass('is-empty-list')
     } else {
       this.$el.removeClass('is-empty-list')
     }
-  },
-  updateResultsList() {
-    const listId = this.listSelect.currentView.model.get('value')
-    if (listId) {
-      selectedListId = listId
-      if (
-        !this.model.get(selectedListId).isEmpty() &&
-        (this.listResults.currentView === undefined ||
-          this.listResults.currentView.model.id !== selectedListId)
-      ) {
-        this.listResults.show(
-          new ResultSelectorView({
-            model: this.model.get(selectedListId).get('query'),
-            selectionInterface: this.options.selectionInterface,
-            tieredSearchIds: this.model
-              .get(selectedListId)
-              .get('list.bookmarks'),
-          })
-        )
-      }
-    } else {
-      this.listResults.empty()
-    }
-    this.handleEmptyList()
-  },
-  triggerDelete() {
-    this.model.remove(this.model.get(selectedListId))
-  },
-  triggerSearch() {
-    $('.content-adhoc')
-      .mousedown()
-      .click()
   },
 })

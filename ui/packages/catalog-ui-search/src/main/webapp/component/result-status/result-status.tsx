@@ -1,4 +1,3 @@
-{{!--
 /**
  * Copyright (c) Codice Foundation
  *
@@ -10,7 +9,20 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
- --}}
-<div class="status-filtered">
-    {{amountFiltered}} hidden
-</div>
+import * as React from 'react'
+import { hot } from 'react-hot-loader'
+import styled from '../../react-component/styles/styled-components'
+
+const Root = styled.div`
+  text-align: center;
+  padding-bottom: ${props => props.theme.minimumSpacing};
+`
+
+type Props = {
+  results: any
+}
+const resultStatus = ({ results }: Props) => {
+  const amountFiltered = results.amountFiltered
+  return amountFiltered > 0 ? <Root>{amountFiltered} hidden</Root> : null
+}
+export default hot(module)(resultStatus)

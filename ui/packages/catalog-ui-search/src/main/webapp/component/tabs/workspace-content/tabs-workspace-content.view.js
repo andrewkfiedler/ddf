@@ -26,6 +26,7 @@ const WorkspaceContentTabsView = TabsView.extend({
     )
   },
   closePanelTwo() {
+    console.log('test')
     switch (this.model.get('activeTab')) {
       case 'Searches':
         this.options.selectionInterface.setCurrentQuery(undefined)

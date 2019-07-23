@@ -1,4 +1,3 @@
-{{!--
 /**
  * Copyright (c) Codice Foundation
  *
@@ -10,14 +9,5 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
- --}}
-<div>
-    <div class="dropdown-text">
-        <span class="text-label">
-            {{selection.label}}
-        </span>
-        <span class="dropdown-icon fa {{icon}}">
-
-        </span>
-    </div>
-</div>
+import * as React from 'react'
+import { withTheme } from '../react-component/styles/styled-components'

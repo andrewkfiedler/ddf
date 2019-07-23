@@ -15,7 +15,7 @@
 ;({
   openWorkspace: {
     patterns: ['workspaces/:id'],
-    component: 'component/content/content.view',
+    component: 'component/content/content.tsx',
     menu: {
       component: 'react-component/container/workspace-menu/workspace-menu',
     },
