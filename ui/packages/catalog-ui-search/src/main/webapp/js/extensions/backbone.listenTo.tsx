@@ -19,6 +19,7 @@ const listenTo = Backbone.View.prototype.listenTo
  * Overrides listenTo to make it behave as it should.  In other words, not fire after views are destroyed.
  * Call is preferred since it's performance is much faster than apply.
  */
+// @ts-ignore
 Backbone.View.prototype.listenTo = function(
   obj: any,
   name: string,

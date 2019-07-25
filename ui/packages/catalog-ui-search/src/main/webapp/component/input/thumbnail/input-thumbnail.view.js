@@ -71,6 +71,7 @@ module.exports = InputView.extend({
     this.handleEmpty()
   },
   resizeButton() {
+    if (this.isDestroyed) return
     this.$el.find('button').css('height', this.el.querySelector('img').height)
   },
   focus() {

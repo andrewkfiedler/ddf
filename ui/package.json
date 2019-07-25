@@ -40,9 +40,6 @@
     "rimraf": "2.6.2",
     "sass-lint": "1.12.1"
   },
-  "workspaces": [
-    "packages/*"
-  ],
   "resolutions": {
     "admin-ui/@connexta/atlas/backbone.marionette": "1.8.8",
     "@connexta/ace": "git://github.com/connexta/ace.git#248c818959157e909bac68982e98b1332d5e31c8"

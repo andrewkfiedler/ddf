@@ -38,6 +38,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 window.CESIUM_BASE_URL = './cesium/assets'
+require('./extensions/backbone.view.delegateEvents.js')
 
 const Backbone = require('backbone')
 const Marionette = require('marionette')
@@ -49,7 +50,10 @@ require('./HandlebarsHelpers.js')
 require('./ApplicationHelpers.js')
 require('./Autocomplete.js')
 require('./backbone.customFunctions.js')
+require('./extensions/backbone.listenTo.internalOn.js')
+require('./extensions/backbone.collection.set.js')
 require('./extensions/backbone.listenTo.tsx')
+require('./extensions/backbone.listenTo.multiEventMapping.js')
 require('./extensions/marionette.onFirstRender.js')
 require('./extensions/marionette.renderer.render.js')
 require('./extensions/marionette.ItemView.attachElContent.js')
