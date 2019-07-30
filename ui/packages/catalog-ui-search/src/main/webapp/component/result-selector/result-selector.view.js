@@ -196,7 +196,7 @@ const ResultSelector = Marionette.LayoutView.extend({
         .get('user')
         .get('preferences')
         .get('resultBlacklist'),
-      'add remove update reset',
+      'add remove reset',
       this.render
     )
   },

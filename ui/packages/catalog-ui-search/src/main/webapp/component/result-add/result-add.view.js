@@ -75,7 +75,7 @@ module.exports = Marionette.LayoutView.extend({
   initialize() {
     this.listenTo(
       store.getCurrentWorkspace().get('lists'),
-      'add remove update change',
+      'add remove change',
       this.safeRender
     )
   },

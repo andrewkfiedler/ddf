@@ -62,7 +62,7 @@ module.exports = Backbone.AssociatedModel.extend({
     this.listenTo(this, 'change:currentResult', this.handleResultChange)
     this.listenTo(
       this.get('activeSearchResults'),
-      'update add remove reset',
+      'add remove reset',
       this.updateActiveSearchResultsAttributes
     )
   },

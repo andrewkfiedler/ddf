@@ -84,7 +84,7 @@ class UserNotifications extends React.Component<Props, {}> {
   notificationGroups: any
   constructor(props: Props) {
     super(props)
-    this.props.listenTo(userNotifications, 'add remove update', () =>
+    this.props.listenTo(userNotifications, 'add remove', () =>
       this.setState({})
     )
     this.notificationGroups = dayRange.map(i => (

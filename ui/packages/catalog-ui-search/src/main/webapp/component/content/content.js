@@ -84,7 +84,7 @@ module.exports = Backbone.AssociatedModel.extend({
     this.listenTo(wreqr.vent, 'search:drawend', this.turnOffDrawing)
     this.listenTo(
       this.get('activeSearchResults'),
-      'update add remove reset',
+      'add remove reset',
       this.updateActiveSearchResultsAttributes
     )
   },

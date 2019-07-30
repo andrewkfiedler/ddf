@@ -115,16 +115,8 @@ module.exports = PartialAssociatedModel.extend({
       model.set('isLocal', this.isLocal())
       collection.trigger('change')
     })
-    this.listenTo(
-      this.get('queries'),
-      'update add remove',
-      this.handleQueryChange
-    )
-    this.listenTo(
-      this.get('lists'),
-      'change update add remove',
-      this.handleListChange
-    )
+    this.listenTo(this.get('queries'), 'add remove', this.handleQueryChange)
+    this.listenTo(this.get('lists'), 'change add remove', this.handleListChange)
     this.listenTo(this.get('queries'), 'change', this.handleChange)
     this.listenTo(this, 'change', this.handleChange)
     this.listenTo(this, 'error', this.handleError)

@@ -38,7 +38,7 @@ class WorkspacesContainer extends React.Component<WithBackboneProps, State> {
   componentDidMount() {
     this.props.listenTo(
       store.get('workspaces'),
-      'change:saved update add remove',
+      'change:saved add remove',
       this.handleSaved.bind(this)
     )
   }

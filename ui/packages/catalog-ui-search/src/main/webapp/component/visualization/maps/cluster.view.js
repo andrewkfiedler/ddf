@@ -35,7 +35,7 @@ const ClusterView = Marionette.ItemView.extend({
     })
     this.listenTo(
       this.options.selectionInterface.getSelectedResults(),
-      'update add remove reset',
+      'add remove reset',
       this.updateSelected
     )
   },

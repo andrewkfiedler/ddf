@@ -45,12 +45,12 @@ const createToggle = ({ isSelected, handleClick }) => {
     initialize() {
       this.listenTo(
         this.options.selectionInterface.getSelectedResults(),
-        'update add remove reset',
+        'add remove reset',
         this.render
       )
       this.listenTo(
         this.options.selectionInterface.getActiveSearchResults(),
-        'update add remove reset',
+        'add remove reset',
         this.render
       )
     },

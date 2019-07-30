@@ -78,7 +78,6 @@ const ResultsView = Marionette.LayoutView.extend({
     this.handleEmptyQueries()
     this.listenTo(this.model, 'add', this.handleEmptyQueries)
     this.listenTo(this.model, 'remove', this.handleEmptyQueries)
-    this.listenTo(this.model, 'update', this.handleEmptyQueries)
   },
   handleCurrentQuery() {
     this._resultsSelectDropdownModel.set('value', store.getCurrentQuery().id)

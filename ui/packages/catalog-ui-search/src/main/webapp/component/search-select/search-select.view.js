@@ -35,7 +35,6 @@ module.exports = Marionette.LayoutView.extend({
   initialize() {
     this.listenTo(store.getCurrentQueries(), 'add', this.handleUpdate)
     this.listenTo(store.getCurrentQueries(), 'remove', this.handleUpdate)
-    this.listenTo(store.getCurrentQueries(), 'update', this.handleUpdate)
     this.handleUpdate()
     this.handleHideActions()
   },

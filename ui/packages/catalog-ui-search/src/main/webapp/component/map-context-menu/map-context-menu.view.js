@@ -71,17 +71,17 @@ module.exports = Marionette.LayoutView.extend({
     )
     this.listenTo(
       this.options.selectionInterface.getSelectedResults(),
-      'update add remove reset',
+      'add remove reset',
       this.handleSelectionChange
     )
     this.listenTo(
       this.options.selectionInterface.getActiveSearchResults(),
-      'update add remove reset',
+      'add remove reset',
       this.handleResultsChange
     )
     this.listenTo(
       this.selectionInterface.getSelectedResults(),
-      'update add remove reset',
+      'add remove reset',
       this.updateSelectionInterface
     )
   },
@@ -127,7 +127,7 @@ module.exports = Marionette.LayoutView.extend({
     this.triggerClick()
     this.stopListening(
       this.selectionInterface.getSelectedResults(),
-      'update add remove reset',
+      'add remove reset',
       this.updateSelectionInterface
     )
     this.selectionInterface.addSelectedResult(
@@ -142,7 +142,7 @@ module.exports = Marionette.LayoutView.extend({
     )
     this.listenTo(
       this.selectionInterface.getSelectedResults(),
-      'update add remove reset',
+      'add remove reset',
       this.updateSelectionInterface
     )
   },
@@ -160,7 +160,7 @@ module.exports = Marionette.LayoutView.extend({
     this.triggerClick()
     this.stopListening(
       this.selectionInterface.getSelectedResults(),
-      'update add remove reset',
+      'add remove reset',
       this.updateSelectionInterface
     )
     this.selectionInterface.clearSelectedResults()

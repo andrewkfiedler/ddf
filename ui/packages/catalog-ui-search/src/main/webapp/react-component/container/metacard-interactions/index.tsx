@@ -97,7 +97,7 @@ class MetacardInteractions extends React.Component<Props, State> {
         .get('user')
         .get('preferences')
         .get('resultBlacklist'),
-      'add remove update reset',
+      'add remove reset',
       () => this.setState({ blacklisted: isBlacklisted(this.props.model) })
     )
   }

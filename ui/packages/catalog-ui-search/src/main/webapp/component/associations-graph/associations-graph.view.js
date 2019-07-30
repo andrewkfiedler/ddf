@@ -123,7 +123,7 @@ module.exports = Marionette.LayoutView.extend({
   setupListeners() {
     this.listenTo(
       this.collection,
-      'reset add remove update change',
+      'reset add remove change',
       this.showGraphView
     )
     this.listenTo(this.collection, 'add', () => {

@@ -41,7 +41,7 @@ module.exports = Marionette.LayoutView.extend({
   },
   initialize() {
     this.handleEmpty()
-    this.listenTo(userNotifications, 'add remove update', this.handleEmpty)
+    this.listenTo(userNotifications, 'add remove', this.handleEmpty)
   },
   onBeforeShow() {
     this.groupItems.show(

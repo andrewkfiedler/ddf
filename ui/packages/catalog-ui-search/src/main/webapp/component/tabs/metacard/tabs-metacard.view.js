@@ -37,11 +37,6 @@ module.exports = TabsView.extend({
     const throttleDetermineContent = _.throttle(this.handleMetacardChange, 200)
     this.listenTo(
       this.selectionInterface.getSelectedResults(),
-      'update',
-      debounceDetermineContent
-    )
-    this.listenTo(
-      this.selectionInterface.getSelectedResults(),
       'add',
       debounceDetermineContent
     )

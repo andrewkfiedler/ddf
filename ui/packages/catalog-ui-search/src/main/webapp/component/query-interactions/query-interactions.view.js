@@ -170,11 +170,7 @@ module.exports = Marionette.ItemView.extend({
       'is-versioning-enabled',
       !properties.isVersioningEnabled
     )
-    this.listenTo(
-      store.getSelectedResults(),
-      'update add remove reset',
-      this.render
-    )
+    this.listenTo(store.getSelectedResults(), 'add remove reset', this.render)
   },
   onRender() {
     this.handleLocal()

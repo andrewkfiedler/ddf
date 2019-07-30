@@ -38,7 +38,7 @@ class NavigationRightContainer extends React.Component<Props, State> {
   componentDidMount() {
     this.props.listenTo(
       notifications,
-      'change add remove reset update',
+      'change add remove reset',
       this.handleUnseenNotifications.bind(this)
     )
   }

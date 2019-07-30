@@ -36,7 +36,7 @@ class UserBlacklistContainer extends React.Component<WithBackboneProps, State> {
   componentDidMount = () => {
     this.props.listenTo(
       this.getBlacklist(),
-      'add remove reset update',
+      'add remove reset',
       this.updateBlacklist
     )
   }

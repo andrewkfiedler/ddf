@@ -58,11 +58,6 @@ const MetacardsTabsView = TabsView.extend({
     const debounceDetermineContent = _.debounce(this.handleMetacardChange, 200)
     this.listenTo(
       this.selectionInterface.getSelectedResults(),
-      'update',
-      debounceDetermineContent
-    )
-    this.listenTo(
-      this.selectionInterface.getSelectedResults(),
       'add',
       debounceDetermineContent
     )

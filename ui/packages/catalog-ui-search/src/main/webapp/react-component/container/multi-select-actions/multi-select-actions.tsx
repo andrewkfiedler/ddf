@@ -43,7 +43,7 @@ class MultiSelectActions extends React.Component<Props, State> {
   componentDidMount = () => {
     this.props.listenTo(
       this.props.selectionInterface.getSelectedResults(),
-      'update add remove reset',
+      'add remove reset',
       this.updateDisabled
     )
   }

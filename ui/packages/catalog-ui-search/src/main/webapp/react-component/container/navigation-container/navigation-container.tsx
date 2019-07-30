@@ -71,7 +71,7 @@ class NavigationContainer extends React.Component<Props, State> {
   componentDidMount() {
     this.props.listenTo(
       store.get('workspaces'),
-      'change:saved update add remove',
+      'change:saved add remove',
       this.handleSaved.bind(this)
     )
     this.props.listenTo(sources, 'all', this.handleSources.bind(this))

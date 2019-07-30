@@ -208,11 +208,6 @@ module.exports = Marionette.LayoutView.extend({
 
     this.listenTo(
       this.options.selectionInterface.getSelectedResults(),
-      'update',
-      this.map.zoomToSelected.bind(this.map)
-    )
-    this.listenTo(
-      this.options.selectionInterface.getSelectedResults(),
       'add',
       this.map.zoomToSelected.bind(this.map)
     )

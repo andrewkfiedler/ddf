@@ -94,7 +94,7 @@ module.exports = Marionette.LayoutView.extend({
     )
     this.listenTo(
       this.model,
-      'remove update change:list.bookmarks add',
+      'remove change:list.bookmarks add',
       this.handleUpdates
     )
     this.listenTo(this.model, 'add', this.handleAdd)

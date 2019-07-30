@@ -58,7 +58,7 @@ module.exports = Marionette.LayoutView.extend({
   setupListeners() {
     this.listenTo(
       this._associationCollection,
-      'reset add remove update change',
+      'reset add remove change',
       this.handleFooter
     )
   },

@@ -460,11 +460,6 @@ module.exports = Marionette.LayoutView.extend({
     )
     this.listenTo(
       this.options.selectionInterface.getSelectedResults(),
-      'update',
-      this.updateHistogram
-    )
-    this.listenTo(
-      this.options.selectionInterface.getSelectedResults(),
       'add',
       this.updateHistogram
     )

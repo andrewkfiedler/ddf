@@ -326,12 +326,12 @@ const ResultItemView = Marionette.LayoutView.extend({
         .get('user')
         .get('preferences')
         .get('resultBlacklist'),
-      'add remove update reset',
+      'add remove reset',
       this.checkIfBlacklisted
     )
     this.listenTo(
       this.options.selectionInterface.getSelectedResults(),
-      'update add remove reset',
+      'add remove reset',
       this.handleSelectionChange
     )
     this.handleSelectionChange()

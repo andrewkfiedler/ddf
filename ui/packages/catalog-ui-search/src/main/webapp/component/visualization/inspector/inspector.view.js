@@ -126,7 +126,7 @@ module.exports = Marionette.LayoutView.extend({
     )
     this.listenTo(
       this.options.selectionInterface.getSelectedResults(),
-      'update add remove reset',
+      'add remove reset',
       this.onRender
     )
   },

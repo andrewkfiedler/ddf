@@ -95,7 +95,6 @@ const QuerySelector = Marionette.LayoutView.extend({
     this.handleUpdate()
     this.listenTo(this.model, 'add', this.handleUpdate)
     this.listenTo(this.model, 'remove', this.handleUpdate)
-    this.listenTo(this.model, 'update', this.handleUpdate)
     this.listenTo(store.get('content'), 'change:query', this.handleQuerySelect)
   },
   addQuery() {

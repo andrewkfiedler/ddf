@@ -12,7 +12,11 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-
+import {
+  patchBackbonePreMarionette,
+  patchMarionette,
+  patchBackbonePostAssociations,
+} from 'paper-mache'
 ;(function injectStyles() {
   if (process.env.NODE_ENV !== 'production') {
     require('../dev/styles/styles.less') // include styles for dev guide components
@@ -40,7 +44,12 @@ if (process.env.NODE_ENV !== 'production') {
 window.CESIUM_BASE_URL = './cesium/assets'
 
 const Backbone = require('backbone')
+patchBackbonePreMarionette(Backbone)
 const Marionette = require('marionette')
+patchMarionette(Marionette)
+require('backbone-associations')
+patchBackbonePostAssociations(Backbone)
+
 const properties = require('./properties.js')
 const announcement = require('../component/announcement/index.jsx')
 require('./Marionette.Region.js')
@@ -49,7 +58,6 @@ require('./HandlebarsHelpers.js')
 require('./ApplicationHelpers.js')
 require('./Autocomplete.js')
 require('./backbone.customFunctions.js')
-require('./extensions/backbone.listenTo.tsx')
 require('./extensions/marionette.onFirstRender.js')
 require('./extensions/marionette.renderer.render.js')
 require('./extensions/marionette.ItemView.attachElContent.js')

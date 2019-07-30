@@ -65,7 +65,7 @@ module.exports = Backbone.AssociatedModel.extend({
     }
     this.listenTo(
       this.get('uploads'),
-      'add remove reset update',
+      'add remove reset',
       this.handleUploadUpdate
     )
     this.listenTo(

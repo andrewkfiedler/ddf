@@ -90,11 +90,7 @@ module.exports = Backbone.AssociatedModel.extend(
           cql: generateCql(this.get('list.bookmarks')),
         })
       )
-      this.listenTo(
-        this,
-        'update:list.bookmarks change:list.bookmarks',
-        this.updateQuery
-      )
+      this.listenTo(this, 'change:list.bookmarks', this.updateQuery)
     },
     removeBookmarks(bookmarks) {
       if (!Array.isArray(bookmarks)) {

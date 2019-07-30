@@ -65,12 +65,12 @@ const GeometryView = Marionette.ItemView.extend({
       this.stopListening(this.options.clusterCollection)
       this.listenTo(
         this.options.selectionInterface.getSelectedResults(),
-        'update add remove reset',
+        'add remove reset',
         this.updateSelected
       )
       this.listenTo(
         this.options.clusterCollection,
-        'add remove update',
+        'add remove',
         this.checkIfClustered
       )
     } else {

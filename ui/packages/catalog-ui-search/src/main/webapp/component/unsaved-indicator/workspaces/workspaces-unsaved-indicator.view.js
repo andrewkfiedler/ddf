@@ -30,7 +30,7 @@ module.exports = SaveView.extend({
     }
     this.listenTo(
       this.model.get('workspaces'),
-      'change:saved update add remove',
+      'change:saved add remove',
       this.handleSaved
     )
   },
