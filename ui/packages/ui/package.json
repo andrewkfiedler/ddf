@@ -65,6 +65,7 @@
     "src/main/resources"
   ],
   "resolutions": {
+    "**/backbone": "1.1.2",
     "**/backbone.marionette": "1.8.8"
   },
   "main": "src/main/webapp/main.js",

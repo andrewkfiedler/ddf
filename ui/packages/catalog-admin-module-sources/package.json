@@ -26,7 +26,11 @@
   "devDependencies": {
     "@connexta/ace": "git://github.com/connexta/ace.git#bd20be6b0fb3c8b2cdbc5a04cc8a66bf1b59861c"
   },
+  "resolutions": {
+    "**/backbone": "1.1.2"
+  },
   "dependencies": {
+    "backbone": "1.1.2",
     "backbone-associations": "0.6.2",
     "backbone.marionette": "1.8.8",
     "backbone.modelbinder": "1.1.0",

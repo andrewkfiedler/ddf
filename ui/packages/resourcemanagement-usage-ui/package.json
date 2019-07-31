@@ -15,6 +15,9 @@
   "engines": {
     "node": ">=0.10.5"
   },
+  "resolutions": {
+    "**/backbone": "1.1.2"
+  },
   "devDependencies": {
     "backbone": "1.1.2",
     "backbone.marionette": "2.4.1",
