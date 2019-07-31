@@ -12,33 +12,8 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
+import * as React from 'react'
+import ReactDOM from 'react-dom'
+import App from './app.tsx'
 
-var $ = require('jquery')
-var React = require('react')
-var render = require('react-dom').render
-var Provider = require('react-redux').Provider
-
-var actions = require('./actions')
-var configureStore = require('./configureStore')
-
-var Announcments = require('./announcements')
-
-var region = $('<div id="announcments">').get(0)
-$(window.document.body).append(region)
-
-var store = configureStore()
-
-render(
-  <Provider store={store}>
-    <Announcments />
-  </Provider>,
-  region
-)
-
-exports.announce = function(announcement, timeout) {
-  store.dispatch(actions.announce(announcement, timeout))
-}
-
-if (process.env.NODE_ENV !== 'production' && module.hot) {
-  module.hot.accept()
-}
+ReactDOM.render(<App />, document.querySelector('#root'))

@@ -14,7 +14,7 @@
  **/
 /* global define */
 import React from 'react'
-import AdminLogViewer from 'logviewer-ui/src/main/webapp/js/main'
+import AdminLogViewer from '@connexta/logviewer-ui/src/main/webapp/js/main'
 define(['backbone.marionette', './iframe.hbs', 'js/CustomElements'], function(
   Marionette,
   template,

@@ -16,34 +16,25 @@
     "node": ">=0.10.5"
   },
   "devDependencies": {
-    "connect-livereload": "0.3.2",
-    "grunt": "1.0.1",
-    "grunt-cli": "1.2.0",
-    "grunt-contrib-clean": "1.0.0",
-    "grunt-contrib-cssmin": "1.0.2",
-    "grunt-contrib-less": "1.4.0",
-    "grunt-contrib-watch": "1.0.0",
-    "grunt-express-server": "0.5.3",
-    "load-grunt-tasks": "3.5.2",
-    "@connexta/ace": "*"
+    "@connexta/ace": "git://github.com/connexta/ace.git#bd20be6b0fb3c8b2cdbc5a04cc8a66bf1b59861c",
+    "@types/node": "12.6.8",
+    "@types/react": "16.8.23",
+    "@types/react-dom": "16.8.4"
   },
   "dependencies": {
-    "lodash": "4.17.5",
-    "http-proxy": "0.10.0",
-    "express": "4.16.3",
-    "node-fs": "0.1.7",
-    "node-options": "0.0.3",
-    "path": "0.4.9"
+    "@connexta/atlas": "0.0.35",
+    "moment": "2.22.0",
+    "react": "16.8.6",
+    "react-dom": "16.8.6"
   },
   "scripts": {
-    "start": "grunt",
-    "build": "grunt build && ace package",
-    "clean": "ace clean"
+    "start": "ace start",
+    "build": "ace bundle",
+    "postbuild": "ace package"
   },
   "files": [
-    "src/main/webapp",
-    "target/webapp",
-    "src/main/resources"
+    "target/webapp"
   ],
+  "main": "src/main/webapp/index.js",
   "context-path": "/admin/metrics"
 }

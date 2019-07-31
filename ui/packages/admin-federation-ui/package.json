@@ -12,7 +12,7 @@
     "node": ">=0.10.5"
   },
   "devDependencies": {
-    "@connexta/ace": "*"
+    "@connexta/ace": "git://github.com/connexta/ace.git#bd20be6b0fb3c8b2cdbc5a04cc8a66bf1b59861c"
   },
   "dependencies": {
     "backbone": "1.1.2",

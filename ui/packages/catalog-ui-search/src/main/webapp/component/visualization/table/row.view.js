@@ -164,10 +164,11 @@ module.exports = Marionette.LayoutView.extend({
           if (value && metacardDefinitions.metacardTypes[property]) {
             switch (metacardDefinitions.metacardTypes[property].type) {
               case 'DATE':
-                value = value.map(val =>
-                  val !== undefined && val !== ''
-                    ? user.getUserReadableDateTime(val)
-                    : ''
+                value = value.map(
+                  val =>
+                    val !== undefined && val !== ''
+                      ? user.getUserReadableDateTime(val)
+                      : ''
                 )
                 break
               default:

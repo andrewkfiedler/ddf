@@ -24,7 +24,7 @@
     "node": ">=0.10.5"
   },
   "devDependencies": {
-    "@connexta/ace": "git://github.com/connexta/ace.git#8fd0444ffc89e45a5b32e0013536d1f13480ffd0",
+    "@connexta/ace": "git://github.com/connexta/ace.git#bd20be6b0fb3c8b2cdbc5a04cc8a66bf1b59861c",
     "chai": "4.1.1",
     "enzyme": "3.3.0",
     "enzyme-adapter-react-16": "1.5.0",
