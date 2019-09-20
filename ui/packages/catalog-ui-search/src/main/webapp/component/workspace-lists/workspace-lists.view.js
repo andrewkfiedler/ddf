@@ -15,14 +15,13 @@
 import * as React from 'react'
 import ListCreate from '../list-create/list-create.js'
 import ResultSelector from '../result-selector/result-selector'
-import MarionetteRegionContainer from '../../react-component/container/marionette-region-container'
+import MarionetteRegionContainer from '../../react-component/marionette-region-container'
 const Marionette = require('marionette')
 const CustomElements = require('../../js/CustomElements.js')
 const template = require('./workspace-lists.hbs')
 const store = require('../../js/store.js')
 const ListSelectorView = require('../dropdown/list-select/dropdown.list-select.view.js')
 const DropdownModel = require('../dropdown/dropdown.js')
-const ResultSelectorView = require('../result-selector/result-selector.view.js')
 
 const $ = require('jquery')
 const PopoutView = require('../dropdown/popout/dropdown.popout.view.js')

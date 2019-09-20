@@ -42,8 +42,8 @@ export type ExtensionPointsType = {
   tableExport: SFC<TableExportProps>
   multiSelectActions: any[]
   resultItem: {
-    extensions: React.ReactNode
-    buttonExtensions: React.ReactNode
+    extensions: React.ReactType
+    buttonExtensions: React.ReactType
   }
 }
 

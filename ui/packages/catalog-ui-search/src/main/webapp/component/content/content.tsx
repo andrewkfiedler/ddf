@@ -10,12 +10,12 @@
  *
  **/
 import * as React from 'react'
-import MultiSelectActions from '../../react-component/container/multi-select-actions'
-import styled from '../../react-component/styles/styled-components'
+import MultiSelectActions from '../../react-component/multi-select-actions'
+import styled from 'styled-components'
 import { ChangeBackground } from '../../react-component/styles/mixins/change-background'
 import { useBackbone } from '../../hooks'
-import MarionetteRegionContainer from '../../react-component/container/marionette-region-container'
-import LoadingCompanion from '../../react-component/container/loading-companion'
+import MarionetteRegionContainer from '../../react-component/marionette-region-container'
+import LoadingCompanion from '../../react-component/loading-companion'
 import { hot } from 'react-hot-loader'
 const WorkspaceContentTabs = require('../tabs/workspace-content/tabs-workspace-content.js')
 const WorkspaceContentTabsView = require('../tabs/workspace-content/tabs-workspace-content.view.js')
@@ -106,7 +106,7 @@ const Content = () => {
 
   return (
     <Root>
-      <LoadingCompanion isLoading={isPartial}>
+      <LoadingCompanion loading={isPartial}>
         {isPartial ? null : (
           <>
             <ContentLeft className="content-left">

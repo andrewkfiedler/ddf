@@ -88,12 +88,8 @@ Behaviors.addBehavior(
     getPossibleDropdownElements(dropdown) {
       const possibleDropdownElements = this.view.$el.find(dropdown.selector)
       if (possibleDropdownElements.length > 1) {
-        console.warn(`More than 1 possible dropdown element found for selector:\n ${
-          dropdown.selector
-        }
-                \n Update your selector in ${
-                  this.view.el.tagName
-                } be more specific, otherwise you'll run into strange behavior!
+        console.warn(`More than 1 possible dropdown element found for selector:\n ${dropdown.selector}
+                \n Update your selector in ${this.view.el.tagName} be more specific, otherwise you'll run into strange behavior!
             `)
       }
       return possibleDropdownElements

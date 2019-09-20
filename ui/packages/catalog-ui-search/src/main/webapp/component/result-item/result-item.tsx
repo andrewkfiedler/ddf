@@ -15,8 +15,8 @@
 
 import { hot } from 'react-hot-loader'
 import * as React from 'react'
-import MarionetteRegionContainer from '../../react-component/container/marionette-region-container'
-import styled from '../../react-component/styles/styled-components'
+import MarionetteRegionContainer from '../../react-component/marionette-region-container'
+import styled from 'styled-components'
 import { readableColor } from 'polished'
 import { useBackbone } from '../../hooks/index'
 import {
@@ -24,7 +24,7 @@ import {
   Button,
 } from '../../react-component/presentation/button'
 import Dropdown from '../../react-component/presentation/dropdown'
-const MetacardInteractionsDropdown = require('../../react-component/container/metacard-interactions/metacard-interactions-dropdown')
+const MetacardInteractionsDropdown = require('../../react-component/metacard-interactions/metacard-interactions-dropdown')
   .default
 
 const Backbone = require('backbone')

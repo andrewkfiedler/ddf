@@ -14,14 +14,13 @@
  **/
 import * as React from 'react'
 import ResultSelector from '../result-selector/result-selector'
-import MarionetteRegionContainer from '../../react-component/container/marionette-region-container'
+import MarionetteRegionContainer from '../../react-component/marionette-region-container'
 const Marionette = require('marionette')
 const resultsTemplate = require('./results.hbs')
 const CustomElements = require('../../js/CustomElements.js')
 const QuerySelectDropdown = require('../dropdown/query-select/dropdown.query-select.view.js')
 const DropdownModel = require('../dropdown/dropdown.js')
 const store = require('../../js/store.js')
-const ResultSelectorView = require('../result-selector/result-selector.view.js')
 const WorkspaceExploreView = require('../workspace-explore/workspace-explore.view.js')
 
 let lastQueryId

@@ -20,15 +20,15 @@ const cql = require('../../js/cql.js')
 const ResultSortDropdownView = require('../dropdown/result-sort/dropdown.result-sort.view.js')
 const user = require('../singletons/user-instance.js')
 require('../../behaviors/selection.behavior.js')
-import MarionetteRegionContainer from '../../react-component/container/marionette-region-container'
+import MarionetteRegionContainer from '../../react-component/marionette-region-container'
 import ResultItemCollection from '../result-item/result-item.collection'
 import Spellcheck from '../spellcheck/index'
 import { hot } from 'react-hot-loader'
 import { useBackbone } from '../../hooks/index'
 import Dropdown from '../../react-component/presentation/dropdown'
-import NavigationBehavior from '../../react-component/presentation/navigation-behavior'
-import MenuSelection from '../../react-component/presentation/menu-selection'
-import styled from '../../react-component/styles/styled-components'
+import NavigationBehavior from '../../react-component/navigation-behavior'
+import MenuSelection from '../../react-component/menu-selection'
+import styled from 'styled-components'
 
 const {
   SelectAllToggle,
