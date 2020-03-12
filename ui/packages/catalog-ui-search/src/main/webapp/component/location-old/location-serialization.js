@@ -326,11 +326,14 @@ const Serializers = plugin.Serializers({
 
 const Deserializers = plugin.Deserializers({
   Point,
+  'Point Radius': Point,
   Polygon,
   MultiPolygon,
   LineString,
+  Line: LineString,
   MultiLineString,
   BoundingBox,
+  'Bounding Box': BoundingBox,
   Keyword,
 })
 
@@ -346,7 +349,10 @@ export const serialize = location => {
 
 export const deserialize = json => {
   if (json) {
-    const deserializer = Deserializers[json.properties.type]['json->location']
+    const deserializer =
+      Deserializers[json.properties.shape || json.properties.type][
+        'json->location'
+      ]
     if (typeof deserializer === 'function') {
       return deserializer(json)
     }

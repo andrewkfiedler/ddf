@@ -58,11 +58,27 @@ module.exports = {
         .addBack(clickedElement).length > 0
     )
   },
+  withinAnyMUIDropdown(clickedElement) {
+    return (
+      $('.MuiPopover-root')
+        .find(clickedElement)
+        .addBack(clickedElement).length > 0
+    )
+  },
+  withinAnyMUIAutocomplete(clickedElement) {
+    return (
+      $('.MuiAutocomplete-popper')
+        .find(clickedElement)
+        .addBack(clickedElement).length > 0
+    )
+  },
   withinAnyDropdown(clickedElement) {
     return (
       this.withinAnyDropdownBehavior(clickedElement) ||
       this.withinAnyDropdownCompanion(clickedElement) ||
-      this.withinAnyReactPortal(clickedElement)
+      this.withinAnyReactPortal(clickedElement) ||
+      this.withinAnyMUIDropdown(clickedElement) ||
+      this.withinAnyMUIAutocomplete(clickedElement)
     )
   },
   withinParentDropdownCompanion($dropdownEl, clickedElement) {
@@ -73,6 +89,16 @@ module.exports = {
         .addBack(clickedElement).length > 0 ||
       $dropdownEl
         .closest('react-portal')
+        .prevAll(`${CustomElements.getNamespace()}dropdown-companion`)
+        .find(clickedElement)
+        .addBack(clickedElement).length > 0 ||
+      $dropdownEl
+        .closest('.MuiPopover-root')
+        .prevAll(`${CustomElements.getNamespace()}dropdown-companion`)
+        .find(clickedElement)
+        .addBack(clickedElement).length > 0 ||
+      $dropdownEl
+        .closest('.MuiAutocomplete-popper')
         .prevAll(`${CustomElements.getNamespace()}dropdown-companion`)
         .find(clickedElement)
         .addBack(clickedElement).length > 0
@@ -104,11 +130,39 @@ module.exports = {
         .addBack(clickedElement).length > 0
     )
   },
+  withinParentMUIDropdown($dropdownEl, clickedElement) {
+    return (
+      $dropdownEl
+        .closest('.MuiPopover-root')
+        .prevAll('.MuiPopover-root')
+        .find(clickedElement)
+        .addBack(clickedElement).length > 0 ||
+      $dropdownEl
+        .prevAll('.MuiPopover-root')
+        .find(clickedElement)
+        .addBack(clickedElement).length > 0
+    )
+  },
+  withinParentMUIAutocomplete($dropdownEl, clickedElement) {
+    return (
+      $dropdownEl
+        .closest('.MuiAutocomplete-popper')
+        .prevAll('.MuiAutocomplete-popper')
+        .find(clickedElement)
+        .addBack(clickedElement).length > 0 ||
+      $dropdownEl
+        .prevAll('.MuiAutocomplete-popper')
+        .find(clickedElement)
+        .addBack(clickedElement).length > 0
+    )
+  },
   withinParentDropdown($dropdownEl, clickedElement) {
     return (
       this.withinParentDropdownBehavior($dropdownEl, clickedElement) ||
       this.withinParentDropdownCompanion($dropdownEl, clickedElement) ||
-      this.withinParentReactPortal($dropdownEl, clickedElement)
+      this.withinParentReactPortal($dropdownEl, clickedElement) ||
+      this.withinParentMUIDropdown($dropdownEl, clickedElement) ||
+      this.withinParentMUIAutocomplete($dropdownEl, clickedElement)
     )
   },
   withinDOM(clickedElement) {

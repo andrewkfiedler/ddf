@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "@connexta/icons": "git://github.com/connexta/icons.git#v0.0.3",
+    "@connexta/revelio": "git://github.com/connexta/revelio.git#composing-revelio",
     "@fortawesome/fontawesome-svg-core": "1.2.19",
     "@fortawesome/free-solid-svg-icons": "5.9.0",
     "@fortawesome/react-fontawesome": "0.1.4",
@@ -67,6 +68,7 @@
     "eonasdan-bootstrap-datetimepicker": "Eonasdan/bootstrap-datetimepicker#4.17.47",
     "font-awesome": "4.7",
     "geo-convex-hull": "1.2.0",
+    "geospatialdraw": "0.5.6",
     "golden-layout": "1.5.8",
     "html-react-parser": "0.4.6",
     "immer": "1.5.0",
@@ -81,6 +83,7 @@
     "moment": "2.22.0",
     "moment-timezone": "0.5.16",
     "mt-geo": "1.0.1",
+    "ol": "6.2.1",
     "openlayers": "4.6.5",
     "plotly.js": "1.16.0",
     "polished": "1.9.3",
@@ -116,10 +119,10 @@
     "cesium$": "cesium/Build/Cesium/Cesium.js"
   },
   "ace": {
-    "files": [
-      "src/main/resources",
-      "target/webapp"
-    ]
+    "resolve": {
+      "react": "react",
+      "react-dom$": "react-dom"
+    }
   },
   "context-path": "/search/catalog"
 }

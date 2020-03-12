@@ -80,7 +80,7 @@ Draw.PolygonView = Marionette.View.extend({
   coordsToLineString(rawCoords) {
     const coords = []
     const setArr = _.uniq(rawCoords)
-    if (setArr.length < 3) {
+    if (setArr.length < 2) {
       return
     }
     _.each(setArr, item => {

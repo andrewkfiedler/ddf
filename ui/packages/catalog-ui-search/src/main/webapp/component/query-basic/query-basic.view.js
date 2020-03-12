@@ -29,6 +29,17 @@ const sources = require('../singletons/sources-instance.js')
 const CQLUtils = require('../../js/CQLUtils.js')
 const QuerySettingsView = require('../query-settings/query-settings.view.js')
 const QueryTimeView = require('../query-time/query-time.view.js')
+import { Location, geoToFilter } from '@connexta/revelio/components/location'
+import { DrawProvider } from '@connexta/revelio/react-hooks/use-draw-interface'
+import {
+  geoJSONToGeometryJSON,
+  makeEmptyGeometry,
+} from 'geospatialdraw/bin/geometry/utilities'
+import { POLYGON, LINE } from 'geospatialdraw/bin/shapes/shape'
+import MRC from '../../react-component/marionette-region-container'
+import { GeospatialdrawLocationView } from '../location-geospatialdraw/location-geospatialdraw'
+
+import * as React from 'react'
 
 function isNested(filter) {
   let nested = false
@@ -336,13 +347,49 @@ module.exports = Marionette.LayoutView.extend({
     if (this.filter.anyGeo) {
       currentValue = this.filter.anyGeo[0]
     }
+    // const fakePropertyView = new PropertyView({
+    //   model: new Property({
+    //     value: [currentValue],
+    //     id: 'Location',
+    //     type: 'LOCATION',
+    //   }),
+    // })
+    // const TestView = Marionette.ItemView.extend({
+    //   template: function() {
+    //     const drawGeo = this.value
+    //       ? this.value.geojson || this.value
+    //       : makeEmptyGeometry('location', LINE)
+    //     drawGeo.properties.id = Math.random()
+    //     return (
+    //       <DrawProvider>
+    //         <Location
+    //           enableDrawing={true}
+    //           value={drawGeo}
+    //           onChange={function(update) {
+    //             this.value = update
+    //             this.render()
+    //           }.bind(this)}
+    //         />
+    //         <MRC view={fakePropertyView} />
+    //       </DrawProvider>
+    //     )
+    //   },
+    //   initialize: function() {
+    //     this.value = this.options.value
+    //     this.listenTo(fakePropertyView.model, 'change:value', () => {
+    //       this.value = CQLUtils.generateFilter(
+    //         undefined,
+    //         'anyGeo',
+    //         fakePropertyView.model.getValue()[0]
+    //       )
+    //       this.render()
+    //     })
+    //   },
+    //   value: undefined,
+    // })
     this.basicLocationSpecific.show(
-      new PropertyView({
-        model: new Property({
-          value: [currentValue],
-          id: 'Location',
-          type: 'LOCATION',
-        }),
+      new GeospatialdrawLocationView({
+        value: currentValue,
       })
     )
   },
@@ -452,12 +499,9 @@ module.exports = Marionette.LayoutView.extend({
     })
 
     const locationSpecific = this.basicLocation.currentView.model.getValue()[0]
-    const location = this.basicLocationSpecific.currentView.model.getValue()[0]
-    const locationFilter = CQLUtils.generateFilter(
-      undefined,
-      'anyGeo',
-      location
-    )
+    const location = this.basicLocationSpecific.currentView.value
+    // const locationFilter = geoToFilter(location)
+    const locationFilter = location // no need to convert
     if (locationSpecific === 'specific' && locationFilter) {
       filters.push(locationFilter)
     }

@@ -15,6 +15,7 @@
 
 const template = require('./input-location.hbs')
 const InputView = require('../input.view')
+import { GeospatialdrawLocationView } from '../../location-geospatialdraw/location-geospatialdraw'
 const LocationView = require('../../location-old/location-old.view.js')
 
 module.exports = InputView.extend({
@@ -46,6 +47,11 @@ module.exports = InputView.extend({
     return this.locationRegion.currentView.isValid()
   },
   initializeRadio() {
+    // this.locationRegion.show(
+    //   new GeospatialdrawLocationView({
+    //     model: this.model,
+    //   })
+    // )
     this.locationRegion.show(
       new LocationView({
         model: this.model,

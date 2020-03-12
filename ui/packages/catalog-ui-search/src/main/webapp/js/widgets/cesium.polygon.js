@@ -72,7 +72,7 @@ class PolygonRenderView extends GeometryRenderView {
     this.primitive = new Cesium.PolylineCollection()
     this.cameraMagnitude = this.map.camera.getMagnitude()
     ;(polygons || []).forEach(polygonPoints => {
-      if (!polygonPoints || polygonPoints.length < 3) {
+      if (!polygonPoints || polygonPoints.length < 2) {
         return
       }
       if (

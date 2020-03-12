@@ -22,6 +22,8 @@ import {
   BetweenTimeInput,
 } from './filter-date-inputs'
 import { TextInput, NearInput, EnumInput } from './filter-text-inputs'
+import MRC from '../../marionette-region-container'
+import { GeospatialdrawLocationView } from '../../../component/location-geospatialdraw/location-geospatialdraw'
 
 export const determineInput = (
   comparator,
@@ -51,7 +53,10 @@ export const determineInput = (
     case 'DATE':
       return <DateInput {...props} />
     case 'LOCATION':
-      return <LocationInput {...props} />
+      return (
+        <MRC view={GeospatialdrawLocationView} viewOptions={{ ...props }} />
+      )
+    // return <LocationInput {...props} />
     case 'FLOAT':
       return <FloatInput {...props} />
     case 'INTEGER':
