@@ -46,9 +46,7 @@ type ValueType = {
 /** Todo: Update Geospatial draw to not crash on bad values, but warn and recover */
 const transformToValidatedValue = (prevValue: any, value: ValueType): any => {
   if (!value || !value.geojson) {
-    return geoToFilter(
-      makeEmptyGeometry(Math.random().toString(), 'Bounding Box')
-    )
+    return geoToFilter(makeEmptyGeometry(Math.random().toString(), 'Line'))
   }
   if (
     value &&
@@ -212,10 +210,6 @@ export const GeospatialdrawLocationView = Marionette.ItemView.extend({
           'anyGeo',
           this.fakePropertyView.model.getValue()[0]
         )
-        if (isDrawing()) {
-          console.log(newValue)
-          return
-        }
         if (isEqual(newValue, this.value)) {
           return
         }

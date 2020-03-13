@@ -117,6 +117,7 @@ module.exports = Marionette.LayoutView.extend({
   },
   // Updates the map with a drawing whenever the user is entering coordinates manually
   updateMap() {
+    console.log('updateMap')
     if (!this.isDestroyed) {
       const mode = this.model.get('mode')
       if (mode !== undefined && store.get('content').get('drawing') !== true) {
