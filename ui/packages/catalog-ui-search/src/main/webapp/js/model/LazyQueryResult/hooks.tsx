@@ -160,16 +160,23 @@ export const useStatusOfLazyResults = ({
 }: {
   lazyResults: LazyQueryResults
 }) => {
-  const [status, setStatus] = React.useState(lazyResults.status)
-  //@ts-ignore
-  const [forceRender, setForceRender] = React.useState(Math.random())
+  const [status, setStatus] = React.useState({
+    status: lazyResults.status,
+    isSearching: lazyResults.isSearching,
+    currentAsOf: lazyResults.currentAsOf,
+  })
   React.useEffect(
     () => {
       const unsubscribeCall = lazyResults.subscribeTo({
         subscribableThing: 'status',
         callback: () => {
-          setStatus(lazyResults.status)
-          setForceRender(Math.random())
+          setStatus({
+            status: {
+              ...lazyResults.status,
+            },
+            isSearching: lazyResults.isSearching,
+            currentAsOf: lazyResults.currentAsOf,
+          })
         },
       })
       return () => {
@@ -179,9 +186,5 @@ export const useStatusOfLazyResults = ({
     [lazyResults]
   )
 
-  return {
-    status,
-    isSearching: lazyResults.isSearching,
-    currentAsOf: lazyResults.currentAsOf,
-  }
+  return status
 }

@@ -94,7 +94,7 @@ module.exports = new (Backbone.AssociatedModel.extend({
       if (this.get('currentQuery')) {
         this.get('currentQuery').cancelCurrentSearches()
       }
-      queryForMetacard.startSearch()
+      queryForMetacard.startSearchFromFirstPage()
       this.set({
         currentMetacard: undefined,
         currentResult: queryForMetacard.get('result'),

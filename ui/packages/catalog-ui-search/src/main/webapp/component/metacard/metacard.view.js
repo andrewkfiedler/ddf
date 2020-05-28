@@ -48,7 +48,7 @@ module.exports = Marionette.LayoutView.extend({
     )
     this.$el.toggleClass(
       'is-searching',
-      metacardInstance.get('currentResult').isSearching()
+      metacardInstance.get('currentResult').get('lazyResults').isSearching
     )
   },
   handleResultChange() {
