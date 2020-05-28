@@ -22,38 +22,6 @@ module.exports = {
   refreshResult(result) {
     const id = result.get('metacard').id
     result.refreshData()
-    store.get('workspaces').forEach(workspace => {
-      workspace.get('queries').forEach(query => {
-        if (query.get('result')) {
-          query
-            .get('result')
-            .get('results')
-            .forEach(result => {
-              if (
-                result
-                  .get('metacard')
-                  .get('properties')
-                  .get('id') === id
-              ) {
-                result.refreshData()
-              }
-            })
-        }
-      })
-    })
-    alert
-      .get('currentResult')
-      .get('results')
-      .forEach(result => {
-        if (
-          result
-            .get('metacard')
-            .get('properties')
-            .get('id') === id
-        ) {
-          result.refreshData()
-        }
-      })
   },
   updateResults(results, response) {
     const attributeMap = response.reduce(
@@ -101,59 +69,5 @@ module.exports = {
           .unset(attribute)
       })
     })
-    store.get('workspaces').forEach(workspace => {
-      workspace.get('queries').forEach(query => {
-        if (query.get('result')) {
-          query
-            .get('result')
-            .get('results')
-            .forEach(result => {
-              if (
-                ids.indexOf(
-                  result
-                    .get('metacard')
-                    .get('properties')
-                    .get('id')
-                ) !== -1
-              ) {
-                result
-                  .get('metacard')
-                  .get('properties')
-                  .set(attributeMap)
-                unsetAttributes.forEach(attribute => {
-                  result
-                    .get('metacard')
-                    .get('properties')
-                    .unset(attribute)
-                })
-              }
-            })
-        }
-      })
-    })
-    alert
-      .get('currentResult')
-      .get('results')
-      .forEach(result => {
-        if (
-          ids.indexOf(
-            result
-              .get('metacard')
-              .get('properties')
-              .get('id')
-          ) !== -1
-        ) {
-          result
-            .get('metacard')
-            .get('properties')
-            .set(attributeMap)
-          unsetAttributes.forEach(attribute => {
-            result
-              .get('metacard')
-              .get('properties')
-              .unset(attribute)
-          })
-        }
-      })
   },
 }

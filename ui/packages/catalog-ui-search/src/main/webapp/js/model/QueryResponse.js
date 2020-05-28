@@ -14,17 +14,9 @@
  **/
 const $ = require('jquery')
 const Backbone = require('backbone')
-const _ = require('underscore')
 const metacardDefinitions = require('../../component/singletons/metacard-definitions.js')
 const properties = require('../properties.js')
-// const user = require('../../component/singletons/user-instance.js')
-const Common = require('../Common.js')
 require('backbone-associations')
-const QueryResponseSourceStatus = require('./QueryResponseSourceStatus.js')
-const QueryResultCollection = require('./QueryResult.collection.js')
-const QueryResult = require('./QueryResult.js')
-const spliceAmount = 5
-import { LazyQueryResults } from './LazyQueryResult/LazyQueryResults'
 
 let rpc = null
 
@@ -40,7 +32,7 @@ if (properties.webSocketsEnabled && window.WebSocket) {
 module.exports = Backbone.AssociatedModel.extend({
   defaults() {
     return {
-      lazyResults: new LazyQueryResults(),
+      lazyResults: undefined,
     }
   },
   url: './internal/cql',

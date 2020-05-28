@@ -15,8 +15,11 @@ export const useSelectionOfLazyResult = ({
   const [isSelected, setIsSelected] = React.useState(lazyResult.isSelected)
   React.useEffect(
     () => {
-      const unsubscribe = lazyResult.subscribeToSelection(() => {
-        setIsSelected(lazyResult.isSelected)
+      const unsubscribe = lazyResult.subscribeTo({
+        subscribableThing: 'selected',
+        callback: () => {
+          setIsSelected(lazyResult.isSelected)
+        },
       })
       return () => {
         unsubscribe()
@@ -39,8 +42,11 @@ export const useFilteredOfLazyResult = ({
   const [isFiltered, setIsFiltered] = React.useState(lazyResult.isFiltered)
   React.useEffect(
     () => {
-      const unsubscribe = lazyResult.subscribeToFiltered(() => {
-        setIsFiltered(lazyResult.isFiltered)
+      const unsubscribe = lazyResult.subscribeTo({
+        subscribableThing: 'filtered',
+        callback: () => {
+          setIsFiltered(lazyResult.isFiltered)
+        },
       })
       return () => {
         unsubscribe()
@@ -100,9 +106,12 @@ export const useSelectionOfLazyResults = ({
       )
       setIsSelected(calculateIfSelected())
       const unsubscribeCalls = lazyResults.map(lazyResult => {
-        return lazyResult.subscribeToSelection(() => {
-          cache.current[lazyResult['metacard.id']] = lazyResult.isSelected
-          debouncedUpdatedIsSelected()
+        return lazyResult.subscribeTo({
+          subscribableThing: 'selected',
+          callback: () => {
+            cache.current[lazyResult['metacard.id']] = lazyResult.isSelected
+            debouncedUpdatedIsSelected()
+          },
         })
       })
       return () => {
