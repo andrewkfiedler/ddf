@@ -21,6 +21,7 @@
             name="HTTP Response Headers" id="headers" required="true" type="String"
             cardinality="100"
             default="X-Content-Security-Policy=default-src 'none'; connect-src 'self'; script-src 'self'; style-src 'self'; img-src 'self',X-Frame-Options=SAMEORIGIN,X_XSS_PROTECTION=1; mode=block,Cache-Control=private\, max-age=604800\, immutable"/>
+        
     </OCD>
 
     <Designate pid="org.codice.ddf.platform.response.filter.ResponseHeaderConfig">

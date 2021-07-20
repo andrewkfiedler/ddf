@@ -1,5 +1,7 @@
 (function () {
-
+    if (parent) {
+        parent.postMessage('loggedIn')
+    }
     var getSourceAvailabilities = function () {
         var sourceAvailabilityList = $("#sourceAvailabilityList");
         sourceAvailabilityList.hide();

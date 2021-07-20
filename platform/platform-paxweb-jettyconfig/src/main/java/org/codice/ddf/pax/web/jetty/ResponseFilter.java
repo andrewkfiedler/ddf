@@ -55,7 +55,12 @@ public class ResponseFilter implements Filter {
           X_XSS_PROTECTION + "=" + DEFAULT_XSS_PROTECTION_VALUE,
           X_FRAME_OPTIONS + "=" + DEFAULT_X_FRAME_OPTIONS_VALUE,
           X_CONTENT_SECURITY_POLICY + "=" + DEFAULT_CONTENT_SECURITY_POLICY,
-          CACHE_CONTROL + "=" + DEFAULT_CACHE_CONTROL_VALUE);
+          CACHE_CONTROL + "=" + DEFAULT_CACHE_CONTROL_VALUE,
+          "Access-Control-Allow-Methods=GET,POST,PUT,OPTIONS",
+          "Access-Control-Allow-Credentials=true",
+          "Access-Control-Allow-Origin=https://deploy-preview-38--modest-kirch-4025c1.netlify.app",
+          "Access-Control-Allow-Headers=Content-Type, *",
+          "Vary=Origin");
 
   // Index paths (such as /search/catalog/ or /admin/) should never be cached
   private void disableCachingForHtml(HttpServletRequest request, HttpServletResponse response) {
